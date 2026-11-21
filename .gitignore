@@ -1,0 +1,4 @@
+.DS_Store
+brief/
+node_modules/
+.claude/settings.json
