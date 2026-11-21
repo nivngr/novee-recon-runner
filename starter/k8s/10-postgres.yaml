@@ -1,0 +1,74 @@
+# Postgres for the candidate's application data.
+# Temporal keeps its own state separately (see 20-temporal.yaml).
+#
+# DATABASE_URL for your services:
+#   postgres://novee:novee@postgres.novee-task.svc.cluster.local:5432/novee?sslmode=disable
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres
+  namespace: novee-task
+stringData:
+  POSTGRES_USER: novee
+  POSTGRES_PASSWORD: novee
+  POSTGRES_DB: novee
+  DATABASE_URL: postgres://novee:novee@postgres:5432/novee?sslmode=disable
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: novee-task
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: novee-task
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels: { app: postgres }
+  template:
+    metadata:
+      labels: { app: postgres }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          envFrom:
+            - secretRef: { name: postgres }
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - { name: pg, containerPort: 5432 }
+          readinessProbe:
+            exec:
+              command: [sh, -c, "pg_isready -U novee -d novee"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 512Mi }
+          volumeMounts:
+            - { name: data, mountPath: /var/lib/postgresql/data }
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: postgres-data }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: novee-task
+spec:
+  selector: { app: postgres }
+  ports:
+    - { name: pg, port: 5432, targetPort: pg }

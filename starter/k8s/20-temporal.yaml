@@ -1,0 +1,79 @@
+# Temporal dev server, persisted to a PVC so history survives pod restarts —
+# which matters, because R2 involves killing your worker mid-run.
+#
+#   gRPC frontend : temporal.novee-task.svc.cluster.local:7233
+#   Web UI        : temporal.novee-task.svc.cluster.local:8233  (port-forward it)
+#
+# Single replica by design. This is not how you would run Temporal in production;
+# be ready to say why on the call.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: temporal-data
+  namespace: novee-task
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: temporal
+  namespace: novee-task
+spec:
+  serviceName: temporal
+  replicas: 1
+  selector:
+    matchLabels: { app: temporal }
+  template:
+    metadata:
+      labels: { app: temporal }
+    spec:
+      # If the pod cannot write /data on your cluster, drop this securityContext —
+      # the image's default user varies by tag. Tell us if you had to.
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: temporal
+          image: temporalio/temporal:1.8.1
+          args:
+            - server
+            - start-dev
+            - --ip=0.0.0.0
+            - --port=7233
+            - --ui-port=8233
+            - --db-filename=/data/temporal.db
+            - --namespace=default
+            - --log-level=warn
+          ports:
+            - { name: grpc, containerPort: 7233 }
+            - { name: ui, containerPort: 8233 }
+          readinessProbe:
+            tcpSocket: { port: grpc }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: grpc }
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 200m, memory: 512Mi }
+            limits: { memory: 1Gi }
+          volumeMounts:
+            - { name: data, mountPath: /data }
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: temporal-data }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: temporal
+  namespace: novee-task
+spec:
+  selector: { app: temporal }
+  ports:
+    - { name: grpc, port: 7233, targetPort: grpc }
+    - { name: ui, port: 8233, targetPort: ui }

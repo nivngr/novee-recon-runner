@@ -1,0 +1,60 @@
+# The long-running dependency your workflow drives. Do not modify this file: we grade
+# against our own copy, so a change here (MAX_CONCURRENT, FAIL_FIRST_N, ...) would not
+# survive grading anyway.
+#
+#   http://agent-service.novee-task.svc.cluster.local:8080
+#
+# Defaults here are what we test against: agents take 10s-2m, the first 2 start attempts
+# per domain fail transiently, and a completed agent discovers 250 subdomains. Turn any of
+# it down while you iterate with POST /admin/config — see the brief.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-service
+  namespace: novee-task
+spec:
+  # Deliberately 1 replica: the scan registry and the concurrency high-water mark are
+  # in-process, and both you and we read them. Scaling this makes them meaningless.
+  replicas: 1
+  selector:
+    matchLabels: { app: agent-service }
+  template:
+    metadata:
+      labels: { app: agent-service }
+    spec:
+      containers:
+        - name: agent-service
+          image: novee-task/agent-service:dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: PORT, value: "8080" }
+            - { name: FAIL_FIRST_N, value: "2" }
+            - { name: FAIL_EVERY_N, value: "0" }
+            - { name: STALL_EVERY_N, value: "0" }
+            - { name: MAX_CONCURRENT, value: "0" }
+            - { name: MIN_DURATION_MS, value: "10000" }
+            - { name: MAX_DURATION_MS, value: "120000" }
+            - { name: RESULT_COUNT, value: "250" }
+          ports:
+            - { name: http, containerPort: 8080 }
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 64Mi }
+            limits: { memory: 256Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent-service
+  namespace: novee-task
+spec:
+  selector: { app: agent-service }
+  ports:
+    - { name: http, port: 8080, targetPort: http }
