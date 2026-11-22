@@ -28,12 +28,13 @@ and heartbeats; returns status and count), `stopAgent`.
 
 ## D4 — Results before approval: a staging table in Postgres
 **Chose:** each completed agent's findings go to `staged_discoveries`. Approve copies the deduplicated set
-into `discovered_domains`; reject or cancel deletes the staged rows. Duplicates keep the most severe risk.
+into `discovered_domains`; reject or cancel deletes the staged rows. Duplicates keep the most severe risk:
+risk is an ordered enum (`LOW < MEDIUM < HIGH < CRITICAL`), so that's simply `max(risk)`.
 **Rejected:** re-fetching the results from agent-service at approval.
 **Why:**
 - Robust: survives an agent-service restart, and the human approves exactly what gets stored.
 - Verifiable: the raw per-agent results let us check our dedup is correct (R2, R3 proofs).
-- In production, visibility into raw agent results (e.g. how techniques compare) for debugging and evaluation.
+- Raw material for agent evaluation: per-agent findings show which technique finds what, each agent's unique contribution, and where agents disagree on risk. (Noise in this simulator; real signal with real agents.)
 - Assumption: "persisted results" means `discovered_domains`. Staged rows of rejected runs are deleted.
 
 ## D5 — Reading progress: a Postgres read model
@@ -76,3 +77,31 @@ checks again when the signal arrives, and the first decision wins.
 **Why:**
 - A signal is stored even with the worker down and applied when it returns; an update needs a live worker to answer *(per the docs)*.
 - The API check gives the user a fast, clear "not now". The workflow check holds against races, since only it sees the real state.
+
+## D9 — Database access: Prisma
+**Chose:** Prisma 7 (pinned stable), with the approve statement as TypedSQL. **Rejected:** Drizzle.
+**Why:**
+- I know Prisma well, and it's fully typed, including the one hand-written SQL statement.
+- Migrations are easy and safe to apply in the one-command bring-up.
+- [Spike 04](../spikes/04-prisma/README.md) confirmed every critical write: idempotent staging, `max` over the risk enum, a retry-safe approve.
+
+## D10 — Schema: the starter's tables, constrained
+**Chose:** keep the starter's tables and columns, and add: `UNIQUE (assessment_id, agent_index)`,
+`UNIQUE (assessment_id, domain)`, the `staged_discoveries` table (D4) tied to its agent row, ordered enums
+for risk and statuses, forward-only status updates, all agent rows created at submit, and the worker
+(pod) handling each agent.
+**Rejected:** an append-only events table.
+**Why:**
+- The unique constraints make retried writes harmless (R3), and graders' queries on the starter's tables still work.
+- Forward-only updates stop a late write from a stale worker reverting a status.
+- Agent rows created at submit let the UI show queued agents from the first second (R8).
+- Here Temporal's history covers each run's timeline; we'd add events when audit must outlive Temporal's retention.
+
+## D11 — UI updates: polling with TanStack Query
+**Chose:** the page polls the run every 1s while agents run and every 5s while awaiting approval, refreshes
+immediately after the user's own action, and stops at any terminal status.
+**Rejected:** push via server-sent events (WebSockets add two-way messaging we don't need).
+**Why:**
+- Progress changes every second anyway (each `waitAgent` poll writes it), so push would save little.
+- Polling fits the read model (D5) with no extra plumbing or long-lived connections.
+- The one real case for push, a long wait for approval, is handled by polling more slowly then.

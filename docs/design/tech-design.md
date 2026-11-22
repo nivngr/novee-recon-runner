@@ -41,7 +41,7 @@ below the window.
 - **Aggregate:** one SQL query over the staged rows gives unique subdomains, keeping the most severe risk when agents disagree. It returns a small summary (counts per risk) to the workflow. Order doesn't matter, so a replay can't change it.
 - **Approve:** one SQL statement copies the deduplicated set into `discovered_domains`, the results table.
 - **Reject or cancel:** deletes the run's staged rows, so nothing from it remains.
-- **Approved runs keep their staged rows** as per-agent provenance, and as a check: stored results must equal the distinct staged subdomains (R2, R3 proofs).
+- **Approved runs keep their staged rows.** They're the raw material for agent evaluation (which technique finds what, each agent's unique contribution, risk disagreements), and a check: stored results must equal the distinct staged subdomains (R2, R3 proofs).
 - **Assumption:** "persisted results" means `discovered_domains`. The staging rows of rejected or cancelled runs are deleted, so nothing from them remains.
 
 ## Reading progress (R2, R8)
@@ -113,10 +113,37 @@ UI, the API and the workflow.
 - **Worker down:** signals are stored and applied when a worker returns.
 - **Cancel** uses Temporal's built-in cancel (D6), but follows the same table.
 
+## Schema (R3)
+
+**In one sentence:** the starter's tables keep their names and columns, and gain the constraints that make
+every retried write harmless.
+
+| Table | One row per | Key additions to the starter |
+|---|---|---|
+| `assessments` | run | `status` enum; `cancel_requested_at`, `decision` + `decision_requested_at`; stall timeout and ceiling settings; risk summary counts; `failure_reason` |
+| `assessment_agents` | agent | **`UNIQUE (assessment_id, agent_index)`**; `status` enum; `progress`; `discovered_count`; `lost_reason`; `worker` (pod name) |
+| `staged_discoveries` *(new)* | (run, agent, subdomain) | primary key on all three; foreign key `(assessment_id, agent_index)` → `assessment_agents`; deleted with its run |
+| `discovered_domains` | (run, subdomain) | **`UNIQUE (assessment_id, domain)`**; `risk` as the ordered enum |
+
+- **Enums:** risk `LOW < MEDIUM < HIGH < CRITICAL`, so "most severe" is `max(risk)`. Run status uses the brief's words: `STARTING`, `RUNNING`, `AGGREGATING`, `AWAITING_APPROVAL`, `PERSISTING`, then `COMPLETED`, `REJECTED`, `REJECTED_INPUT`, `CANCELLED`, `FAILED`. "Cancelling" and "approving" are shown from the request timestamps, not as statuses.
+- **Every insert is "insert, or do nothing if it exists",** so a retried activity can't duplicate.
+- **Every status update is conditional** ("set `COMPLETED` only if `RUNNING`"), so statuses only move forward, even if a stale worker writes late.
+- **At submit,** the API creates the run row (`STARTING`) and all agent rows (`QUEUED`) in one transaction.
+- **Database names are `snake_case`;** Prisma maps them to `camelCase` in code.
+
+## UI updates (R8)
+
+**In one sentence:** the run page polls the API with TanStack Query, and stops polling when the run ends.
+
+- **Interval:** 1s while agents run (matching `waitAgent`'s 1s progress writes), 5s while awaiting approval (nothing changes until a person acts), and an immediate refresh after the user's own action.
+- **Stops** at any terminal status, and when the page closes: `refetchInterval` returns `false`.
+- **Right after submit:** the run and agent rows already exist (D10), so the first poll shows "starting, 0 of N, N queued".
+- **Never optimistically terminal:** after Approve returns, the page shows "approving…" until a poll reports `COMPLETED`.
+- **Buttons:** enabled per the legality table (D8), and disabled while their request is in flight.
+- **When push would pay off:** long idle waits and many viewers. Here, slower polling while awaiting approval covers it.
+
 ## Open questions
 
-8. **Schema (R3):** constraints, the staging table, recording which worker owns an agent.
-9. **UI updates (R8):** polling or streaming, and the moment right after submit.
 10. **Run identity:** what the run id is and who creates it (API, database or workflow); the idempotency keys depend on it.
 11. **Our HTTP API:** endpoints and their shapes.
 12. **Deployment (R9):** the worker's liveness signal without HTTP, how the schema is applied in the one-command bring-up.
