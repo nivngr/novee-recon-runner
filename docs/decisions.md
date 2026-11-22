@@ -35,3 +35,13 @@ into `discovered_domains`; reject or cancel deletes the staged rows. Duplicates 
 - Verifiable: the raw per-agent results let us check our dedup is correct (R2, R3 proofs).
 - In production, visibility into raw agent results (e.g. how techniques compare) for debugging and evaluation.
 - Assumption: "persisted results" means `discovered_domains`. Staged rows of rejected runs are deleted.
+
+## D5 — Reading progress: a Postgres read model
+**Chose:** the workflow publishes its state to Postgres as it changes (via activities), and the UI reads
+only Postgres. The workflow stays the source of truth; the database is its published copy.
+**Rejected:** querying the workflow directly; a hybrid (query first, database when the worker is down).
+**Why:**
+- Reads keep working while the worker is down. A query hangs ~29s, then fails ([spike 02](../spikes/02-read-paths/README.md)).
+- Per-agent progress is fresher: written on each poll (~1s). Heartbeat progress via Temporal is throttled (~5s old).
+- The hybrid adds a query timeout, two read paths, and can show a status going backwards at the switch.
+- Cost: every step now writes to Postgres. It was already required (D4); progress writes are best-effort.

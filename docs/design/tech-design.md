@@ -44,9 +44,23 @@ below the window.
 - **Approved runs keep their staged rows** as per-agent provenance, and as a check: stored results must equal the distinct staged subdomains (R2, R3 proofs).
 - **Assumption:** "persisted results" means `discovered_domains`. The staging rows of rejected or cancelled runs are deleted, so nothing from them remains.
 
+## Reading progress (R2, R8)
+
+**In one sentence:** the workflow publishes its state to Postgres as it changes, and the UI reads only Postgres.
+
+- **Before the workflow exists:** the API inserts the run row as `STARTING`, then starts the workflow, so a read right after submit shows "starting", not an error.
+- **Per agent:** `waitAgent` updates its agent's row on each poll (status, progress), about 1s fresh.
+- **Per run:** the workflow records each phase change through a tiny activity, and only once it's true (e.g. writes "awaiting approval", then starts waiting).
+- **While the worker is down:** reads keep working and the numbers freeze, honestly. When it's back, writes resume.
+- **Safety net:** if Temporal says the workflow is closed but the database still says live (a bug, or killed by hand), the API shows `FAILED`. `describe` needs no worker.
+- **Lag:** milliseconds behind the workflow, below the UI's 1–2s polling.
+- **If a write fails:** progress writes are best-effort (logged, never retry the wait; the next poll writes again). Phase, staging and terminal writes are retried, with backoff capped at a few seconds, and the run waits for them, so nothing is announced before it's recorded.
+- **If Postgres is down:** the API can't read either and the UI says so. A run can't finish without Postgres anyway (D4).
+
+Verified in [spike 02](../../spikes/02-read-paths/README.md): a query hangs ~29s with no worker; heartbeat progress via `describe` is ~5s stale.
+
 ## Open questions
 
-4. **Reading progress (R2, R8):** where the UI reads from, including while the worker is down.
 5. **Cancellation (R7):** who stops the agents, and what if that call fails.
 6. **Errors and timeouts (R5):** what is retried, what stops the run, how long we wait.
 7. **Messages into a running run:** how approve, reject and change-window reach it.
