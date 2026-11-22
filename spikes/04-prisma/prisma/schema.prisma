@@ -1,0 +1,39 @@
+// Spike 04: just the two result tables from question 8.
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["typedSql"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Declaration order is the Postgres enum order, so max(risk) = most severe.
+enum Risk {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model StagedDiscovery {
+  assessmentId String @map("assessment_id") @db.Uuid
+  agentIndex   Int    @map("agent_index")
+  domain       String
+  risk         Risk
+
+  @@id([assessmentId, agentIndex, domain])
+  @@map("staged_discoveries")
+}
+
+model DiscoveredDomain {
+  id           BigInt @id @default(autoincrement())
+  assessmentId String @map("assessment_id") @db.Uuid
+  domain       String
+  risk         Risk
+
+  @@unique([assessmentId, domain])
+  @@map("discovered_domains")
+}

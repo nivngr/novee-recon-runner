@@ -2,3 +2,4 @@
 brief/
 node_modules/
 .claude/settings.json
+**/src/generated/
