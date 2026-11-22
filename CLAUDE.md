@@ -17,8 +17,8 @@ Update these as a side effect of the work, in the same session it happens, not a
 | File | Update when | Format |
 |---|---|---|
 | `APPROACH.md` | A phase starts or ends | Numbered phases, sub-phases allowed, one short sentence each |
-| `docs/decisions.md` | We choose between real alternatives | Newest first: decision, what we rejected, why |
-| `docs/ai-log.md` | The agent (Claude) gets something wrong and we catch it | Newest first: requirement, file, wrong behaviour, how we noticed, fix |
+| `docs/decisions.md` | We choose between real alternatives in the design | In order, numbered D1, D2…: chose, rejected, 2–3 short reasons |
+| `docs/ai-log.md` | The agent (Claude) gets something wrong and we catch it | In order, numbered A1, A2…: requirement, file, wrong behaviour, how we noticed, fix |
 | `proofs/` | A requirement gets verified | One script per requirement plus its captured output; index in `proofs/README.md` |
 
 Spike first: before relying on how an external API or SDK behaves (agent-service, Temporal, k8s), confirm it

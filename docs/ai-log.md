@@ -1,8 +1,8 @@
 # AI log
 
-Where the coding agent got it wrong, and how we noticed. Newest first.
+Where the coding agent got it wrong, and how we noticed. In the order it happened.
 
-## 2026-11-21 — Spike 01 — misleading "result" timestamp
+## A1 — Spike 01 — misleading "result" timestamp
 **File:** `spikes/01-window/src/client.ts`
 **Wrong behaviour:** the timestamp was taken before awaiting the result, so the run looked finished the
 moment the window was raised.
@@ -11,7 +11,7 @@ showed agents still running 25s later.
 **Fix:** await the result first, then log.
 
 <!--
-## YYYY-MM-DD — <requirement> — <one-line summary>
+## A<n> — <requirement or spike> — <one-line summary>
 **File:** …
 **Wrong behaviour:** …
 **How we noticed:** …
