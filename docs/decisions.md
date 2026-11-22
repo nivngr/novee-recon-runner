@@ -115,3 +115,14 @@ immediately after the user's own action, and stops at any terminal status.
 - A double click or a retried submit can't create two runs, and a half-finished submit is completed by retrying it.
 - Only the retrier can keep the id stable across retries, and that's the browser.
 - Temporal allows one running workflow per id, so starting twice is harmless.
+
+## D13 — Our HTTP API: REST with shared zod contracts
+**Chose:** a small REST API, request and response shapes as zod schemas in one package shared by the API
+and the frontend, `allowedActions` returned with each run, and the browser reaching the API only through
+Next.js. `task up` refuses to deploy unless the whole repo typechecks and its tests pass, and builds every
+image from the same commit.
+**Rejected:** tRPC; GraphQL.
+**Why:**
+- REST is driven by plain `curl`, which our proofs and the graders use. Shared zod still gives end-to-end types.
+- One copy of the legality rules, on the backend: the UI enables buttons from `allowedActions`.
+- A contract change that breaks either side stops the deploy, with no CI needed.

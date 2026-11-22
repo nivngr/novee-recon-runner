@@ -153,8 +153,27 @@ submit itself is safe to repeat.
 - **Same id, different parameters:** 409, never the other run.
 - **Temporal's "use existing" conflict policy** would return the running workflow instead of an error *(per the docs; check the SDK and server support it when building)*.
 
+## Our HTTP API
+
+**In one sentence:** nine REST endpoints, typed end to end by zod schemas shared with the frontend.
+
+| Method | Path | Purpose | Source |
+|---|---|---|---|
+| `POST` | `/assessments` | Submit `{ id, domain, agentCount, windowSize }` (+ optional timing settings) | brief: configure a run |
+| `GET` | `/assessments/{id}` | Status, counts, window, agent rows, risk summary, `allowedActions` | brief: watch progress |
+| `GET` | `/assessments/{id}/domains` | Findings for review (staged, then final), most severe first | brief: review what came back |
+| `POST` | `/assessments/{id}/approve` | `202`, or `409` if not allowed now | R6 |
+| `POST` | `/assessments/{id}/reject` | same | R6 |
+| `POST` | `/assessments/{id}/cancel` | same | R7 |
+| `PUT` | `/assessments/{id}/window` | `{ size }` → `202`, `409`, or `400` | R1 |
+| `GET` | `/assessments` | Recent runs | ours |
+| `GET` | `/healthz` | Health check for k8s | ours |
+
+- **Contracts:** one package of zod schemas, imported by the API (to validate requests) and the frontend (to parse responses). Same idea as Pydantic models on both sides.
+- **Keeping them aligned without CI:** `task check` typechecks everything and runs the tests; `task up` runs it first and refuses to deploy on failure, then builds all images from one commit. At runtime, the frontend shows "contract mismatch" rather than render a response that fails its schema.
+- **Routing:** the browser talks only to Next.js, which forwards `/api/*` to the API inside the cluster. No CORS, one address, the API stays internal.
+
 ## Open questions
 
-11. **Our HTTP API:** endpoints and their shapes.
 12. **Deployment (R9):** the worker's liveness signal without HTTP, how the schema is applied in the one-command bring-up.
 13. **How it's verified:** one row per requirement (its proof script, any automated test), and which test would catch a real regression.
