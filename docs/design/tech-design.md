@@ -142,9 +142,19 @@ every retried write harmless.
 - **Buttons:** enabled per the legality table (D8), and disabled while their request is in flight.
 - **When push would pay off:** long idle waits and many viewers. Here, slower polling while awaiting approval covers it.
 
+## Run identity
+
+**In one sentence:** one UUID per run, created by the browser, from which every other id is derived, so the
+submit itself is safe to repeat.
+
+- **Derived ids:** workflow `assessment-<uuid>`; agent idempotency keys `<uuid>-agent-<n>`. Stable across retries, crashes and replays (R2, R3).
+- **Submit, step by step:** validate the UUID → in one transaction, insert the run (`STARTING`) and its agent rows (`QUEUED`), doing nothing if they exist → start the workflow; "already started" counts as success → reply with the id.
+- **What a repeat does:** a double click, or a retry after a crash between the two steps, sends the same id. The save is a no-op, and the start either begins the missing workflow or finds it running.
+- **Same id, different parameters:** 409, never the other run.
+- **Temporal's "use existing" conflict policy** would return the running workflow instead of an error *(per the docs; check the SDK and server support it when building)*.
+
 ## Open questions
 
-10. **Run identity:** what the run id is and who creates it (API, database or workflow); the idempotency keys depend on it.
 11. **Our HTTP API:** endpoints and their shapes.
 12. **Deployment (R9):** the worker's liveness signal without HTTP, how the schema is applied in the one-command bring-up.
 13. **How it's verified:** one row per requirement (its proof script, any automated test), and which test would catch a real regression.

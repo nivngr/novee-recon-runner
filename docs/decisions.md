@@ -105,3 +105,13 @@ immediately after the user's own action, and stops at any terminal status.
 - Progress changes every second anyway (each `waitAgent` poll writes it), so push would save little.
 - Polling fits the read model (D5) with no extra plumbing or long-lived connections.
 - The one real case for push, a long wait for approval, is handled by polling more slowly then.
+
+## D12 — Run identity: a UUID from the browser, a submit safe to repeat
+**Chose:** the browser generates the run's UUID and sends it with the submit. The API saves the rows with
+"insert, or do nothing if it exists", and starts the workflow with id `assessment-<uuid>`, treating
+"already started" as success. Same id, different parameters → 409. Agent keys are `<uuid>-agent-<n>`.
+**Rejected:** the API generating the id, with a sweeper failing runs stuck in `STARTING`.
+**Why:**
+- A double click or a retried submit can't create two runs, and a half-finished submit is completed by retrying it.
+- Only the retrier can keep the id stable across retries, and that's the browser.
+- Temporal allows one running workflow per id, so starting twice is harmless.
