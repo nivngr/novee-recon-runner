@@ -1,0 +1,24 @@
+# Applies Prisma migrations once per deploy, before the apps start (D14).
+# Jobs are immutable: `task up` deletes the previous one before applying this.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+  namespace: novee-task
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels: { app: migrate }
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: novee-task/migrate:__TAG__
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: postgres, key: DATABASE_URL } }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { memory: 512Mi }

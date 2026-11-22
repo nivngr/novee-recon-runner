@@ -1,0 +1,11 @@
+// Tables arrive in M2 (plan §2). M1 only proves the migrate Job runs in the cluster.
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["typedSql"]
+}
+
+datasource db {
+  provider = "postgresql"
+}

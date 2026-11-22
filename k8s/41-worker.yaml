@@ -1,0 +1,40 @@
+# The Temporal worker: runs the workflow and its activities.
+# Not an HTTP server, so deliberately no Service (R9). Two replicas share the task queue (D14).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: novee-task
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: worker }
+  template:
+    metadata:
+      labels: { app: worker }
+    spec:
+      # Let in-flight activities wind down on SIGTERM before the pod is killed.
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: worker
+          image: novee-task/worker:__TAG__
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: TEMPORAL_ADDRESS, value: "temporal:7233" }
+            - { name: TEMPORAL_NAMESPACE, value: "default" }
+            - { name: TASK_QUEUE, value: "recon" }
+            - { name: AGENT_SERVICE_URL, value: "http://agent-service:8080" }
+            - { name: HEALTH_FILE, value: "/tmp/healthy" }
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: postgres, key: DATABASE_URL } }
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+          # Liveness without HTTP: the worker refreshes /tmp/healthy every 10s while it is running.
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "test $(( $(date +%s) - $(stat -c %Y /tmp/healthy) )) -lt 30"]
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 512Mi }

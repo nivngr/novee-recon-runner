@@ -1,0 +1,11 @@
+**/node_modules
+**/.next
+**/dist
+**/src/generated
+.git
+.task
+brief
+docs
+proofs
+spikes
+starter

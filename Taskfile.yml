@@ -1,6 +1,20 @@
 version: '3'
 
-# One file for every step: check, build, load, deploy (M1 adds the rest).
+# One command from an empty k3s cluster to the running stack: `task up` (R9, D14).
+
+vars:
+  NS: novee-task
+  # Short git hash; uncommitted changes add a suffix hashed from them, so an edit never reuses an old image.
+  TAG:
+    sh: |
+      tag=$(git rev-parse --short HEAD)
+      if [ -n "$(git status --porcelain)" ]; then
+        tag="$tag-dirty-$( (git diff HEAD; git ls-files --others --exclude-standard -z | xargs -0 cat 2>/dev/null) | shasum | cut -c1-8)"
+      fi
+      echo "$tag"
+  CONTEXT:
+    sh: kubectl config current-context 2>/dev/null || echo none
+  IMAGES: api worker web migrate
 
 tasks:
   install:
@@ -19,3 +33,84 @@ tasks:
       - npm run typecheck
       - npm run lint
       - npm run test
+
+  build:
+    desc: Build every image from the current commit, tagged {{.TAG}}
+    cmds:
+      - docker build -q -t novee-task/agent-service:dev starter/agent-service
+      - docker build -q -f apps/api/Dockerfile -t novee-task/api:{{.TAG}} .
+      - docker build -q -f apps/worker/Dockerfile -t novee-task/worker:{{.TAG}} .
+      - docker build -q -f apps/web/Dockerfile -t novee-task/web:{{.TAG}} .
+      - docker build -q -f packages/db/Dockerfile -t novee-task/migrate:{{.TAG}} .
+
+  load:
+    desc: Load the images into the cluster; the method depends on the k3s flavour (context {{.CONTEXT}})
+    vars:
+      ALL: novee-task/agent-service:dev {{range $i := splitList " " .IMAGES}}novee-task/{{$i}}:{{$.TAG}} {{end}}
+    cmds:
+      - |
+        case "{{.CONTEXT}}" in
+          k3d-*)
+            k3d image import -c "{{trimPrefix "k3d-" .CONTEXT}}" {{.ALL}} ;;
+          orbstack|rancher-desktop)
+            echo "{{.CONTEXT}} shares Docker's images with the cluster: nothing to load" ;;
+          *)
+            echo "Loading into k3s with ctr (needs sudo)"
+            docker save {{.ALL}} | sudo k3s ctr images import - ;;
+        esac
+
+  infra:
+    desc: Apply the namespace and the given infrastructure (Postgres, Temporal, agent-service); wait until ready
+    cmds:
+      - kubectl apply -f starter/k8s/00-namespace.yaml
+      - kubectl apply -f starter/k8s/10-postgres.yaml -f starter/k8s/20-temporal.yaml -f starter/k8s/30-agent-service.yaml
+      - kubectl -n {{.NS}} rollout status statefulset/postgres --timeout=180s
+      - kubectl -n {{.NS}} rollout status statefulset/temporal --timeout=180s
+      - kubectl -n {{.NS}} rollout status deployment/agent-service --timeout=180s
+
+  migrate:
+    desc: Run the database migrations as a one-off Job, and wait for it
+    cmds:
+      - kubectl -n {{.NS}} delete job migrate --ignore-not-found
+      - sed "s/__TAG__/{{.TAG}}/" k8s/35-migrate-job.yaml | kubectl apply -f -
+      - kubectl -n {{.NS}} wait --for=condition=complete job/migrate --timeout=180s
+      - kubectl -n {{.NS}} logs job/migrate --tail=3
+
+  apps:
+    desc: Deploy the API, the worker and the web app; wait for their rollouts
+    cmds:
+      - for f in k8s/40-api.yaml k8s/41-worker.yaml k8s/42-web.yaml; do sed "s/__TAG__/{{.TAG}}/" "$f" | kubectl apply -f -; done
+      - kubectl -n {{.NS}} rollout status deployment/api --timeout=180s
+      - kubectl -n {{.NS}} rollout status deployment/worker --timeout=180s
+      - kubectl -n {{.NS}} rollout status deployment/web --timeout=180s
+
+  up:
+    desc: From an empty k3s cluster to the running stack
+    cmds:
+      - task: check
+      - task: build
+      - task: load
+      - task: infra
+      - task: migrate
+      - task: apps
+      - echo "Stack is up (images {{.TAG}}). Open the UI with 'task open', then http://localhost:3000"
+
+  open:
+    desc: Port-forward the web app to http://localhost:3000
+    cmds:
+      - kubectl -n {{.NS}} port-forward svc/web 3000:3000
+
+  down:
+    desc: Delete everything (the whole namespace, including data)
+    cmds:
+      - kubectl delete namespace {{.NS}} --ignore-not-found
+
+  logs:
+    desc: Follow the workers' logs
+    cmds:
+      - kubectl -n {{.NS}} logs -l app=worker -f --tail=100 --prefix
+
+  cluster:
+    desc: "Local development only: create an empty k3d cluster named novee-task"
+    cmds:
+      - k3d cluster create novee-task --wait

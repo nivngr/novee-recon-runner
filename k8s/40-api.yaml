@@ -1,0 +1,48 @@
+# The REST API (D13). Reached only by the web app, inside the cluster.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: novee-task
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: api }
+  template:
+    metadata:
+      labels: { app: api }
+    spec:
+      containers:
+        - name: api
+          image: novee-task/api:__TAG__
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: PORT, value: "8080" }
+            - { name: TEMPORAL_ADDRESS, value: "temporal:7233" }
+            - { name: TEMPORAL_NAMESPACE, value: "default" }
+            - { name: TASK_QUEUE, value: "recon" }
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: postgres, key: DATABASE_URL } }
+          ports:
+            - { name: http, containerPort: 8080 }
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { memory: 256Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: novee-task
+spec:
+  selector: { app: api }
+  ports:
+    - { name: http, port: 8080, targetPort: http }

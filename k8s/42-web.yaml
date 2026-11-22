@@ -1,0 +1,43 @@
+# The Next.js app: the only part reached from outside (by port-forward, `task open`).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: novee-task
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: web }
+  template:
+    metadata:
+      labels: { app: web }
+    spec:
+      containers:
+        - name: web
+          image: novee-task/web:__TAG__
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: API_URL, value: "http://api:8080" }
+          ports:
+            - { name: http, containerPort: 3000 }
+          readinessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 192Mi }
+            limits: { memory: 384Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: novee-task
+spec:
+  selector: { app: web }
+  ports:
+    - { name: http, port: 3000, targetPort: http }

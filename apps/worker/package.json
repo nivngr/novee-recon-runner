@@ -2,8 +2,14 @@
   "name": "@novee/worker",
   "private": true,
   "type": "module",
-  "exports": "./src/index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "start": "node dist/main.js",
+    "build": "tsc -p tsconfig.build.json && node dist/scripts/bundle-workflows.js"
+  },
+  "dependencies": {
+    "@temporalio/worker": "1.26.0",
+    "@temporalio/workflow": "1.26.0",
+    "zod": "4.6.7"
   }
 }

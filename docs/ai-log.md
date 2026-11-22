@@ -40,6 +40,23 @@ slot for minutes, though a no-progress timeout (stalls freeze progress) catches 
 **How we noticed:** I asked for genuine alternatives to each choice; the better option surfaced there.
 **Fix:** both: a 60s no-progress timeout, with the 5-min ceiling as a backstop.
 
+## A6 — R9 — the plan picked Alpine images the worker can't run on
+**File:** `docs/design/plan.md` (§8, images)
+**Wrong behaviour:** the plan specified Node Alpine images for every service. Temporal's worker loads a native
+library, and the SDK ships it only for glibc Linux; Alpine uses musl, so the worker would fail at startup.
+**How we noticed:** before writing the first Dockerfile, we listed the binaries in `@temporalio/core-bridge`:
+`x86_64-unknown-linux-gnu` and `aarch64-unknown-linux-gnu`, no musl.
+**Fix:** all Node images use `node:22.23.5-bookworm-slim` (Debian, glibc).
+
+## A7 — R9 — `task up` never returned
+**File:** `Taskfile.yml` (the last step of `up`)
+**Wrong behaviour:** the closing message was `echo "… Open the UI with `task open` …"`. The shell runs anything
+in backticks, so `task up` actually started the port-forward and blocked forever: a grader's one-command
+bring-up would hang at the very end.
+**How we noticed:** the first `task up` on a fresh cluster deployed everything but never exited; its log
+ended with `task: [open] … port-forward`.
+**Fix:** plain quotes in the message.
+
 <!--
 ## A<n> — <requirement or spike> — <one-line summary>
 **File:** …

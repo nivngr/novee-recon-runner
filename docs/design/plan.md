@@ -10,7 +10,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 | # | Milestone | Status |
 |---|---|---|
 | M0 | Toolchain and workspace skeleton | done |
-| M1 | Deploy skeleton: `task up` on an empty cluster (R9) | not started |
+| M1 | Deploy skeleton: `task up` on an empty cluster (R9) | done |
 | M2 | Data layer: Prisma schema and queries | not started |
 | M3 | Workflow and activities (R1–R5, R7) | not started |
 | M4 | HTTP API (R6) | not started |
@@ -26,7 +26,7 @@ Statuses: `not started` → `in progress` → `done` (its "done when" passed, re
 - **Spike first:** before relying on an external behaviour we haven't seen work, confirm it with a small spike (`spikes/`).
 - **Record as you go:** a real choice → `docs/decisions.md`; an agent mistake caught → `docs/ai-log.md`; a phase change → `APPROACH.md`.
 - **Never** modify `starter/agent-service/` or `starter/k8s/30-agent-service.yaml`, and never call `/admin/*` from our services (proof scripts may).
-- **Pin versions** exactly: Node 22 (≥ 22.12; Alpine images), Temporal TypeScript SDK 1.26.0, Prisma 7.10.1. npm's `latest` tag for `prisma` was a release candidate.
+- **Pin versions** exactly: Node 22 (≥ 22.12; images `node:22.23.5-bookworm-slim`, not Alpine: Temporal's native library ships for glibc only), Temporal TypeScript SDK 1.26.0, Prisma 7.10.1. npm's `latest` tag for `prisma` was a release candidate.
 - **Time spent:** `NOTES.md` asks for one rough total (`~Nh`), design and spikes included; keep a rough tally.
 
 ---
@@ -334,7 +334,7 @@ Next.js (App Router), TanStack Query, plain styling: a table that tells the trut
 
 ## 8. Deployment
 
-**Images** (Node 22 Alpine, non-root, multi-stage): `api`, `worker`, `web` (Next.js standalone output),
+**Images** (`node:22.23.5-bookworm-slim`, non-root, multi-stage; not Alpine, see A6): `api`, `worker`, `web` (Next.js standalone output),
 `migrate` (Prisma CLI + migrations), plus the given `agent-service`. All tagged with the short git hash.
 
 **Manifests (`k8s/`):**
@@ -346,7 +346,15 @@ Next.js (App Router), TanStack Query, plain styling: a table that tells the trut
 | `41-worker.yaml` | Deployment (**2 replicas**, **no Service**, exec liveness `test $(($(date +%s) - $(stat -c %Y /tmp/healthy))) -lt 30` every 15s after 20s, requests 100m / 256Mi, limit 512Mi, `POD_NAME` from the downward API) |
 | `42-web.yaml` | Deployment (1 replica, port 3000, probes on `/`, requests 100m / 192Mi, limit 384Mi) + `ClusterIP` Service `web` |
 
-Images use the placeholder `__TAG__`, filled in by `task up`.
+Images use the placeholder `__TAG__`, filled in by `task up`. The tag is the short git hash; uncommitted changes
+add a suffix hashed from them, so an edit never reuses an old image.
+
+**As built in M1:** TypeScript is compiled with `tsc` (Node's `NodeNext` module rules, so relative imports end in
+`.js`); shared packages point their types at the source and their runtime at `dist/`. `api` and `worker` images
+are two-stage: build with all tools, run `node dist/main.js` with production dependencies only. The worker's
+workflow code is pre-bundled at build time (`bundleWorkflowCode`, Temporal's production setup), so startup takes
+~4s instead of ~13s; `migrate` adds OpenSSL (Prisma's migration engine needs it); `web` ships Next's
+standalone server. `task cluster` creates a local k3d cluster for development only; graders bring their own.
 
 **Environment:** `TEMPORAL_ADDRESS=temporal:7233`, `TEMPORAL_NAMESPACE=default`, `TASK_QUEUE=recon`,
 `AGENT_SERVICE_URL=http://agent-service:8080`, `DATABASE_URL` (secret), `API_URL=http://api:8080` (web),
