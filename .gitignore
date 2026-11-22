@@ -3,3 +3,7 @@ brief/
 node_modules/
 .claude/settings.json
 **/src/generated/
+.next/
+dist/
+coverage/
+.task/

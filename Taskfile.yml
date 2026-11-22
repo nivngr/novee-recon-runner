@@ -1,0 +1,21 @@
+version: '3'
+
+# One file for every step: check, build, load, deploy (M1 adds the rest).
+
+tasks:
+  install:
+    desc: Install npm dependencies (only when the lockfile changed)
+    cmds:
+      - npm ci --no-audit --no-fund
+    sources:
+      - package-lock.json
+    generates:
+      - node_modules/.package-lock.json
+
+  check:
+    desc: Typecheck every workspace, lint, run the tests. Gates every deploy (D13).
+    deps: [install]
+    cmds:
+      - npm run typecheck
+      - npm run lint
+      - npm run test

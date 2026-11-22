@@ -9,7 +9,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 
 | # | Milestone | Status |
 |---|---|---|
-| M0 | Toolchain and workspace skeleton | not started |
+| M0 | Toolchain and workspace skeleton | done |
 | M1 | Deploy skeleton: `task up` on an empty cluster (R9) | not started |
 | M2 | Data layer: Prisma schema and queries | not started |
 | M3 | Workflow and activities (R1–R5, R7) | not started |
@@ -401,6 +401,9 @@ Images use the placeholder `__TAG__`, filled in by `task up`.
 2. Workspaces per §1; strict shared `tsconfig`; lint and format; Vitest.
 3. `Taskfile.yml` with `check`.
 4. **Confirm with the user first:** API framework (Fastify proposed), lint and format tool (Biome, or ESLint + Prettier).
+   Confirmed at the M0 review: Fastify and Biome.
+5. Pinned: TypeScript 5.9.3 (7.x is the new native compiler; tooling support not yet assumed), `@types/node` 22.x,
+   Next 16.4.6, React 19.3.1, Biome 2.6.8 (code files only, not Markdown), Vitest 5.1.1.
 
 **Done when:** `task check` passes on the empty packages.
 

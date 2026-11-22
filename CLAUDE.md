@@ -10,6 +10,14 @@ The goal is a submission I understand and can defend line by line, so explain be
 - Call agent-service `/admin/*` from our services. Admin endpoints are for proof scripts only.
 - Commit before I've reviewed the diff and said so.
 
+## Code rules
+
+- **Type safety first:** no `any`, no loosely typed objects or ad-hoc dictionaries. Model data with explicit
+  types and zod schemas; use discriminated unions for variants.
+- **Readable, simple, clean:** small units with a single responsibility; clear names over comments.
+- **Prefer classes for stateful services** (clients, repositories, activity groups with dependencies).
+  Temporal workflow code itself is a function, as the SDK requires.
+
 ## Recording our work
 
 Update these as a side effect of the work, in the same session it happens, not at the end.
@@ -24,6 +32,9 @@ Update these as a side effect of the work, in the same session it happens, not a
 Spike first: before relying on how an external API or SDK behaves (agent-service, Temporal, k8s), confirm it
 with a small runnable spike in `spikes/` (script plus a one-line finding). A claim taken only from docs is
 marked unverified until a spike confirms it. A spike that contradicts what the agent said goes in the AI log.
+
+At the end of every milestone, say explicitly whether it produced new AI-log entries, changes to
+`decisions.md`, or anything worth noting for `NOTES.md`.
 
 Rules:
 - Thin beats thorough. These feed `NOTES.md`, which is written last from them.

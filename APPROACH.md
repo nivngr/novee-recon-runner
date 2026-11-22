@@ -8,4 +8,6 @@ The phases I went through, in order, from receiving the assignment to submitting
     3. *Walk through it:* a Q&A session where I worked through the brief until I could explain every requirement in my own words.
 2. **Explore agent-service (the first spike).** Ran it in plain Docker and poked every behaviour by hand (retries, idempotency, errors, stop, failure knobs, overlap) before writing any code.
 3. **Map the fixed constraints.** Listed everything the brief decides in advance as a pre-submission checklist ([`docs/constraints.md`](docs/constraints.md)).
-4. **Tech design, one decision at a time** *(in progress)*. Each open question discussed, recorded in [`docs/decisions.md`](docs/decisions.md), and spiked where it depends on Temporal's behaviour (spike 01: the window; spike 02: read paths while the worker is down; spike 03: cancellation).
+4. **Tech design, one decision at a time.** Each open question discussed, recorded in [`docs/decisions.md`](docs/decisions.md), and spiked where it depends on Temporal's behaviour (spike 01: the window; spike 02: read paths while the worker is down; spike 03: cancellation).
+5. **Plan the build.** Turned the design into a system diagram, a short tech design and a detailed build spec with milestones ([`docs/design/`](docs/design/)).
+6. **Build, milestone by milestone** *(in progress)*. Each milestone ends with a demo and a review before its commit.
