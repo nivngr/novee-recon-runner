@@ -172,8 +172,29 @@ submit itself is safe to repeat.
 - **Contracts:** one package of zod schemas, imported by the API (to validate requests) and the frontend (to parse responses). Same idea as Pydantic models on both sides.
 - **Keeping them aligned without CI:** `task check` typechecks everything and runs the tests; `task up` runs it first and refuses to deploy on failure, then builds all images from one commit. At runtime, the frontend shows "contract mismatch" rather than render a response that fails its schema.
 - **Routing:** the browser talks only to Next.js, which forwards `/api/*` to the API inside the cluster. No CORS, one address, the API stays internal.
+- **Validation and limits:** the domain is checked for shape only (non-empty, sane length), never for support. A `.invalid` domain must reach agent-service, get its 422, and end `REJECTED_INPUT` (R5). Agents per run are capped (e.g. 20), and the window must be between 1 and the agent count, so a request can't run up an unbounded bill.
+- **Security basics:** parameterized SQL only (Prisma, TypedSQL); credentials stay in the k8s Secret; only the UI is reachable from outside; containers run as non-root with resource limits. No auth: the brief has no users. Next steps would be user accounts and verifying the user may assess the target domain.
+
+## Deployment (R9)
+
+**In one sentence:** `task up` takes an empty k3s cluster to the running stack, and refuses to deploy code
+that doesn't typecheck.
+
+**`task up`, in order:**
+1. `task check`: typecheck the repo and run the tests; stop on failure (D13).
+2. Build five images from one commit, tagged with its git hash: agent-service (given), `api`, `worker`, `web` (the Next.js app) and `migrate`.
+3. Load them into the cluster, using the flavour detected from the kubectl context: `k3d image import`, `k3s ctr images import`, or nothing for OrbStack and Rancher Desktop.
+4. Apply the namespace, Postgres, Temporal and agent-service; wait until ready.
+5. Run the `migrate` Job (`prisma migrate deploy`) and wait for it to complete.
+6. Apply `api`, `worker` and `web`; wait for their rollouts.
+7. Print how to open the UI (`task open` port-forwards `web` to `localhost:3000`).
+
+- **Worker:** no Service, 2 replicas, resource requests and limits. Liveness: it touches `/tmp/healthy` every 10s while its Temporal connection is running, and an `exec` probe checks the file is fresh.
+- **API and web:** `ClusterIP` Services, `/healthz` probes. Only `web` is reached from outside, by port-forward.
+- **Config:** environment variables (Temporal address, agent-service URL, `DATABASE_URL` from the given secret).
+- **Schema:** Prisma migrations replace the starter's `psql < schema.sql` step.
+- **Repo layout:** npm workspaces: `apps/api`, `apps/worker`, `apps/web`, `packages/contracts` (zod), `packages/db` (Prisma), and `k8s/` for our manifests. `starter/` stays untouched.
 
 ## Open questions
 
-12. **Deployment (R9):** the worker's liveness signal without HTTP, how the schema is applied in the one-command bring-up.
 13. **How it's verified:** one row per requirement (its proof script, any automated test), and which test would catch a real regression.

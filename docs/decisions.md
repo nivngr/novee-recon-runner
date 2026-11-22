@@ -126,3 +126,15 @@ image from the same commit.
 - REST is driven by plain `curl`, which our proofs and the graders use. Shared zod still gives end-to-end types.
 - One copy of the legality rules, on the backend: the UI enables buttons from `allowedActions`.
 - A contract change that breaks either side stops the deploy, with no CI needed.
+
+## D14 — Deployment: one `task up`
+**Chose:** `task up` checks, builds every image from one commit (tagged with its git hash), loads them
+using the detected k3s flavour, runs the schema as a one-off migrate Job, then deploys. The worker
+proves liveness by touching a file that an `exec` probe checks, and runs as 2 replicas. `task open`
+port-forwards the UI.
+**Rejected:** supporting k3d only; migrating on API startup; a health endpoint in the worker; an Ingress.
+**Why:**
+- Graders bring their own cluster: flavour detection and port-forwarding work on any of them.
+- A migrate Job is one explicit step that never races between replicas.
+- The worker stays a non-HTTP process (R9), and a hung worker stops touching the file and gets restarted.
+- With 2 replicas, a killed worker's agents move to the other within ~10s (R2).
