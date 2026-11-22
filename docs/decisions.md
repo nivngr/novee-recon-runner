@@ -55,3 +55,15 @@ A stop is retried for a bounded time, then the agent is flagged "stop unconfirme
 - Built-in cancel also cancels the running `waitAgent` steps; a custom message means rebuilding that.
 - Temporal stores the cancel, so it works with the worker down; cleanup runs when one returns ([spike 03](../spikes/03-cancel/README.md)).
 - Retrying a stop forever could leave the run stuck live, which R7 forbids.
+
+## D7 — Errors and timeouts
+**Chose:** activities classify errors and Temporal retries by policy: 503, 429 and network errors with
+capped backoff; a 422 ends the run `REJECTED_INPUT`, a 400 ends it `FAILED`. An agent is written off as
+lost when it reports `FAILED`, its start fails for 2 min, its poll gets a 404, its progress hasn't moved
+for 60s, or it reaches a 5-min ceiling (stalled agents are stopped first). If no agent completed, the run
+ends `FAILED`. `REJECTED_INPUT` and `REJECTED` end the workflow normally.
+**Rejected:** a single fixed time ceiling; failing the whole run when one start never succeeds.
+**Why:**
+- One bad agent doesn't sink the run (R5). The run fails only when there's nothing to review.
+- The no-progress timeout catches a stall in about a minute without punishing slow agents; the ceiling backs it up.
+- "Failed" in Temporal's UI stays reserved for real breakage.

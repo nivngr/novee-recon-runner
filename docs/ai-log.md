@@ -33,6 +33,13 @@ worker-down scenario passed without testing anything.
 showed workers alive.
 **Fix:** kill by script path and confirm no worker is alive before the step.
 
+## A5 — R5 — naive stall detection first *(optional: decide later if it fits)*
+**File:** `docs/decisions.md` (D7 draft)
+**Wrong behaviour:** the agent proposed only a fixed 5-min ceiling for stalled agents, holding a window
+slot for minutes, though a no-progress timeout (stalls freeze progress) catches them in about one.
+**How we noticed:** I asked for genuine alternatives to each choice; the better option surfaced there.
+**Fix:** both: a 60s no-progress timeout, with the 5-min ceiling as a backstop.
+
 <!--
 ## A<n> — <requirement or spike> — <one-line summary>
 **File:** …

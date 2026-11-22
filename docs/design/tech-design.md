@@ -15,7 +15,7 @@ below the window.
 - **The loop:** start lanes while `running < window` and agents are queued; otherwise sleep until something changes (a lane ends, or the window changes).
 - **Changing the window:** a message to the running workflow sets the new value. Raising it starts more agents at once. Lowering it only holds back new starts until `running` drops below it; nothing in flight is killed.
 - **A slot is taken when we decide to start,** so retries of a failed start happen inside the slot and can't exceed the window.
-- **Stalled agents:** every agent has a time ceiling. At the ceiling we stop it at agent-service first, then free the slot, so a stalled agent never pushes us past the window.
+- **Stalled agents:** an agent whose progress stops moving (60s), or that hits a time ceiling (5 min), is stopped at agent-service first, then its slot is freed, so a stalled agent never pushes us past the window (D7).
 - **The first agent starts alone,** so a bad domain gets exactly one start attempt (R5).
 - **No polling inside the workflow:** Temporal wakes it on each event (a message, or an agent ending). *(Verified in [spike 01](../../spikes/01-window/README.md).)*
 
@@ -26,11 +26,11 @@ below the window.
 | Activity | Does | Returns |
 |---|---|---|
 | `startAgent` | `POST /scans` with key `<runId>-agent-<n>`. A 503 is retried with backoff; a 422 is not. | the scan id |
-| `waitAgent` | Polls `GET /scans/{id}` every ~1s and heartbeats, until the agent ends or hits its ceiling | status and discovered count |
+| `waitAgent` | Polls `GET /scans/{id}` every ~1s and heartbeats, until the agent ends, stalls or hits its ceiling | status and discovered count |
 | `stopAgent` | `POST /scans/{id}/stop`. Safe to repeat. | nothing |
 
 - **The heartbeat is a lease:** if the worker dies, heartbeats stop, and within ~10s Temporal re-runs `waitAgent` on another worker. It polls the same scan id, so the agent is reattached, not restarted.
-- **Time ceiling (our assumption):** a stalled agent never errors, so every agent gets a maximum run time, a per-run setting. It is measured from the agent's own start time, so a re-run after a crash doesn't reset it. At the ceiling, the lane calls `stopAgent`, marks the agent lost, then frees its slot.
+- **Stall detection (our assumption):** a stalled agent never errors, so `waitAgent` gives up when progress hasn't moved for 60s or the agent has run 5 min (per-run settings, D7). Neither resets after a crash: the ceiling uses agent-service's own start time, and the no-progress clock travels to the re-run in the heartbeat details *(per the docs; to verify)*. Then the lane calls `stopAgent`, marks the agent lost, and frees its slot.
 - **Polling is forced:** agent-service has no callback. It's cheap here: polls inside an activity add nothing to the history (spike 01: 78 events for a whole run).
 
 ## Results before approval (R4, R6)
@@ -73,13 +73,33 @@ before ending `CANCELLED`.
 
 Verified in [spike 03](../../spikes/03-cancel/README.md).
 
+## Errors and timeouts (R5)
+
+**In one sentence:** retry what's temporary, write off a bad agent, and end the run only when it can't
+produce anything worth reviewing.
+
+| What goes wrong | What we do |
+|---|---|
+| Start → 503, 429, network error | Retried by Temporal (1s, doubling, capped at 10s) for up to 2 min, then the agent is lost |
+| Start → 422 | No retry; the run ends `REJECTED_INPUT` (the first agent starts alone, so one attempt) |
+| Start → 400 | No retry; the run ends `FAILED` (our bug) |
+| Agent reports `FAILED` | Lost; the run continues |
+| Poll → network error | `waitAgent` polls again in 1s (its own loop, not a Temporal retry) |
+| Poll → 404 | Lost (agent-service forgot it) |
+| Progress unchanged for 60s | Stalled: stopped, then lost |
+| Running for 5 min | Ceiling: stopped, then lost |
+
+- **Who retries:** the workflow declares a retry policy per activity, the activity only classifies (throws, or throws "do not retry"), and Temporal does the retrying. The workflow sees one result.
+- **Timing values are per-run settings** with these defaults, so longer agents can be configured.
+- **The run's end:** no agent completed → `FAILED`. Otherwise it aggregates whatever completed, and the UI shows how many were lost.
+- **Normal endings:** `REJECTED_INPUT` and `REJECTED` finish the workflow successfully, carrying that outcome; Temporal shows "failed" only for real breakage.
+
 ## Open questions
 
-6. **Errors and timeouts (R5):** what is retried, what stops the run, how long we wait.
 7. **Messages into a running run:** how approve, reject and change-window reach it.
 8. **Schema (R3):** constraints, the staging table, recording which worker owns an agent.
 9. **UI updates (R8):** polling or streaming, and the moment right after submit.
 10. **Run identity:** what the run id is and who creates it (API, database or workflow); the idempotency keys depend on it.
 11. **Our HTTP API:** endpoints and their shapes.
 12. **Deployment (R9):** the worker's liveness signal without HTTP, how the schema is applied in the one-command bring-up.
-13. **Testing:** which automated test would catch a real regression.
+13. **How it's verified:** one row per requirement (its proof script, any automated test), and which test would catch a real regression.
