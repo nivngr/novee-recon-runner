@@ -138,3 +138,13 @@ port-forwards the UI.
 - A migrate Job is one explicit step that never races between replicas.
 - The worker stays a non-HTTP process (R9), and a hung worker stops touching the file and gets restarted.
 - With 2 replicas, a killed worker's agents move to the other within ~10s (R2).
+
+## D15 — Verification: proof scripts, workflow tests, recorded UI runs
+**Chose:** a repeatable proof script per requirement against the deployed stack; workflow tests with
+Temporal's time-skipping test environment and a replay test, run in `task check`; a per-run retry switch
+(`failFirstAttempts`) for R3; and Playwright runs of the UI that assert R8 and record videos.
+**Rejected:** a manual checklist for R8; a worker-wide retry switch set by environment variable.
+**Why:**
+- The window test fails on fan-out or batching, the regression the brief itself names; the replay test fails on code that breaks crash recovery.
+- Playwright makes R8 checkable (no errors after submit, never terminal early, polling stops) and records the proof as video.
+- A per-run switch proves R3 without redeploying the worker.

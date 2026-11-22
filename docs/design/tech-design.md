@@ -1,7 +1,7 @@
 # Tech design
 
-How the system works and why. Each open question below gets settled in discussion, recorded in
-[`decisions.md`](../decisions.md), and written up here.
+How the system works and why. Each section was settled in discussion; the choice, the rejected
+alternative and the reasons are in [`decisions.md`](../decisions.md) (D1–D15).
 
 **Stack:** TypeScript backend (API + worker), Next.js frontend, Temporal, Postgres, local k3s.
 **Tooling:** k3d as the local k3s, Task (`Taskfile.yml`) as the task runner.
@@ -195,6 +195,23 @@ that doesn't typecheck.
 - **Schema:** Prisma migrations replace the starter's `psql < schema.sql` step.
 - **Repo layout:** npm workspaces: `apps/api`, `apps/worker`, `apps/web`, `packages/contracts` (zod), `packages/db` (Prisma), and `k8s/` for our manifests. `starter/` stays untouched.
 
-## Open questions
+## How it's verified
 
-13. **How it's verified:** one row per requirement (its proof script, any automated test), and which test would catch a real regression.
+**In one sentence:** every requirement has a repeatable proof against the deployed stack, and the
+riskiest behaviours have automated tests that gate every deploy.
+
+| Req | Proof (`proofs/`) | Passes when | Automated test |
+|---|---|---|---|
+| R1 | 6 agents at window 2; a second run raises the window to 4, then lowers it | `maxConcurrent` exactly 2; starts line up with finishes; reaches 4 after the raise; lowering kills nothing | window test; resize test |
+| R2 | Delete all worker pods mid-run, then approve | `totalStarted` = N; stored set = the distinct union of the run's agents | replay test |
+| R3 | A run with `failFirstAttempts: n` (activities fail after their side effect) | N started, N agent rows, no duplicate domains | database test: approve twice, same rows |
+| R4 | Read the run's history from Temporal | Each activity's return and the largest payload, in bytes | — |
+| R5 | A `.invalid` domain; a run with `failEveryN` | `REJECTED_INPUT` < 30s, `totalStarted` 0, one start attempt; `COMPLETED` with fewer agents | bad-domain test; error classification |
+| R6 | One run approved, one rejected; read mid-flight | `COMPLETED` with rows; `REJECTED`, 0 rows, staging empty; readable with nothing stored | — |
+| R7 | Cancel with agents in flight | `CANCELLED`, nothing `RUNNING`, queued agents never started | cancel test |
+| R8 | Playwright run with video | No errors after submit; never terminal early; buttons per `allowedActions`; no polling after the end | the same Playwright run |
+| R9 | Recreate the k3d cluster, then `task up` | Everything ready; worker without a Service, with probe and resources | — |
+
+- **Workflow tests** use Temporal's test environment: fake activities and skipped time, so a minutes-long run takes milliseconds. They run in `task check`, so they gate every deploy.
+- **The retry switch** is a per-run setting: each activity fails its first n attempts right after doing its work, so only a truly idempotent retry passes.
+- **Videos** of key flows (submit to approve, cancel mid-flight, window change) are saved in `proofs/videos/` and linked from `NOTES.md`.
