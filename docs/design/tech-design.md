@@ -94,9 +94,27 @@ produce anything worth reviewing.
 - **The run's end:** no agent completed → `FAILED`. Otherwise it aggregates whatever completed, and the UI shows how many were lost.
 - **Normal endings:** `REJECTED_INPUT` and `REJECTED` finish the workflow successfully, carrying that outcome; Temporal shows "failed" only for real breakage.
 
+## Messages into a run
+
+**In one sentence:** user actions reach the workflow as signals, and each is checked for legality by the
+UI, the API and the workflow.
+
+| Phase | Approve / Reject | Change window | Cancel |
+|---|---|---|---|
+| Starting, running agents | no | yes | yes |
+| Aggregating | no | no | yes |
+| Awaiting approval | yes | no | yes |
+| Persisting | no | no | no |
+| Terminal | no | no | no |
+
+- **Frontend:** buttons enabled only when the table allows it, and disabled while a request is in flight (R8).
+- **API:** checks the table against the read model (D5) and refuses with 409 if not allowed. It records the request ("approval requested"), so the UI shows "approving…" until the backend reports `PERSISTING`, then `COMPLETED`.
+- **Workflow:** checks again when the signal arrives and ignores what's illegal; the first decision wins. It is the final judge, since the API's view can be a moment behind (two tabs, approve racing cancel, signals sent straight to Temporal).
+- **Worker down:** signals are stored and applied when a worker returns.
+- **Cancel** uses Temporal's built-in cancel (D6), but follows the same table.
+
 ## Open questions
 
-7. **Messages into a running run:** how approve, reject and change-window reach it.
 8. **Schema (R3):** constraints, the staging table, recording which worker owns an agent.
 9. **UI updates (R8):** polling or streaming, and the moment right after submit.
 10. **Run identity:** what the run id is and who creates it (API, database or workflow); the idempotency keys depend on it.

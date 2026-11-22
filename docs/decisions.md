@@ -67,3 +67,12 @@ ends `FAILED`. `REJECTED_INPUT` and `REJECTED` end the workflow normally.
 - One bad agent doesn't sink the run (R5). The run fails only when there's nothing to review.
 - The no-progress timeout catches a stall in about a minute without punishing slow agents; the ceiling backs it up.
 - "Failed" in Temporal's UI stays reserved for real breakage.
+
+## D8 — Messages into a run: signals, checked twice
+**Chose:** approve, reject and change-window are Temporal signals. The API first checks the action is
+legal in the run's current phase (from the read model, D5) and refuses with 409 if not. The workflow
+checks again when the signal arrives, and the first decision wins.
+**Rejected:** Temporal updates (a request with a validated reply).
+**Why:**
+- A signal is stored even with the worker down and applied when it returns; an update needs a live worker to answer *(per the docs)*.
+- The API check gives the user a fast, clear "not now". The workflow check holds against races, since only it sees the real state.
