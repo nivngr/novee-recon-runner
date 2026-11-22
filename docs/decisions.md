@@ -45,3 +45,13 @@ only Postgres. The workflow stays the source of truth; the database is its publi
 - Per-agent progress is fresher: written on each poll (~1s). Heartbeat progress via Temporal is throttled (~5s old).
 - The hybrid adds a query timeout, two read paths, and can show a status going backwards at the switch.
 - Cost: every step now writes to Postgres. It was already required (D4); progress writes are best-effort.
+
+## D6 — Cancellation: Temporal's built-in cancel, then cleanup
+**Chose:** the API cancels the workflow. The workflow catches it and runs a cleanup that can't itself be
+cancelled: let in-flight starts finish, stop every started agent, delete staged rows, write `CANCELLED`.
+A stop is retried for a bounded time, then the agent is flagged "stop unconfirmed".
+**Rejected:** a custom "cancel" message handled like approve.
+**Why:**
+- Built-in cancel also cancels the running `waitAgent` steps; a custom message means rebuilding that.
+- Temporal stores the cancel, so it works with the worker down; cleanup runs when one returns ([spike 03](../spikes/03-cancel/README.md)).
+- Retrying a stop forever could leave the run stuck live, which R7 forbids.

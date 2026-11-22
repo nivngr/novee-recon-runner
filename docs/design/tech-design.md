@@ -59,9 +59,22 @@ below the window.
 
 Verified in [spike 02](../../spikes/02-read-paths/README.md): a query hangs ~29s with no worker; heartbeat progress via `describe` is ~5s stale.
 
+## Cancellation (R7)
+
+**In one sentence:** the API cancels the workflow, and the workflow's cleanup stops every agent it started
+before ending `CANCELLED`.
+
+- **Trigger:** the API records "cancel requested" (the UI shows "cancelling"), then cancels the workflow. Temporal wakes it with a cancellation error and cancels its running `waitAgent` steps. The window loop ends, so no queued agent starts.
+- **Cleanup can't be cancelled:** it waits for every lane, so an in-flight start finishes and we learn its scan id. Then it stops each started, unfinished agent, deletes the run's staged rows (D4), and writes `CANCELLED`.
+- **Who stops the agents:** the worker, through `stopAgent`, run by the cleanup. A 404 means agent-service no longer knows the scan, so there's nothing to stop. Other failures are retried for a bounded time, then the agent is flagged "stop unconfirmed" and the run still ends `CANCELLED`.
+- **Worker down at cancel:** Temporal stores the cancel, and the cleanup runs when a worker returns. Until then, agents keep running.
+- **When Cancel is allowed:** running, aggregating, awaiting approval. Not once persisting has begun: that's one transaction that either completes or doesn't.
+- **Pitfall:** every lane's error must be handled when the lane is created. An unhandled cancellation error fails the workflow step forever, leaving the run stuck live.
+
+Verified in [spike 03](../../spikes/03-cancel/README.md).
+
 ## Open questions
 
-5. **Cancellation (R7):** who stops the agents, and what if that call fails.
 6. **Errors and timeouts (R5):** what is retried, what stops the run, how long we wait.
 7. **Messages into a running run:** how approve, reject and change-window reach it.
 8. **Schema (R3):** constraints, the staging table, recording which worker owns an agent.
