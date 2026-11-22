@@ -28,14 +28,14 @@ and heartbeats; returns status and count), `stopAgent`.
 
 ## D4 — Results before approval: a staging table in Postgres
 **Chose:** each completed agent's findings go to `staged_discoveries`. Approve copies the deduplicated set
-into `discovered_domains`; reject or cancel deletes the staged rows. Duplicates keep the most severe risk:
+into `discovered_domains`; reject and cancel copy nothing. Staged rows are kept for every run. Duplicates keep the most severe risk:
 risk is an ordered enum (`LOW < MEDIUM < HIGH < CRITICAL`), so that's simply `max(risk)`.
 **Rejected:** re-fetching the results from agent-service at approval.
 **Why:**
 - Robust: survives an agent-service restart, and the human approves exactly what gets stored.
 - Verifiable: the raw per-agent results let us check our dedup is correct (R2, R3 proofs).
 - Raw material for agent evaluation: per-agent findings show which technique finds what, each agent's unique contribution, and where agents disagree on risk. (Noise in this simulator; real signal with real agents.)
-- Assumption: "persisted results" means `discovered_domains`. Staged rows of rejected runs are deleted.
+- Assumption: "persisted results" means `discovered_domains`, which only approve writes. Staged rows are raw agent output, kept for every run; rejected runs are the most useful for evaluation.
 
 ## D5 — Reading progress: a Postgres read model
 **Chose:** the workflow publishes its state to Postgres as it changes (via activities), and the UI reads
@@ -49,7 +49,7 @@ only Postgres. The workflow stays the source of truth; the database is its publi
 
 ## D6 — Cancellation: Temporal's built-in cancel, then cleanup
 **Chose:** the API cancels the workflow. The workflow catches it and runs a cleanup that can't itself be
-cancelled: let in-flight starts finish, stop every started agent, delete staged rows, write `CANCELLED`.
+cancelled: let in-flight starts finish, stop every started agent, write `CANCELLED`.
 A stop is retried for a bounded time, then the agent is flagged "stop unconfirmed".
 **Rejected:** a custom "cancel" message handled like approve.
 **Why:**
