@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { apiClient } from '../lib/api-client';
-import { RUN_STATUS_LABEL } from '../lib/labels';
+import { PENDING_LABEL, RUN_STATUS_LABEL } from '../lib/labels';
 import { SLOW_POLL_MS } from '../lib/polling';
 import { ErrorBanner } from './error-banner';
 
@@ -36,7 +36,10 @@ export function RunList() {
                   <td>
                     <Link href={`/runs/${run.id}`}>{run.domain}</Link>
                   </td>
-                  <td>{RUN_STATUS_LABEL[run.status]}</td>
+                  <td>
+                    {RUN_STATUS_LABEL[run.status]}
+                    {run.pending !== null && <span className="muted"> — {PENDING_LABEL[run.pending]}</span>}
+                  </td>
                   <td>{run.agentCount}</td>
                   <td className="muted">{new Date(run.createdAt).toLocaleString()}</td>
                 </tr>

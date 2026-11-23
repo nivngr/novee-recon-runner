@@ -1,10 +1,10 @@
 # AI log
 
 Where the coding agent got it wrong, and how we noticed. In the order it happened. Shown: catches that would
-have broken a requirement or shipped broken. Smaller ones are kept as comments in this file, numbers unchanged.
+have broken a requirement or shipped broken. Smaller ones are kept as unnumbered comments in this file.
 
 <!-- Below the bar (kept for the record):
-## A1 — Design — padded "rejected alternatives" *(optional: decide later if it fits)*
+## Design — padded "rejected alternatives"
 **File:** `docs/decisions.md` (D2, D4 drafts)
 **Wrong behaviour:** the agent listed alternatives the brief forbids or nobody would build (fan-out, cron,
 agent-service's own cap; Redis for staging), making the comparison look broader than it was.
@@ -12,7 +12,7 @@ agent-service's own cap; Redis for staging), making the comparison look broader 
 **Fix:** each decision now names only genuine alternatives (child workflows for D2, re-fetching for D4).
 -->
 
-## A2 — R7 — cancelled runs stuck live
+## A1 — R7 — cancelled runs stuck live
 **File:** `spikes/03-cancel/src/workflows.ts`
 **Wrong behaviour:** on cancel, the running lanes' cancellation errors went unhandled. The TypeScript SDK
 treats that as a broken workflow step and retries it forever, so cleanup never ran: agents not stopped,
@@ -21,14 +21,14 @@ run stuck `RUNNING`.
 "Unhandled Promise rejection: Activity cancelled".
 **Fix:** handle each lane's error when it's created; cleanup first collects every lane.
 
-## A3 — R7 — stop retried forever on an unknown scan
+## A2 — R7 — stop retried forever on an unknown scan
 **File:** `spikes/03-cancel/src/activities.ts`
 **Wrong behaviour:** `stopAgent` treated agent-service's 404 (scan unknown, e.g. after a restart) as a
 retryable failure, so cleanup could never finish.
 **How we noticed:** stale workflows from the broken run retried `stop failed: HTTP 404` in the worker log.
 **Fix:** 404 means there is nothing to stop.
 
-## A4 — Spike 03 — a false pass
+## A3 — Spike 03 — a false pass
 **File:** spike 03's run script
 **Wrong behaviour:** "kill the worker" killed only the `npx` wrapper; the Node worker kept running, so the
 worker-down scenario passed without testing anything.
@@ -37,7 +37,7 @@ showed workers alive.
 **Fix:** kill by script path and confirm no worker is alive before the step.
 
 <!-- Below the bar (kept for the record):
-## A5 — R5 — naive stall detection first *(optional: decide later if it fits)*
+## R5 — naive stall detection first
 **File:** `docs/decisions.md` (D7 draft)
 **Wrong behaviour:** the agent proposed only a fixed 5-min ceiling for stalled agents, holding a window
 slot for minutes, though a no-progress timeout (stalls freeze progress) catches them in about one.
@@ -45,7 +45,7 @@ slot for minutes, though a no-progress timeout (stalls freeze progress) catches 
 **Fix:** both: a 60s no-progress timeout, with the 5-min ceiling as a backstop.
 -->
 
-## A6 — R9 — the plan picked Alpine images the worker can't run on
+## A4 — R9 — the plan picked Alpine images the worker can't run on
 **File:** `docs/design/plan.md` (§8, images)
 **Wrong behaviour:** the plan specified Node Alpine images for every service. Temporal's worker loads a native
 library, and the SDK ships it only for glibc Linux; Alpine uses musl, so the worker would fail at startup.
@@ -54,7 +54,7 @@ library, and the SDK ships it only for glibc Linux; Alpine uses musl, so the wor
 **Fix:** all Node images use `node:22.23.5-bookworm-slim` (Debian, glibc).
 
 <!-- Below the bar (kept for the record):
-## A7 — R9 — `task up` never returned
+## R9 — `task up` never returned
 **File:** `Taskfile.yml` (the last step of `up`)
 **Wrong behaviour:** the closing message was `echo "… Open the UI with `task open` …"`. The shell runs anything
 in backticks, so `task up` actually started the port-forward and blocked forever: a grader's one-command
@@ -64,7 +64,7 @@ ended with `task: [open] … port-forward`.
 **Fix:** plain quotes in the message.
 -->
 
-## A8 — R3 — the plan's TypedSQL couldn't be built in an image
+## A5 — R3 — the plan's TypedSQL couldn't be built in an image
 **File:** `docs/design/plan.md` §2 (`approve`), D9
 **Wrong behaviour:** the plan wrote the approve statement as TypedSQL. `prisma generate --sql` connects to a
 database to type the query, and our image builds have none, so the api and worker images could never build.
@@ -73,7 +73,7 @@ Spike 04 hid it: it always generated against a running Postgres.
 database server`; plain `prisma generate` worked.
 **Fix:** a parameterised `$executeRaw` for approve (it returns no rows), `groupBy` for aggregate.
 
-## A9 — Tests — tests ran against a stale build
+## A6 — Tests — tests ran against a stale build
 **File:** `packages/*/package.json` exports (M1), `vitest.config.ts`
 **Wrong behaviour:** packages give types from `src/` but runtime code from `dist/`. Vitest followed the runtime
 path and loaded M1's old `dist/` of `@novee/contracts`, which had no legality table, while the typecheck
@@ -83,7 +83,7 @@ on code that typechecked.
 **Fix:** both Vitest configs alias the workspace packages to their source.
 
 <!-- Below the bar (kept for the record):
-## A10 — D1 — "the sandbox blocks non-deterministic calls"
+## D1 — "the sandbox blocks non-deterministic calls"
 **File:** `docs/decisions.md` D1
 **Wrong behaviour:** D1 said the workflow sandbox *blocks* non-deterministic calls. It doesn't block
 `Math.random()` or `Date.now()`: it replaces them with replay-safe versions (seeded per run; clock frozen per
@@ -93,7 +93,7 @@ four runs replayed cleanly.
 **Fix:** D1 reworded from the spike's results.
 -->
 
-## A11 — R6 — an approve could be dropped
+## A7 — R6 — an approve could be dropped
 **File:** `apps/worker/src/workflows/recon.ts` (`moveTo`)
 **Wrong behaviour:** the first version wrote the status to the database, then updated the workflow's own
 phase. The API allows approve once the *row* says `AWAITING_APPROVAL`, so an approve signal could arrive while
@@ -102,7 +102,7 @@ the workflow still thought it was `AGGREGATING`; the handler would ignore it, an
 **Fix:** the phase moves first, then the row.
 
 <!-- Below the bar (kept for the record):
-## A12 — Worker — dependencies registered as activities
+## Worker — dependencies registered as activities
 **File:** `apps/worker/src/activities/*.ts`, `main.ts`
 **Wrong behaviour:** activity classes held their dependencies in TypeScript `private` fields and were
 registered with `{ ...agentActivities }`. `private` only exists at compile time, so the spread would have
@@ -112,7 +112,7 @@ registered the HTTP client and database layer as "activities".
 -->
 
 <!-- Below the bar (kept for the record):
-## A13 — Replay fixture — the developer's machine in a committed file
+## Replay fixture — the developer's machine in a committed file
 **File:** `apps/worker/src/workflows/fixtures/recon-history.json`
 **Wrong behaviour:** the recorded history carried the worker identity (`pid@<hostname>`) and stack traces with
 the home-directory path; it would have been committed with the submission.
@@ -121,7 +121,7 @@ the home-directory path; it would have been committed with the submission.
 -->
 
 <!-- Below the bar (kept for the record):
-## A14 — Replay test — the fixture was in the wrong format
+## Replay test — the fixture was in the wrong format
 **File:** `apps/worker/src/scripts/record-history.ts`
 **Wrong behaviour:** the recorder wrote the history with `JSON.stringify`, the protobuf *object* form; the
 replayer reads protobuf's canonical JSON.
@@ -129,7 +129,7 @@ replayer reads protobuf's canonical JSON.
 **Fix:** `historyToJSON` / `historyFromJSON` from `@temporalio/common/proto-utils`.
 -->
 
-## A16 — R6 — the Approve button did nothing
+## A8 — R6 — the Approve button did nothing
 **File:** `apps/web/app/api/[...path]/route.ts`, `apps/api/src/http/routes.ts`
 **Wrong behaviour:** the web app's proxy labelled every POST as JSON, including approve, which has no body.
 Fastify refused it with its own 400, so the decision never reached our code and the run waited forever. That
@@ -139,8 +139,8 @@ Fastify refused it with its own 400, so the decision never reached our code and 
 **Fix:** the proxy sends a content type only with a body; the API answers its framework errors in the contract
 shape too (error and not-found handlers, an `internal` code), with tests for both.
 
-## A17 — R9 — the image cleanup deleted the image it had just loaded
-**File:** `Taskfile.yml` (`prune-images`, the fix for A15)
+## A9 — R9 — the image cleanup deleted the image it had just loaded
+**File:** `Taskfile.yml` (`prune-images`, the fix for the image pile-up below)
 **Wrong behaviour:** to drop old builds from the node it ran `crictl rmi <old tag>`. When a build didn't change
 an image (here `migrate`), the new and old tags point at the same image, and `crictl rmi` deletes the image
 itself, every tag included. The next step's Job then couldn't start (`ImagePullBackOff`) and `task up` failed.
@@ -149,8 +149,20 @@ Local `docker rmi` only removes the tag, so checking it locally looked fine.
 image except `migrate`.
 **Fix:** `ctr images rm`, which removes only the named reference.
 
+## A10 — R2 — new code broke runs that had started under the old code
+**File:** the workflow's input (`packages/contracts/src/workflow.ts`, `apps/worker/src/workflows/`)
+**Wrong behaviour:** the agent changed the shape of the data a run starts with. Two runs that started before the change
+were still waiting for approval. Temporal finishes old runs with the *new* code, and the new code couldn't read
+their old data, so they got stuck on "approving…". The agent had assumed no old runs would be affected, and
+replaced the one test that would have caught it.
+**How we noticed:** I was testing by hand in the UI, approved one of those runs, and it never finished.
+**Fix:** the new code accepted both shapes until those two runs had finished, then the extra code was deleted.
+A rule now says compatibility code is temporary and removed once no old run is open.
+**Better in production:** keep old runs on the old code until they finish (Temporal's Worker Versioning), and only
+ever add to a workflow's input, never reshape it.
+
 <!-- Below the bar (kept for the record):
-## A15 — R9 — image builds piled up until the node evicted the stack
+## R9 — image builds piled up until the node evicted the stack
 **File:** `Taskfile.yml` (`load`)
 **Wrong behaviour:** each `task up` after an edit imported a new set of image tags and never removed old ones.
 After a day of deploys the Docker disk hit 83%; the node reported DiskPressure, evicted every pod and

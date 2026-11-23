@@ -1,7 +1,8 @@
 'use client';
 
-import { AssessmentStatus, ErrorCode, type RunView } from '@novee/contracts';
+import { AssessmentStatus, ErrorCode, type RunView, WORKFLOW_STEP } from '@novee/contracts';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { ApiError, apiClient, ContractMismatchError } from '../lib/api-client';
 import { FAILURE_LABEL, PENDING_LABEL, RUN_STATUS_LABEL } from '../lib/labels';
 import { runPollInterval } from '../lib/polling';
@@ -36,10 +37,24 @@ export function RunDetail({ id }: { id: string }) {
   const view = run.data;
   return (
     <>
+      <p>
+        <Link href="/">← All runs</Link>
+      </p>
       {run.error !== null && (
         <div className="banner warn">
           Can't refresh right now ({run.error.message}). Showing the last update, from{' '}
           {new Date(run.dataUpdatedAt).toLocaleTimeString()}.
+        </div>
+      )}
+      {view.stuck !== null && (
+        <div className="banner error" data-testid="run-stuck">
+          This run is stuck:{' '}
+          {view.stuck.step === WORKFLOW_STEP
+            ? 'its workflow code keeps failing'
+            : `${view.stuck.step} keeps failing`}{' '}
+          (attempt {view.stuck.attempt}){view.stuck.lastError !== null && <> — {view.stuck.lastError}</>}. It
+          won't progress until the problem is fixed, then it resumes where it stopped. The status below is the
+          last one it recorded.
         </div>
       )}
       <StatusHeader view={view} />

@@ -1,0 +1,17 @@
+== R7 — cancellation stops the agents
+   2026-11-23T12:27:29Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   agent-service reset (default config, counters zeroed)
+   14:27:30 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=2
+   14:27:32 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=2
+   14:27:34 RUNNING completed=0 running=2 queued=4 failed=0 lost=0 stopped=0 window=2
+   cancel: {"status":"RUNNING"}
+   14:27:34 RUNNING (cancelling) completed=0 running=2 queued=4 failed=0 lost=0 stopped=0 window=2
+   14:27:36 CANCELLED completed=0 running=0 queued=4 failed=0 lost=0 stopped=2 window=2
+   PASS  scans still RUNNING at agent-service: 0
+   PASS  scans agent-service marked STOPPED: 2
+   PASS  agents started: 2
+   PASS  agent rows STOPPED, stop confirmed: 2
+   PASS  agent rows still QUEUED (never started): 4
+   PASS  agent rows RUNNING: 0
+   PASS  Temporal's view of the workflow: WORKFLOW_EXECUTION_STATUS_CANCELED
+== PASS

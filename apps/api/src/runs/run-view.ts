@@ -15,6 +15,9 @@ import {
   type Technique,
 } from '@novee/contracts';
 import type { AgentRecord, RunRecord } from '@novee/db';
+import { type WorkflowCheck, WorkflowState } from '../temporal/run-workflows.js';
+
+const HEALTHY: WorkflowCheck = { state: WorkflowState.Healthy };
 
 /** Reported when Temporal says the workflow ended but the row still says it's live (D5's safety net). */
 export const ENDED_UNRECORDED: RunFailure = {
@@ -23,10 +26,12 @@ export const ENDED_UNRECORDED: RunFailure = {
 };
 
 /**
- * The run as the UI sees it. `workflowEnded`: Temporal reports no running workflow for a run the database still
- * calls live; the view then says FAILED instead of showing progress that will never come (R8).
+ * The run as the UI sees it. `workflow` is Temporal's view, checked only for live runs (D5's safety net): if the
+ * workflow ended without recording it, the view says FAILED instead of showing progress that will never come; if
+ * it's stuck, the view says so, keeping the recorded status (it resumes once the problem is fixed) (R8).
  */
-export function toRunView(run: RunRecord, workflowEnded: boolean): RunView {
+export function toRunView(run: RunRecord, workflow: WorkflowCheck = HEALTHY): RunView {
+  const workflowEnded = workflow.state === WorkflowState.Ended;
   const status = workflowEnded ? AssessmentStatus.Failed : run.status;
   const pending = workflowEnded ? null : pendingRequestOf(run);
   return {
@@ -36,6 +41,10 @@ export function toRunView(run: RunRecord, workflowEnded: boolean): RunView {
     window: run.windowSize,
     status,
     pending,
+    stuck:
+      workflow.state === WorkflowState.Stuck
+        ? { step: workflow.step, attempt: workflow.attempt, lastError: workflow.lastError }
+        : null,
     counts: countAgents(run),
     summary:
       run.uniqueDomains === null
@@ -61,8 +70,10 @@ function failureOf(run: RunRecord): RunFailure | null {
   return run.failureCode === null ? null : { code: run.failureCode, detail: run.failureReason ?? '' };
 }
 
-/** A request the workflow hasn't acted on yet. Only a live run can have one. */
-function pendingRequestOf(run: RunRecord): PendingRequest | null {
+/** A request the workflow hasn't acted on yet. Only a live run can have one. Used by the run page and the list. */
+export function pendingRequestOf(
+  run: Pick<RunRecord, 'status' | 'cancelRequestedAt' | 'decision'>,
+): PendingRequest | null {
   if (!LIVE_STATUSES.includes(run.status)) return null;
   if (run.cancelRequestedAt !== null) return PendingRequest.Cancelling;
   if (run.status === AssessmentStatus.AwaitingApproval && run.decision !== null) {

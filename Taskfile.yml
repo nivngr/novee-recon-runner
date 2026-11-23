@@ -58,6 +58,14 @@ tasks:
       - until curl -sf -o /dev/null http://localhost:3000; do sleep 1; done
       - cd apps/web && npx playwright test
 
+  proof:*:
+    desc: 'Run one proof and save its output next to it: task proof:r1 (r1…r9; r8 is the browser test)'
+    vars:
+      SCRIPT:
+        sh: ls proofs/{{index .MATCH 0}}-*.sh
+    cmds:
+      - set -o pipefail; bash {{.SCRIPT}} 2>&1 | tee {{trimSuffix ".sh" .SCRIPT}}.out
+
   db:migration:
     desc: 'Write a new migration from schema changes: task db:migration NAME=add_something'
     deps: [install]
@@ -161,9 +169,19 @@ tasks:
       - echo "Stack is up (images {{.TAG}}). Open the UI with 'task open', then http://localhost:3000"
 
   open:
-    desc: Port-forward the web app to http://localhost:3000
+    desc: 'Open the stack locally: the UI on http://localhost:3000, Temporal''s Web UI on http://localhost:8234 (Ctrl-C stops both)'
+    deps: [open:web, open:temporal]
+
+  open:web:
+    internal: true
     cmds:
       - kubectl -n {{.NS}} port-forward svc/web 3000:3000
+
+  open:temporal:
+    internal: true
+    cmds:
+      # 8234, not 8233: a local Temporal dev server may already hold 8233.
+      - kubectl -n {{.NS}} port-forward svc/temporal 8234:8233
 
   down:
     desc: Delete everything (the whole namespace, including data)

@@ -1,0 +1,14 @@
+== R8 — the UI tells the truth (Playwright, video in proofs/videos/r8/)
+task: Task "install" is up to date
+task: [test:e2e] cd apps/web && npx playwright install chromium > /dev/null
+task: [test:e2e] kubectl -n novee-task port-forward svc/web 3000:3000 > /dev/null 2>&1 &
+task: [test:e2e] until curl -sf -o /dev/null http://localhost:3000; do sleep 1; done
+task: [test:e2e] cd apps/web && npx playwright test
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › e2e/r8-truthful-ui.spec.ts:34:1 › submit → watch → approve → completed: truthful status, buttons from allowedActions, no polling after the end (3.3m)
+
+  1 passed (3.3m)
+task: [test:e2e] pkill -f "port-forward svc/web 3000:3000" || true
+== PASS

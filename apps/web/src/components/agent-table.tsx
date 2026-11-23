@@ -24,8 +24,11 @@ export function AgentTable({ agents }: { agents: readonly AgentView[] }) {
                 <td>{agent.technique}</td>
                 <td>{describeStatus(agent)}</td>
                 <td>
-                  <div className="bar" title={`${Math.round(agent.progress * 100)}%`}>
-                    <span style={{ width: `${agent.progress * 100}%` }} />
+                  <div className="progress">
+                    <div className="bar">
+                      <span style={{ width: `${agent.progress * 100}%` }} />
+                    </div>
+                    <span className="muted">{Math.round(agent.progress * 100)}%</span>
                   </div>
                 </td>
                 <td>{agent.discoveredCount ?? '—'}</td>

@@ -96,7 +96,7 @@ class FakeActivities {
   }
 }
 
-/** Bundle our packages from source, never a stale dist/ (A9). Keeps Temporal's own aliases: they block I/O. */
+/** Bundle our packages from source, never a stale dist/ (A6). Keeps Temporal's own aliases: they block I/O. */
 const BUNDLE_FROM_SOURCE: NonNullable<WorkerOptions['bundlerOptions']> = {
   webpackConfigHook: (config) => {
     const alias = config.resolve?.alias;
@@ -260,14 +260,17 @@ describe('recon workflow', { timeout: 60_000 }, () => {
 });
 
 describe('replay', { timeout: 60_000 }, () => {
-  it('a recorded real run (approved, every activity failed once) replays against the current code', async () => {
-    // Re-record after an intended workflow change: see scripts/record-history.ts.
-    const history = historyFromJSON(
-      JSON.parse(await readFile(source('./fixtures/recon-history.json'), 'utf8')),
-    );
-    await Worker.runReplayHistory(
-      { workflowsPath: source('./index.ts'), bundlerOptions: BUNDLE_FROM_SOURCE },
-      history,
-    );
-  });
+  // Each fixture is a real run recorded with a version of the code whose runs may still be in flight. A failing
+  // replay means the change would break them (A10). Retire a fixture only with its compatibility code (apps/worker/CLAUDE.md).
+  it.each([['recon-history.json', 'settings nested (M5 on)']])(
+    '%s — a real run (%s) replays against the current code',
+    async (fixture) => {
+      // Record a new fixture with scripts/record-history.ts.
+      const history = historyFromJSON(JSON.parse(await readFile(source(`./fixtures/${fixture}`), 'utf8')));
+      await Worker.runReplayHistory(
+        { workflowsPath: source('./index.ts'), bundlerOptions: BUNDLE_FROM_SOURCE },
+        history,
+      );
+    },
+  );
 });

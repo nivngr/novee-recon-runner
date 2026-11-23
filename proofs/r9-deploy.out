@@ -1,0 +1,22 @@
+== R9 — one-command deploy
+   recreating the k3d cluster
+task: [cluster] k3d cluster create novee-task --wait
+   task up: exit 0 in 218s
+     deployment.apps/agent-service   1/1   1     1     42s
+     deployment.apps/api             1/1   1     1     8s
+     deployment.apps/web             1/1   1     1     8s
+     deployment.apps/worker          2/2   2     2     8s
+     statefulset.apps/postgres   1/1   42s
+     statefulset.apps/temporal   1/1   42s
+     job.batch/migrate   Complete   1/1   5s    15s
+   PASS  api ready replicas: 1
+   PASS  worker ready replicas: 2
+   PASS  web ready replicas: 1
+   PASS  agent-service ready replicas: 1
+   PASS  worker replicas: 2
+   PASS  Services selecting the worker: 0
+   PASS  worker liveness probe: test $(( $(date +%s) - $(stat -c %Y /tmp/healthy) )) -lt 30
+   PASS  worker memory limit: 512Mi
+   PASS  migrate Job succeeded: 1
+   PASS  ready workers after deleting worker-b95d55f65-9snmm: 2
+== PASS

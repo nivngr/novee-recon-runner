@@ -9,6 +9,7 @@ import {
 } from '@novee/contracts';
 import type { AgentRecord, RunRecord } from '@novee/db';
 import { describe, expect, it } from 'vitest';
+import { WorkflowState } from '../temporal/run-workflows.js';
 import { ENDED_UNRECORDED, toRunView } from './run-view.js';
 
 const CREATED = new Date('2026-11-23T10:00:00Z');
@@ -70,22 +71,21 @@ describe('toRunView', () => {
           agent(2, AgentStatus.Lost, { lostReason: LostReason.NoProgress }),
         ],
       }),
-      false,
     );
     expect(view.counts).toEqual({ queued: 0, running: 2, completed: 0, failed: 0, lost: 1, stopped: 0 });
   });
 
   it('offers the actions the legality table allows for the status', () => {
-    expect(toRunView(run({ status: AssessmentStatus.Running }), false).allowedActions).toEqual([
+    expect(toRunView(run({ status: AssessmentStatus.Running })).allowedActions).toEqual([
       RunAction.Cancel,
       RunAction.SetWindow,
     ]);
-    expect(toRunView(run({ status: AssessmentStatus.AwaitingApproval }), false).allowedActions).toEqual([
+    expect(toRunView(run({ status: AssessmentStatus.AwaitingApproval })).allowedActions).toEqual([
       RunAction.Approve,
       RunAction.Reject,
       RunAction.Cancel,
     ]);
-    expect(toRunView(run({ status: AssessmentStatus.Completed }), false).allowedActions).toEqual([]);
+    expect(toRunView(run({ status: AssessmentStatus.Completed })).allowedActions).toEqual([]);
   });
 
   it('shows a pending request and offers nothing while it is pending', () => {
@@ -95,21 +95,20 @@ describe('toRunView', () => {
         decision: Decision.Approve,
         decisionRequestedAt: CREATED,
       }),
-      false,
     );
     expect([approving.pending, approving.allowedActions]).toEqual([PendingRequest.Approving, []]);
 
-    const cancelling = toRunView(run({ cancelRequestedAt: CREATED }), false);
+    const cancelling = toRunView(run({ cancelRequestedAt: CREATED }));
     expect([cancelling.pending, cancelling.allowedActions]).toEqual([PendingRequest.Cancelling, []]);
   });
 
   it('drops the pending label once the run has ended', () => {
-    const view = toRunView(run({ status: AssessmentStatus.Cancelled, cancelRequestedAt: CREATED }), false);
+    const view = toRunView(run({ status: AssessmentStatus.Cancelled, cancelRequestedAt: CREATED }));
     expect(view.pending).toBeNull();
   });
 
   it('reports FAILED when Temporal says the workflow ended but the row still says live', () => {
-    const view = toRunView(run({ status: AssessmentStatus.Running }), true);
+    const view = toRunView(run({ status: AssessmentStatus.Running }), { state: WorkflowState.Ended });
     expect([view.status, view.failure, view.allowedActions]).toEqual([
       AssessmentStatus.Failed,
       ENDED_UNRECORDED,
@@ -124,7 +123,6 @@ describe('toRunView', () => {
         failureCode: FailureCode.NoAgentCompleted,
         failureReason: 'none of the 3 agents completed',
       }),
-      false,
     );
     expect(view.failure).toEqual({
       code: FailureCode.NoAgentCompleted,
@@ -132,10 +130,26 @@ describe('toRunView', () => {
     });
   });
 
+  it('says a run is stuck, with the attempt, and keeps its recorded status and pending request', () => {
+    const view = toRunView(
+      run({
+        status: AssessmentStatus.AwaitingApproval,
+        decision: Decision.Approve,
+        decisionRequestedAt: CREATED,
+      }),
+      { state: WorkflowState.Stuck, step: 'setRunStatus', attempt: 10, lastError: 'blocked' },
+    );
+    expect([view.status, view.pending, view.stuck]).toEqual([
+      AssessmentStatus.AwaitingApproval,
+      PendingRequest.Approving,
+      { step: 'setRunStatus', attempt: 10, lastError: 'blocked' },
+    ]);
+  });
+
   it('has a summary only once aggregate has written one', () => {
-    expect(toRunView(run(), false).summary).toBeNull();
+    expect(toRunView(run()).summary).toBeNull();
     expect(
-      toRunView(run({ uniqueDomains: 3, criticalCount: 1, highCount: 2, mediumCount: 0, lowCount: 0 }), false)
+      toRunView(run({ uniqueDomains: 3, criticalCount: 1, highCount: 2, mediumCount: 0, lowCount: 0 }))
         .summary,
     ).toEqual({ uniqueDomains: 3, critical: 1, high: 2, medium: 0, low: 0 });
   });

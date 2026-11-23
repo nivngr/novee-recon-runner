@@ -15,7 +15,15 @@ export class RunReader {
 
   listRuns(limit: number): Promise<RunListItem[]> {
     return this.prisma.assessment.findMany({
-      select: { id: true, targetDomain: true, status: true, agentCount: true, createdAt: true },
+      select: {
+        id: true,
+        targetDomain: true,
+        status: true,
+        agentCount: true,
+        createdAt: true,
+        cancelRequestedAt: true,
+        decision: true,
+      },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });

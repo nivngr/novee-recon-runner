@@ -11,6 +11,7 @@
       "!**/dist",
       "!**/src/generated",
       "!**/fixtures",
+      "!**/.last-run.json",
       "!spikes",
       "!starter",
       "!brief"

@@ -138,7 +138,7 @@ class ReconRun {
       this.running += 1;
       this.lanes.push(lane);
       const task = this.runLane(lane);
-      // Handle every lane's rejection right away, or it would fail the workflow task (A2).
+      // Handle every lane's rejection right away, or it would fail the workflow task (A1).
       task.catch((error: unknown) => {
         if (!isCancellation(error)) this.laneError ??= error;
       });

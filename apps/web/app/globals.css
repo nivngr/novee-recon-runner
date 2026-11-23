@@ -35,6 +35,8 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
 th { font-weight: 500; color: var(--muted); }
 .table-wrap { overflow-x: auto; }
+.progress { display: flex; align-items: center; gap: 8px; }
+.progress .muted { width: 3em; text-align: right; font-variant-numeric: tabular-nums; }
 .bar { width: 120px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
 .bar > span { display: block; height: 100%; background: var(--accent); }
 .status { font-weight: 600; }

@@ -1,0 +1,31 @@
+== R4 — what the workflow's history holds
+   2026-11-23T12:17:22Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   agent-service reset (default config, counters zeroed)
+   14:17:23 STARTING completed=0 running=0 queued=4 failed=0 lost=0 stopped=0 window=2
+   14:17:25 RUNNING completed=0 running=1 queued=3 failed=0 lost=0 stopped=0 window=2
+   14:17:27 RUNNING completed=0 running=2 queued=2 failed=0 lost=0 stopped=0 window=2
+   14:18:09 RUNNING completed=1 running=2 queued=1 failed=0 lost=0 stopped=0 window=2
+   14:18:14 RUNNING completed=2 running=2 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:19:00 RUNNING completed=3 running=1 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:20:14 AWAITING_APPROVAL completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:20:14 AWAITING_APPROVAL (approving) completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:20:16 COMPLETED completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   each activity's result, as stored in the history:
+     setRunStatus      4 bytes  true
+     startAgent       12 bytes  "s-946b40f2"
+     startAgent       12 bytes  "s-05f0c4ba"
+     waitAgent        45 bytes  {"outcome":"COMPLETED","discoveredCount":250}
+     startAgent       12 bytes  "s-49b82e6f"
+     waitAgent        45 bytes  {"outcome":"COMPLETED","discoveredCount":250}
+     startAgent       12 bytes  "s-0b092675"
+     waitAgent        45 bytes  {"outcome":"COMPLETED","discoveredCount":250}
+     waitAgent        45 bytes  {"outcome":"COMPLETED","discoveredCount":250}
+     setRunStatus      4 bytes  true
+     aggregate        69 bytes  {"uniqueDomains":595,"critical":98,"high":209,"medium":128,"low":160}
+     setRunStatus      4 bytes  true
+     setRunStatus      4 bytes  true
+     persist           0 bytes  
+   history: 93 events, 61641 bytes as JSON; findings in Postgres: 1000 staged, 595 stored
+   PASS  largest payload anywhere in the history (bytes): 182 (limit 1024)
+   PASS  history mentions any found subdomain: 0
+== PASS

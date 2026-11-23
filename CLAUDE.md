@@ -48,7 +48,7 @@ Rules:
 - Thin beats thorough. These feed `NOTES.md`, which is written last from them.
 - AI log entries are honest and specific: "it fanned out all six; caught because `maxConcurrent` came back 6".
   Log a catch only if it would have broken a requirement or shipped broken (review catches count); small slips
-  are just fixed. Entries below that bar stay in `ai-log.md` as comments, never deleted; `NOTES.md` draws from
+  are just fixed. Entries below that bar stay in `ai-log.md` as unnumbered comments, never deleted; `NOTES.md` draws from
   the shown ones.
 - Wording: describe new parts of the stack by how they connect to my experience. Don't frame it
   as things I lack or need to learn.

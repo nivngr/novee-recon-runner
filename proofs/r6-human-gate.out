@@ -1,0 +1,29 @@
+== R6 — the human gate
+   2026-11-23T12:25:21Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   agent-service reset (default config, counters zeroed)
+   approve before the run asks: {"error":"not_allowed","message":"approve is not allowed: the run is STARTING"}
+   14:25:23 STARTING completed=0 running=0 queued=3 failed=0 lost=0 stopped=0 window=3
+   14:25:25 RUNNING completed=0 running=1 queued=2 failed=0 lost=0 stopped=0 window=3
+   14:25:27 RUNNING completed=0 running=3 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:25:42 RUNNING completed=1 running=2 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:26:22 RUNNING completed=2 running=1 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:27:21 AWAITING_APPROVAL completed=3 running=0 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:27:21 RUNNING completed=2 running=1 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:27:25 AWAITING_APPROVAL completed=3 running=0 queued=0 failed=0 lost=0 stopped=0 window=3
+-- while waiting: readable, nothing stored
+   PASS  domain list source while waiting: staged
+   PASS  domains listed while waiting > 0: true
+   PASS  rows stored while waiting: 0
+-- approve one, reject the other
+   approve: {"status":"AWAITING_APPROVAL"}
+   approve again: {"error":"not_allowed","message":"approve is not allowed: a request is pending (approving)"}
+   reject:  {"status":"AWAITING_APPROVAL"}
+   14:27:26 PERSISTING completed=3 running=0 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:27:28 COMPLETED completed=3 running=0 queued=0 failed=0 lost=0 stopped=0 window=3
+   14:27:28 REJECTED completed=3 running=0 queued=0 failed=0 lost=0 stopped=0 window=3
+   PASS  approved: domain list source: final
+   PASS  approved: rows stored = domains listed: 521
+   PASS  rejected: rows stored: 0
+   PASS  rejected: staged findings kept: t
+   PASS  rejected: actions offered afterwards: []
+== PASS

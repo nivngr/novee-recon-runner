@@ -1,0 +1,39 @@
+== R5 — failure classification
+   2026-11-23T12:20:17Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   agent-service reset (default config, counters zeroed)
+-- an unsupported domain: refused once, never retried, the run says so
+   14:20:19 STARTING completed=0 running=0 queued=4 failed=0 lost=0 stopped=0 window=2
+   14:20:21 REJECTED_INPUT completed=0 running=0 queued=3 failed=0 lost=1 stopped=0 window=2
+   PASS  seconds from submit to REJECTED_INPUT: 3 (limit 30)
+   PASS  agents agent-service started for it: 0
+   PASS  startAgent attempts in the history: 1
+   PASS  agents never started (still QUEUED): 3
+-- agents that crash (failEveryN=3): they fail, the run carries on and completes with the rest
+   14:20:21 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=3
+   14:20:23 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=3
+   14:20:25 RUNNING completed=0 running=3 queued=3 failed=0 lost=0 stopped=0 window=3
+   14:21:54 RUNNING completed=1 running=3 queued=2 failed=0 lost=0 stopped=0 window=3
+   14:22:17 RUNNING completed=2 running=3 queued=1 failed=0 lost=0 stopped=0 window=3
+   14:22:21 RUNNING completed=2 running=3 queued=0 failed=1 lost=0 stopped=0 window=3
+   14:22:55 RUNNING completed=3 running=2 queued=0 failed=1 lost=0 stopped=0 window=3
+   14:23:29 AWAITING_APPROVAL completed=4 running=0 queued=0 failed=2 lost=0 stopped=0 window=3
+   PASS  agents FAILED: 2
+   PASS  agents COMPLETED: 4
+   PASS  agents started (crashed ones are not replaced): 6
+   14:23:29 AWAITING_APPROVAL (approving) completed=4 running=0 queued=0 failed=2 lost=0 stopped=0 window=3
+   14:23:31 COMPLETED completed=4 running=0 queued=0 failed=2 lost=0 stopped=0 window=3
+-- agents that hang (stallEveryN=3, no-progress timeout 15s): given up on, stopped, the run completes
+   14:23:32 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=3
+   14:23:34 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=3
+   14:23:36 RUNNING completed=0 running=3 queued=3 failed=0 lost=0 stopped=0 window=3
+   14:23:50 RUNNING completed=1 running=3 queued=1 failed=0 lost=1 stopped=0 window=3
+   14:24:28 RUNNING completed=2 running=3 queued=0 failed=0 lost=1 stopped=0 window=3
+   14:24:30 RUNNING completed=3 running=2 queued=0 failed=0 lost=1 stopped=0 window=3
+   14:24:43 RUNNING completed=3 running=1 queued=0 failed=0 lost=2 stopped=0 window=3
+   14:25:19 AWAITING_APPROVAL completed=4 running=0 queued=0 failed=0 lost=2 stopped=0 window=3
+   PASS  agents LOST (no progress): 2
+   PASS  lost agents whose stop agent-service confirmed: 2
+   PASS  scans still RUNNING at agent-service: 0
+   14:25:19 AWAITING_APPROVAL (approving) completed=4 running=0 queued=0 failed=0 lost=2 stopped=0 window=3
+   14:25:21 COMPLETED completed=4 running=0 queued=0 failed=0 lost=2 stopped=0 window=3
+== PASS

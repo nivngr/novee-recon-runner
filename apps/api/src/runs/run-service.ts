@@ -12,8 +12,8 @@ import {
   type WindowResponse,
 } from '@novee/contracts';
 import { CreateRunResult, type RunReader, type RunRecord, type RunRequests } from '@novee/db';
-import type { RunWorkflows } from '../temporal/run-workflows.js';
-import { toRunView } from './run-view.js';
+import { type RunWorkflows, type WorkflowCheck, WorkflowState } from '../temporal/run-workflows.js';
+import { pendingRequestOf, toRunView } from './run-view.js';
 
 /** A service call's outcome: a value, or an error code the HTTP layer maps to a status. */
 export type Result<T> = { ok: true; value: T } | { ok: false; error: ErrorCode; message: string };
@@ -23,6 +23,7 @@ export type RequestAction = typeof RunAction.Approve | typeof RunAction.Reject |
 
 /** Workflow ended but row still live: only checked for runs at least this old (D5's safety net). */
 const SAFETY_NET_MIN_AGE_MS = 30_000;
+const HEALTHY: WorkflowCheck = { state: WorkflowState.Healthy };
 
 const ok = <T>(value: T): Result<T> => ({ ok: true, value });
 const fail = <T>(error: ErrorCode, message: string): Result<T> => ({ ok: false, error, message });
@@ -59,7 +60,7 @@ export class RunService {
   async get(id: string): Promise<Result<RunView>> {
     const run = await this.reader.getRun(id);
     if (run === null) return fail(ErrorCode.NotFound, `no run ${id}`);
-    return ok(toRunView(run, await this.workflowEndedUnrecorded(run)));
+    return ok(toRunView(run, await this.checkWorkflow(run)));
   }
 
   async list(limit: number): Promise<RunList> {
@@ -68,6 +69,7 @@ export class RunService {
       id: run.id,
       domain: run.targetDomain,
       status: run.status,
+      pending: pendingRequestOf(run),
       agentCount: run.agentCount,
       createdAt: run.createdAt.toISOString(),
     }));
@@ -129,7 +131,7 @@ export class RunService {
   private async checkAllowed(id: string, action: RunAction): Promise<Result<RunRecord>> {
     const run = await this.reader.getRun(id);
     if (run === null) return fail(ErrorCode.NotFound, `no run ${id}`);
-    const view = toRunView(run, false);
+    const view = toRunView(run);
     if (!view.allowedActions.includes(action)) {
       const reason =
         view.pending === null ? `the run is ${view.status}` : `a request is pending (${view.pending})`;
@@ -149,15 +151,15 @@ export class RunService {
     }
   }
 
-  /** The safety net: a live row whose workflow Temporal no longer runs. Temporal unreachable = trust the row. */
-  private async workflowEndedUnrecorded(run: RunRecord): Promise<boolean> {
+  /** The safety net: Temporal's view of a live run's workflow. Temporal unreachable = trust the row. */
+  private async checkWorkflow(run: RunRecord): Promise<WorkflowCheck> {
     const live = LIVE_STATUSES.includes(run.status);
     const oldEnough = Date.now() - run.createdAt.getTime() >= SAFETY_NET_MIN_AGE_MS;
-    if (!live || !oldEnough) return false;
+    if (!live || !oldEnough) return HEALTHY;
     try {
-      return await this.workflows.hasEnded(run.id);
+      return await this.workflows.check(run.id, run.failFirstAttempts);
     } catch {
-      return false;
+      return HEALTHY;
     }
   }
 }

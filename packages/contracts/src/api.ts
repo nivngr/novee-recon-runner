@@ -69,6 +69,9 @@ export type WindowResponse = z.infer<typeof WindowResponseSchema>;
 export const ActionResponseSchema = z.object({ status: z.enum(AssessmentStatus) });
 export type ActionResponse = z.infer<typeof ActionResponseSchema>;
 
+/** `RunView.stuck.step` when the workflow's own code keeps failing (otherwise it's the activity's name). */
+export const WORKFLOW_STEP = 'workflow';
+
 /** A request the workflow hasn't acted on yet; while one is pending, no other action is allowed. */
 export const PendingRequest = {
   Cancelling: 'cancelling',
@@ -118,6 +121,11 @@ export const RunViewSchema = z.object({
   window: z.int(),
   status: z.enum(AssessmentStatus),
   pending: z.enum(PendingRequest).nullable(),
+  /**
+   * The same step keeps failing: the run won't move until the problem is fixed. `step` is "workflow" (its own code)
+   * or the name of the activity; `lastError` is that activity's last failure.
+   */
+  stuck: z.object({ step: z.string(), attempt: z.int(), lastError: z.string().nullable() }).nullable(),
   counts: RunCountsSchema,
   summary: SummarySchema.nullable(),
   agents: z.array(AgentViewSchema),
@@ -134,6 +142,7 @@ export const RunListSchema = z.array(
     id: z.uuid(),
     domain: z.string(),
     status: z.enum(AssessmentStatus),
+    pending: z.enum(PendingRequest).nullable(),
     agentCount: z.int(),
     createdAt: z.iso.datetime(),
   }),

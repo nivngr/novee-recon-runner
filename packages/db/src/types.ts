@@ -27,7 +27,15 @@ export type RunRecord = Prisma.AssessmentGetPayload<{ include: { agents: true } 
 export type AgentRecord = RunRecord['agents'][number];
 
 export type RunListItem = Prisma.AssessmentGetPayload<{
-  select: { id: true; targetDomain: true; status: true; agentCount: true; createdAt: true };
+  select: {
+    id: true;
+    targetDomain: true;
+    status: true;
+    agentCount: true;
+    createdAt: true;
+    cancelRequestedAt: true;
+    decision: true;
+  };
 }>;
 
 /** One subdomain as one agent reported it (the same shape as a stored domain). */

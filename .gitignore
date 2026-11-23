@@ -8,3 +8,6 @@ dist/
 coverage/
 .task/
 *.tsbuildinfo
+
+# Playwright run bookkeeping (not evidence)
+**/.last-run.json

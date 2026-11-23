@@ -19,5 +19,5 @@
 - Where a write moves a status *and* adds rows, move the status first in the same transaction and add rows
   only if it moved (see `approve`, `completeAgent`).
 - Never delete data. Staged findings are kept for every run (D4).
-- No TypedSQL: it needs a live database at generate time, and image builds have none (A8). Hand-written SQL
+- No TypedSQL: it needs a live database at generate time, and image builds have none (A5). Hand-written SQL
   goes through `$executeRaw` with bound parameters.

@@ -1,0 +1,41 @@
+== R1 — the concurrency window
+   2026-11-23T12:02:25Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   agent-service reset (default config, counters zeroed)
+-- run A: 6 agents, window 2
+   14:02:26 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=2
+   14:02:28 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=2
+   14:02:30 RUNNING completed=0 running=2 queued=4 failed=0 lost=0 stopped=0 window=2
+   14:02:57 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=2
+   14:04:17 RUNNING completed=2 running=2 queued=2 failed=0 lost=0 stopped=0 window=2
+   14:04:20 RUNNING completed=3 running=1 queued=2 failed=0 lost=0 stopped=0 window=2
+   14:04:22 RUNNING completed=3 running=2 queued=1 failed=0 lost=0 stopped=0 window=2
+   14:04:50 RUNNING completed=4 running=2 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:05:39 RUNNING completed=5 running=1 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:06:38 AWAITING_APPROVAL completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   PASS  most agents running at once (agent-service): 2
+   PASS  agents started for 6 requested: 6
+   PASS  slowest refill: start after the finish that freed its slot (s): 1 (limit 3)
+   14:06:38 AWAITING_APPROVAL (approving) completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   14:06:41 COMPLETED completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+-- run B: 6 agents, window 2 → raised to 4 → lowered to 1
+   14:06:41 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=2
+   14:06:43 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=2
+   14:06:45 RUNNING completed=0 running=2 queued=4 failed=0 lost=0 stopped=0 window=2
+   14:07:51 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=2
+   raise: {"window":4}
+   14:07:51 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=4
+   14:07:53 RUNNING completed=1 running=4 queued=1 failed=0 lost=0 stopped=0 window=4
+   PASS  most agents running at once after the raise: 4
+   lower: {"window":1}
+   14:07:53 RUNNING completed=1 running=4 queued=1 failed=0 lost=0 stopped=0 window=1
+   14:07:55 RUNNING completed=2 running=3 queued=1 failed=0 lost=0 stopped=0 window=1
+   14:08:53 RUNNING completed=3 running=2 queued=1 failed=0 lost=0 stopped=0 window=1
+   14:09:08 RUNNING completed=4 running=1 queued=1 failed=0 lost=0 stopped=0 window=1
+   14:09:40 RUNNING completed=5 running=1 queued=0 failed=0 lost=0 stopped=0 window=1
+   14:10:55 AWAITING_APPROVAL completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=1
+   PASS  most agents running at once (never above 4): 4
+   PASS  agents stopped by lowering the window: 0
+   PASS  agents completed: 6
+   14:10:55 AWAITING_APPROVAL (approving) completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=1
+   14:10:57 COMPLETED completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=1
+== PASS

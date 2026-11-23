@@ -9,6 +9,7 @@ const view = (status: AssessmentStatus, pending: PendingRequest | null = null): 
   window: 1,
   status,
   pending,
+  stuck: null,
   counts: { queued: 0, running: 0, completed: 0, failed: 0, lost: 0, stopped: 0 },
   summary: null,
   agents: [],
