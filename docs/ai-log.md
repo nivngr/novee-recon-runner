@@ -57,6 +57,24 @@ bring-up would hang at the very end.
 ended with `task: [open] … port-forward`.
 **Fix:** plain quotes in the message.
 
+## A8 — R3 — the plan's TypedSQL couldn't be built in an image
+**File:** `docs/design/plan.md` §2 (`approve`), D9
+**Wrong behaviour:** the plan wrote the approve statement as TypedSQL. `prisma generate --sql` connects to a
+database to type the query, and our image builds have none, so the api and worker images could never build.
+Spike 04 hid it: it always generated against a running Postgres.
+**How we noticed:** before writing M2, ran the spike's generate against an unreachable host: `P1001 Can't reach
+database server`; plain `prisma generate` worked.
+**Fix:** a parameterised `$executeRaw` for approve (it returns no rows), `groupBy` for aggregate.
+
+## A9 — Tests — tests ran against a stale build
+**File:** `packages/*/package.json` exports (M1), `vitest.config.ts`
+**Wrong behaviour:** packages give types from `src/` but runtime code from `dist/`. Vitest followed the runtime
+path and loaded M1's old `dist/` of `@novee/contracts`, which had no legality table, while the typecheck
+(reading `src/`) passed. A test could pass or fail against code that no longer exists.
+**How we noticed:** 2 of 13 database tests failed with `Cannot read properties of undefined (reading 'approve')`
+on code that typechecked.
+**Fix:** both Vitest configs alias the workspace packages to their source.
+
 <!--
 ## A<n> — <requirement or spike> — <one-line summary>
 **File:** …

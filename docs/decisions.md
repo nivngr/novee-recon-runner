@@ -79,9 +79,10 @@ checks again when the signal arrives, and the first decision wins.
 - The API check gives the user a fast, clear "not now". The workflow check holds against races, since only it sees the real state.
 
 ## D9 — Database access: Prisma
-**Chose:** Prisma 7 (pinned stable), with the approve statement as TypedSQL. **Rejected:** Drizzle.
+**Chose:** Prisma 7 (pinned stable), with the approve statement as one parameterised SQL statement. **Rejected:** Drizzle.
 **Why:**
-- I know Prisma well, and it's fully typed, including the one hand-written SQL statement.
+- I know Prisma well, and it's fully typed; the one hand-written statement returns no rows, so it needs no result types.
+  (TypedSQL was the first choice; it needs a live database to generate, and image builds have none.)
 - Migrations are easy and safe to apply in the one-command bring-up.
 - [Spike 04](../spikes/04-prisma/README.md) confirmed every critical write: idempotent staging, `max` over the risk enum, a retry-safe approve.
 

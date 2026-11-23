@@ -17,7 +17,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
-    "build": "npm run build -w @novee/contracts -w @novee/db -w @novee/api -w @novee/worker"
+    "build": "npm run build -w @novee/contracts -w @novee/db -w @novee/api -w @novee/worker",
+    "generate": "npm run generate -w @novee/db"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",

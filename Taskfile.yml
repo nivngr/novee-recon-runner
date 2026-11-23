@@ -15,6 +15,9 @@ vars:
   CONTEXT:
     sh: kubectl config current-context 2>/dev/null || echo none
   IMAGES: api worker web migrate
+  # A throwaway Postgres for database tests and for writing migrations.
+  SCRATCH_PG: novee-scratch-pg
+  SCRATCH_PG_URL: postgresql://novee:novee@localhost:55432/novee
 
 tasks:
   install:
@@ -30,9 +33,42 @@ tasks:
     desc: Typecheck every workspace, lint, run the tests. Gates every deploy (D13).
     deps: [install]
     cmds:
+      - npm run generate
       - npm run typecheck
       - npm run lint
       - npm run test
+
+  test:db:
+    desc: Database tests against a throwaway Postgres container, with the migrations applied
+    deps: [install]
+    cmds:
+      - defer: { task: scratch-pg:stop }
+      - task: scratch-pg:start
+      - npm run generate
+      - cd packages/db && DATABASE_URL={{.SCRATCH_PG_URL}} npx prisma migrate deploy
+      - DATABASE_URL={{.SCRATCH_PG_URL}} npx vitest run -c vitest.db.config.ts
+
+  db:migration:
+    desc: 'Write a new migration from schema changes: task db:migration NAME=add_something'
+    deps: [install]
+    requires: { vars: [NAME] }
+    cmds:
+      - defer: { task: scratch-pg:stop }
+      - task: scratch-pg:start
+      # Replays the existing migrations into the scratch database, diffs against the schema, writes the new one.
+      - cd packages/db && DATABASE_URL={{.SCRATCH_PG_URL}} npx prisma migrate dev --create-only --name {{.NAME}}
+
+  scratch-pg:start:
+    internal: true
+    cmds:
+      - docker run -d --rm --name {{.SCRATCH_PG}} -e POSTGRES_USER=novee -e POSTGRES_PASSWORD=novee -e POSTGRES_DB=novee -p 55432:5432 postgres:16-alpine > /dev/null
+      # TCP only opens once the image's init phase is over, so this waits for the real server.
+      - until docker exec {{.SCRATCH_PG}} pg_isready -q -h 127.0.0.1 -U novee; do sleep 1; done
+
+  scratch-pg:stop:
+    internal: true
+    cmds:
+      - docker rm -f {{.SCRATCH_PG}} > /dev/null
 
   build:
     desc: Build every image from the current commit, tagged {{.TAG}}

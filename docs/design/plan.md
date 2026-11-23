@@ -11,7 +11,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 |---|---|---|
 | M0 | Toolchain and workspace skeleton | done |
 | M1 | Deploy skeleton: `task up` on an empty cluster (R9) | done |
-| M2 | Data layer: Prisma schema and queries | not started |
+| M2 | Data layer: Prisma schema and queries | done |
 | M3 | Workflow and activities (R1–R5, R7) | not started |
 | M4 | HTTP API (R6) | not started |
 | M5 | Web UI (R8) | not started |
@@ -160,10 +160,29 @@ Primary key `(assessment_id, agent_index, domain)`. `(assessment_id, agent_index
 | `setRunStatus(id, from[], to, extra?)` | Conditional update; `extra` can carry `failure_reason`, summary counts | workflow activities |
 | `requestCancel(id)`, `requestDecision(id, decision)`, `setWindow(id, size)` | Set the request columns (conditional on a legal status) | API |
 | `setAgentStarting(id, i, worker)`, `setAgentRunning(id, i, scanId)`, `recordProgress(id, i, progress, worker)` | Agent row updates; `recordProgress` is best-effort | activities |
-| `completeAgent(id, i, findings[])` | One transaction: insert findings into staging (insert-or-nothing), set agent `COMPLETED` + `discovered_count` + `finished_at` | `waitAgent` |
-| `endAgent(id, i, status, lostReason?, stopConfirmed?)` | Conditional update to `FAILED`, `LOST` or `STOPPED` | activities |
+| `completeAgent(id, i, findings[])` | One transaction: `RUNNING → COMPLETED` + `discovered_count` + `finished_at`; only if that moved, insert findings into staging (insert-or-nothing) | `waitAgent` |
+| `endAgent(id, i, ending)` | Conditional update (from `QUEUED`/`STARTING`/`RUNNING`) to `FAILED`, `LOST` or `STOPPED`; `ending` is a union carrying `lostReason` / `stopConfirmed` where they apply | activities |
 | `aggregate(id)` | One query over staged rows: unique domains and counts per risk (using `max(risk)` per domain); writes the summary; returns it | `aggregate` activity |
-| `approve(id)` | One transaction: TypedSQL `INSERT INTO discovered_domains … SELECT … max(risk) … GROUP BY … ON CONFLICT DO NOTHING`, then `PERSISTING → COMPLETED` | `persist` activity |
+| `approve(id)` | One transaction: `PERSISTING → COMPLETED`; only if that moved, `INSERT INTO discovered_domains … SELECT … max(risk) … GROUP BY … ON CONFLICT DO NOTHING` (parameterised `$executeRaw`) | `persist` activity |
+
+**As built in M2:**
+- Four classes, split by who writes: `RunReader` and `RunRequests` (API), `RunLifecycle` and `AgentLifecycle`
+  (worker activities). Each takes a `PrismaClient` (`createPrismaClient(url)`, `pg` driver adapter).
+- **Status first, then data:** `approve` and `completeAgent` move the status in the same transaction *before*
+  writing rows, and write only if it moved. A repeat writes nothing; an agent stopped by a cancel can't stage
+  late findings; a run that isn't `PERSISTING` can never get result rows. The unique constraints back this up.
+- **No TypedSQL:** `prisma generate --sql` needs a live database, and image builds have none. The approve
+  statement returns no rows, so a parameterised `$executeRaw` loses nothing; `aggregate` uses Prisma's
+  `groupBy` + `_max` (spike 04).
+- The client is generated in every build (`prisma generate` works offline) and is git-ignored; `prisma.config.ts`
+  reads `DATABASE_URL` without Prisma's `env()`, which fails when it's unset.
+- The first migration was produced offline (`prisma migrate diff --from-empty`) plus hand-written `CHECK`
+  constraints for the value ranges.
+- **One vocabulary:** statuses, risk levels and the legality table live in `packages/contracts`;
+  `enum-parity.ts` fails the typecheck if a database enum and the shared list differ.
+- Tests resolve workspace packages to their source (`vitest.config.ts` alias), never to a stale `dist/`.
+- `api` and `worker` declare `@novee/db` and `@novee/contracts`, so their images install the Prisma CLI that
+  the db build needs.
 
 ## 3. Activities (`apps/worker`)
 
@@ -437,7 +456,8 @@ deleted worker pod is replaced.
 1. Activities and options per §3; HTTP classification with its test.
 2. Workflow per §4. Port the spikes' proven shapes: spike 01 (window), spike 03 (cancel cleanup).
 3. Workflow tests per §9; record one real history for the replay test.
-4. Settle the claims still marked "per the docs": D1 (the sandbox blocks non-deterministic calls), D7 (heartbeat details survive a retry), D12 ("use existing" conflict policy).
+4. `setWindow` signal: accept it in `STARTING` too (the legality table allows it; §4's handler says only `RUNNING`).
+5. Settle the claims still marked "per the docs": D1 (the sandbox blocks non-deterministic calls), D7 (heartbeat details survive a retry), D12 ("use existing" conflict policy).
 
 **Done when:** tests pass in `task check`; a run in the cluster shows `maxConcurrent` exactly at the window.
 

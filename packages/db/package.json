@@ -11,9 +11,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit -p .",
     "migrate:deploy": "prisma migrate deploy",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "generate": "prisma generate"
   },
   "dependencies": {
+    "@novee/contracts": "*",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "prisma": "7.10.1"

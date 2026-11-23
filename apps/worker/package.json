@@ -8,6 +8,8 @@
     "build": "tsc -p tsconfig.build.json && node dist/scripts/bundle-workflows.js"
   },
   "dependencies": {
+    "@novee/contracts": "*",
+    "@novee/db": "*",
     "@temporalio/worker": "1.26.0",
     "@temporalio/workflow": "1.26.0",
     "zod": "4.6.7"

@@ -36,9 +36,15 @@ marked unverified until a spike confirms it. A spike that contradicts what the a
 At the end of every milestone, say explicitly whether it produced new AI-log entries, changes to
 `decisions.md`, or anything worth noting for `NOTES.md`.
 
+Before reporting a milestone done, and before every commit: `task check` passes (generate, typecheck,
+lint + formatting, unit tests), plus `task test:db` when the data layer changed. Say so in the report.
+
 Rules:
 - Thin beats thorough. These feed `NOTES.md`, which is written last from them.
 - AI log entries are honest and specific: "it fanned out all six; caught because `maxConcurrent` came back 6".
   Log every catch, including ones caught in review before running.
 - Wording: describe new parts of the stack by how they connect to my experience. Don't frame it
   as things I lack or need to learn.
+
+Package-specific rules live in nested `CLAUDE.md` files (`packages/db`, `packages/contracts`). Add one only
+for a practice that must be repeated and can't be read from the code itself.

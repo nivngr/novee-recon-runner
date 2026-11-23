@@ -8,6 +8,8 @@
     "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
+    "@novee/contracts": "*",
+    "@novee/db": "*",
     "fastify": "5.12.8",
     "zod": "4.6.7"
   }
