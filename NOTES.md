@@ -18,9 +18,10 @@ The working record behind these notes: [`APPROACH.md`](APPROACH.md) (how I worke
 images accordingly: `k3d image import` for k3d, nothing for OrbStack / Rancher Desktop (they share Docker's
 images), `docker save | sudo k3s ctr images import -` for plain k3s.
 
-**Needs on the machine:** Docker, `kubectl` pointed at the empty cluster, [Task](https://taskfile.dev) 3.x, Node
-22.12+ (the deploy gate typechecks and tests the code before building), internet access (npm packages, base
-images, and Temporal's test server, downloaded by the first test run). The proofs also use `curl` and `jq`.
+**Needs on the machine:** Docker, `kubectl` pointed at the empty cluster, [Task](https://taskfile.dev) 3.x, and
+internet access (npm packages, base images, and Temporal's test server for the tests). No Node: the deploy gate
+runs in a container. The proofs also use `curl` and `jq`; developing (`task check`, `task test:db`) needs Node
+22.12+.
 
 ```bash
 # 0. Unpack the repo and go to its root; Docker running; kubectl's current context on the empty k3s cluster.
@@ -28,7 +29,7 @@ cd novee
 
 # 1. Everything, in one command:
 task up
-#    = install deps → typecheck, lint, test (refuses to deploy on any failure) → build all images from this
+#    = typecheck, lint, test in a container (refuses to deploy on any failure) → build all images from this
 #      commit → load them into the cluster → namespace, Postgres, Temporal, agent-service → migrate Job → api,
 #      worker ×2, web → wait for every rollout. ~3–4 min on a warm machine (218s on a freshly created k3d cluster).
 
@@ -39,7 +40,7 @@ task open
 **The same, one step at a time** (exactly what `task up` runs, in order; each is a task you can run on its own):
 
 ```bash
-task check     # npm ci, Prisma client, typecheck, lint, unit + workflow tests (the deploy gate)
+task gate      # the deploy gate, in Docker: Prisma client, typecheck, lint, unit + workflow tests
 task build     # docker build: api, worker, web, migrate, and the given agent-service, tagged with the commit
 task load      # the image-load step: into the cluster, by flavour (k3d image import / nothing / k3s ctr import)
 task infra     # namespace, Postgres, Temporal, agent-service (the starter's manifests, unchanged); waits for them
@@ -70,7 +71,13 @@ the short version in the [tech design](docs/design/tech-design.md), the picture 
 | **worker** (×2, no Service) | Runs the `recon` workflow (the decisions) and its activities (agent-service and Postgres calls). |
 | **packages/contracts** | zod schemas and the shared vocabulary (statuses, legality table): one definition for api, worker and web. |
 | **packages/db** | Prisma schema, migrations, and the only code that writes Postgres. |
-| Temporal, Postgres, agent-service | As given. |
+| Temporal, Postgres, agent-service | As given: the starter's manifests, unchanged. Temporal's `securityContext` needed no change on k3d. |
+
+**The tables:** Prisma migrations (run once by the migrate Job) create them; the starter's `db/schema.sql` isn't
+applied. Same three table names and the same meaning, plus: a `staged_discoveries` table (raw agent output, before
+approval), unique keys that make every write repeatable (one row per agent index, each domain once per run),
+Postgres enums for every status, `CHECK`s on the value ranges the API also validates, and a `failure_code` on
+failed runs.
 
 **Why this split:** the workflow has to be crash-proof and replayable, so it lives in the worker and touches
 nothing directly; everything with side effects is an activity that's safe to repeat. The UI reads a **read model
@@ -139,8 +146,8 @@ with agent-service's default timings.
 | | Requirement | Status | How I checked |
 |---|---|---|---|
 | R1 | Window holds, and resizes mid-run | ✅ | 6 agents, window 2: `maxConcurrent` 2, each refill ≤ 1s after a finish. Raised to 4 mid-run → 4; lowered to 1 → nothing stopped, all 6 completed. |
-| R2 | Survives a worker crash | ✅ | Deleted every worker pod mid-run: replacements ready 2s later and finished it. `totalStarted` 6 for 6 agents; stored = the distinct union of what they found (715). |
-| R3 | Recorded exactly once | ✅ | Every activity fails its first 2 attempts *after* its side effect, on top of agent-service's 503s: 4 started for 4, 4 agent rows, every domain stored once. Plus database tests: approve twice, complete twice → same rows. |
+| R2 | Survives a worker crash | ✅ | Deleted every worker pod mid-run: replacements ready 5s later and finished it. `totalStarted` 6 for 6 agents; stored = the distinct union of what they found (707), and = agent-service's own count from its completed scans (the starter's check). |
+| R3 | Recorded exactly once | ✅ | Every activity fails its first 2 attempts *after* its side effect, on top of agent-service's 503s: 4 started for 4, 4 agent rows, every domain stored once (591, = agent-service's own count). Plus database tests: approve twice, complete twice → same rows. |
 | R4 | Bulk results stay out of the workflow | ✅ | Read the run's history from Temporal: every activity result 0–69 bytes, largest payload 182 bytes, no found subdomain in it; the 1,000 findings are only in Postgres. |
 | R5 | Failures classified, partial failure survived | ✅ | `.invalid` domain → `REJECTED_INPUT` in 3s, one start attempt, `totalStarted` 0. `failEveryN=3` → 2 FAILED, run completes with 4. `stallEveryN=3` → 2 LOST (no progress), stops confirmed. |
 | R6 | Human gate is real | ✅ | While waiting: findings readable, 0 rows stored, early approve refused (409). Approve → exactly the listed domains stored; reject → 0 stored, staged findings kept. |
@@ -153,6 +160,18 @@ flight, but only the code does that; no test checks it. The proofs used agent-se
 fault knobs, so your settings (other `failFirstN`, `failEveryN`, `stallEveryN`, durations) weren't each tried
 beyond what R3 and R5 cover.
 
+**What each activity puts in the history (R4):** only small values, never findings.
+
+| Activity | Returns |
+|---|---|
+| `startAgent` | the scan id |
+| `waitAgent` | the outcome, plus a count when it completed |
+| `aggregate` | the run's summary: a count per risk level |
+| `setRunStatus` | whether the status moved (a boolean) |
+| `persist`, `stopAgent`, `markStartFailed`, `markStopUnconfirmed` | nothing |
+
+The largest payload anywhere in a run's history, inputs included, was 182 bytes.
+
 **My retry switch for R3:** `settings.failFirstAttempts` (0–5) on the submit request, or *Advanced → Fail first
 attempts* in the form. Per run, so no redeploy: every activity of that run throws a retryable failure on its first
 N attempts, right after doing its work, as if the worker died before reporting success.
@@ -160,7 +179,7 @@ N attempts, right after doing its work, as if the worker died before reporting s
 **`maxConcurrent` / `totalStarted` from my best run:** `maxConcurrent` 2 at window 2, `totalStarted` 6 for 6 agents
 (R1); `totalStarted` 6 for 6 with every worker killed mid-run (R2).
 
-**Tests that would catch a real regression** (all in `task check`, which gates every deploy): the window (fails on
+**Tests that would catch a real regression** (all in `task check`, and in the same steps in `task gate`, which gates every deploy): the window (fails on
 fan-out or batching), resize, cancel and bad-domain workflow tests in Temporal's time-skipping server; a replay of a
 real recorded run (fails if a change would break runs in flight); approve / complete twice against a real Postgres
 (`task test:db`); a compile-time check that the database enums and the shared vocabulary match.

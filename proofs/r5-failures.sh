@@ -5,12 +5,14 @@ start_proof "R5 — failure classification"
 
 echo "-- an unsupported domain: refused once, never retried, the run says so"
 DOMAIN=nope.invalid
+LINES_BEFORE=$(start_lines $DOMAIN)
 T0=$SECONDS
 BAD=$(submit $DOMAIN 4 2)
 wait_for "$BAD" REJECTED_INPUT 60
 check_at_most "seconds from submit to REJECTED_INPUT" "$((SECONDS - T0))" 30
 check "agents agent-service started for it" "$(admin scans | jq ".startsByDomain[\"$DOMAIN\"] // 0")" 0
 HISTORY=$(kubectl -n "$NS" exec temporal-0 -- temporal workflow show -w "assessment-$BAD" --address temporal:7233 --output json)
+check "start requests in agent-service's log" "$(( $(start_lines $DOMAIN) - LINES_BEFORE ))" 1
 check "startAgent attempts in the history" "$(jq '[.events[] | select(.eventType == "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED" and .activityTaskScheduledEventAttributes.activityType.name == "startAgent")] | length' <<< "$HISTORY")" 1
 check "agents never started (still QUEUED)" "$(get "/assessments/$BAD" | jq .counts.queued)" 3
 

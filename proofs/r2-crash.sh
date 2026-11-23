@@ -24,4 +24,5 @@ check "agents started for 6 requested (agent-service totalStarted)" "$(admin sca
 check "agents completed" "$(get "/assessments/$ID" | jq .counts.completed)" 6
 STAGED=$(sql "select count(distinct domain) from staged_discoveries where assessment_id = '$ID'")
 check "stored domains = distinct union of what the agents found" "$(sql "select count(*) from discovered_domains where assessment_id = '$ID'")" "$STAGED"
+check "stored domains = agent-service's own count (unique domains of its COMPLETED scans)" "$(sql "select count(*) from discovered_domains where assessment_id = '$ID'")" "$(ground_truth $DOMAIN)"
 finish

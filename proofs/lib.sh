@@ -53,6 +53,16 @@ submit() {
   echo "$id"
 }
 
+# ground_truth <domain> → unique domains found by agent-service's COMPLETED scans for <domain>, read from
+# agent-service itself (the starter README's check; needs a reset before the run so only its scans count)
+ground_truth() {
+  admin scans | jq -r --arg d "$1" '.scans[] | select(.domain == $d and .status == "COMPLETED") | .scanId' \
+    | while read -r id; do curl -s "$AGENTS/scans/$id" | jq -r '.discovered[].domain'; done | sort -u | wc -l | tr -d ' '
+}
+
+# start_lines <domain> → how many start requests for <domain> agent-service has logged (log lines survive resets)
+start_lines() { kubectl -n "$NS" logs deploy/agent-service | grep -cF "start domain=\"$1\"" || true; }
+
 status_of() { get "/assessments/$1" | jq -r .status; }
 
 # wait_until <id> <jq condition on the run view> [timeout s] — polls every 2s, printing each change

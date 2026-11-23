@@ -1,28 +1,28 @@
 == R3 — exactly-once effects under retried activities
-   2026-11-23T12:14:05Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   2026-11-23T20:54:09Z on k3d-novee-task, images novee-task/api:9bac8ae-dirty-16e57772
    agent-service reset (default config, counters zeroed)
    failFirstAttempts=2: every activity's first 2 attempts fail after doing their work
    (agent-service also refuses each domain's first 2 starts with 503)
-   14:14:06 STARTING completed=0 running=0 queued=4 failed=0 lost=0 stopped=0 window=2
-   14:14:08 RUNNING completed=0 running=0 queued=4 failed=0 lost=0 stopped=0 window=2
-   14:14:10 RUNNING completed=0 running=1 queued=3 failed=0 lost=0 stopped=0 window=2
-   14:14:14 RUNNING completed=0 running=2 queued=2 failed=0 lost=0 stopped=0 window=2
-   14:14:59 RUNNING completed=1 running=1 queued=2 failed=0 lost=0 stopped=0 window=2
-   14:15:03 RUNNING completed=1 running=2 queued=1 failed=0 lost=0 stopped=0 window=2
-   14:15:20 RUNNING completed=2 running=1 queued=1 failed=0 lost=0 stopped=0 window=2
-   14:15:24 RUNNING completed=2 running=2 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:16:00 RUNNING completed=3 running=1 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:17:01 RUNNING completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:17:03 AGGREGATING completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:17:09 AWAITING_APPROVAL completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:17:10 AWAITING_APPROVAL (approving) completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:17:14 PERSISTING completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:17:16 COMPLETED completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:54:11 STARTING completed=0 running=0 queued=4 failed=0 lost=0 stopped=0 window=2
+   22:54:14 RUNNING completed=0 running=0 queued=4 failed=0 lost=0 stopped=0 window=2
+   22:54:18 RUNNING completed=0 running=1 queued=3 failed=0 lost=0 stopped=0 window=2
+   22:54:20 RUNNING completed=0 running=2 queued=2 failed=0 lost=0 stopped=0 window=2
+   22:55:12 RUNNING completed=1 running=1 queued=2 failed=0 lost=0 stopped=0 window=2
+   22:55:19 RUNNING completed=1 running=2 queued=1 failed=0 lost=0 stopped=0 window=2
+   22:56:17 RUNNING completed=2 running=2 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:56:23 RUNNING completed=3 running=1 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:57:28 RUNNING completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:57:30 AGGREGATING completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:57:37 AWAITING_APPROVAL completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:57:37 AWAITING_APPROVAL (approving) completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:57:41 PERSISTING completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:57:45 COMPLETED completed=4 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
    PASS  agents started for 4 requested (agent-service): 4
    PASS  agent rows: 4
    PASS  staged rows with a duplicate (agent, domain): 0
    PASS  stored domains appearing more than once: 0
-   PASS  stored domains = distinct staged domains: 592
+   PASS  stored domains = distinct staged domains: 591
+   PASS  stored domains = agent-service's own count (unique domains of its COMPLETED scans): 591
    activity attempts in the workflow's history (attempt > 1 = retried):
      attempt 3: 14 tasks
 == PASS

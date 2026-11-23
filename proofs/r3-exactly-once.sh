@@ -18,6 +18,7 @@ check "staged rows with a duplicate (agent, domain)" "$(sql "select count(*) - c
 check "stored domains appearing more than once" "$(sql "select count(*) from (select domain from discovered_domains where assessment_id = '$ID' group by domain having count(*) > 1) d")" 0
 STAGED=$(sql "select count(distinct domain) from staged_discoveries where assessment_id = '$ID'")
 check "stored domains = distinct staged domains" "$(sql "select count(*) from discovered_domains where assessment_id = '$ID'")" "$STAGED"
+check "stored domains = agent-service's own count (unique domains of its COMPLETED scans)" "$(sql "select count(*) from discovered_domains where assessment_id = '$ID'")" "$(ground_truth $DOMAIN)"
 echo "   activity attempts in the workflow's history (attempt > 1 = retried):"
 kubectl -n "$NS" exec temporal-0 -- temporal workflow show -w "assessment-$ID" --address temporal:7233 --output json \
   | jq -r '[.events[] | select(.eventType == "EVENT_TYPE_ACTIVITY_TASK_STARTED") | .activityTaskStartedEventAttributes.attempt] | group_by(.) | map("     attempt \(.[0]): \(length) tasks") | .[]'

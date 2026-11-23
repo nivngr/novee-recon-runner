@@ -1,32 +1,34 @@
 == R2 — surviving the death of every worker
-   2026-11-23T12:31:23Z on k3d-novee-task, images novee-task/api:7175fc6-dirty-27b97d53
+   2026-11-23T20:50:29Z on k3d-novee-task, images novee-task/api:9bac8ae-dirty-16e57772
    agent-service reset (default config, counters zeroed)
-   14:31:24 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=2
-   14:31:26 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=2
-   14:31:28 RUNNING completed=0 running=2 queued=4 failed=0 lost=0 stopped=0 window=2
-   14:33:03 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=2
-   workers before: worker-b95d55f65-9ssm6 worker-b95d55f65-hrmnc
-   pod "worker-b95d55f65-9ssm6" deleted
-   pod "worker-b95d55f65-hrmnc" deleted
-   14:33:04 every worker pod deleted mid-run
-   14:33:06 workers after: worker-b95d55f65-blxb4 worker-b95d55f65-k9sxd
-   14:33:06 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=2
-   14:33:27 RUNNING completed=2 running=2 queued=2 failed=0 lost=0 stopped=0 window=2
-   14:34:09 RUNNING completed=3 running=2 queued=1 failed=0 lost=0 stopped=0 window=2
-   14:34:41 RUNNING completed=4 running=2 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:35:26 RUNNING completed=5 running=1 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:36:32 AGGREGATING completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:36:34 AWAITING_APPROVAL completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:36:34 AWAITING_APPROVAL (approving) completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
-   14:36:36 COMPLETED completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:50:30 STARTING completed=0 running=0 queued=6 failed=0 lost=0 stopped=0 window=2
+   22:50:33 RUNNING completed=0 running=1 queued=5 failed=0 lost=0 stopped=0 window=2
+   22:50:35 RUNNING completed=0 running=2 queued=4 failed=0 lost=0 stopped=0 window=2
+   22:51:40 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=2
+   workers before: worker-fd86496f8-m7fqr worker-fd86496f8-ncvmj
+   pod "worker-fd86496f8-m7fqr" deleted
+   pod "worker-fd86496f8-ncvmj" deleted
+   22:51:40 every worker pod deleted mid-run
+   22:51:45 workers after: worker-fd86496f8-2z5v7 worker-fd86496f8-ltvdx
+   22:51:45 RUNNING completed=1 running=2 queued=3 failed=0 lost=0 stopped=0 window=2
+   22:51:58 RUNNING completed=2 running=1 queued=3 failed=0 lost=0 stopped=0 window=2
+   22:52:00 RUNNING completed=2 running=2 queued=2 failed=0 lost=0 stopped=0 window=2
+   22:52:14 RUNNING completed=3 running=1 queued=2 failed=0 lost=0 stopped=0 window=2
+   22:52:17 RUNNING completed=3 running=2 queued=1 failed=0 lost=0 stopped=0 window=2
+   22:52:31 RUNNING completed=4 running=2 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:53:19 RUNNING completed=5 running=1 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:54:04 AWAITING_APPROVAL completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:54:04 AWAITING_APPROVAL (approving) completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
+   22:54:06 COMPLETED completed=6 running=0 queued=0 failed=0 lost=0 stopped=0 window=2
    which worker last handled each agent:
-     0|COMPLETED|worker-b95d55f65-hrmnc
-     1|COMPLETED|worker-b95d55f65-blxb4
-     2|COMPLETED|worker-b95d55f65-blxb4
-     3|COMPLETED|worker-b95d55f65-blxb4
-     4|COMPLETED|worker-b95d55f65-k9sxd
-     5|COMPLETED|worker-b95d55f65-k9sxd
+     0|COMPLETED|worker-fd86496f8-2z5v7
+     1|COMPLETED|worker-fd86496f8-ncvmj
+     2|COMPLETED|worker-fd86496f8-ltvdx
+     3|COMPLETED|worker-fd86496f8-2z5v7
+     4|COMPLETED|worker-fd86496f8-ltvdx
+     5|COMPLETED|worker-fd86496f8-2z5v7
    PASS  agents started for 6 requested (agent-service totalStarted): 6
    PASS  agents completed: 6
-   PASS  stored domains = distinct union of what the agents found: 715
+   PASS  stored domains = distinct union of what the agents found: 707
+   PASS  stored domains = agent-service's own count (unique domains of its COMPLETED scans): 707
 == PASS

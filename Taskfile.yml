@@ -44,6 +44,18 @@ tasks:
       - npm run lint
       - npm run test
 
+  gate:
+    desc: The deploy gate in Docker (no Node needed on the host) — the same steps as `task check`
+    cmds:
+      # Quiet on success; on a failure, the end of the build log (the failing step's output). One fixed tag.
+      - |
+        log=$(mktemp)
+        if docker build --progress=plain -f check.Dockerfile -t novee-task/gate . > "$log" 2>&1; then
+          rm -f "$log"; echo "Deploy gate passed (typecheck, lint, tests)"
+        else
+          tail -n 60 "$log"; rm -f "$log"; echo "Deploy gate FAILED: nothing was deployed"; exit 1
+        fi
+
   test:db:
     desc: Database tests against a throwaway Postgres container, with the migrations applied
     deps: [install]
@@ -166,7 +178,7 @@ tasks:
   up:
     desc: From an empty k3s cluster to the running stack
     cmds:
-      - task: check
+      - task: gate
       - task: build
       - task: load
       - task: infra
