@@ -2,9 +2,9 @@
   "events": [
     {
       "eventId": "1",
-      "eventTime": "2026-11-23T06:50:15.293050887Z",
+      "eventTime": "2026-11-23T09:59:21.530785762Z",
       "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_STARTED",
-      "taskId": "1051024",
+      "taskId": "1051354",
       "workflowExecutionStartedEventAttributes": {
         "workflowType": {
           "name": "recon"
@@ -19,25 +19,25 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImRvbWFpbiI6ImV4YW1wbGUuY29tIiwiYWdlbnRDb3VudCI6NCwid2luZG93U2l6ZSI6Miwic3RhbGxUaW1lb3V0UyI6NjAsIm1heEFnZW50RHVyYXRpb25TIjozMDAsImZhaWxGaXJzdEF0dGVtcHRzIjoxfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImRvbWFpbiI6ImV4YW1wbGUuY29tIiwiYWdlbnRDb3VudCI6NCwid2luZG93U2l6ZSI6Miwic2V0dGluZ3MiOnsic3RhbGxUaW1lb3V0UyI6NjAsIm1heEFnZW50RHVyYXRpb25TIjozMDAsImZhaWxGaXJzdEF0dGVtcHRzIjoxfX0="
             }
           ]
         },
         "workflowTaskTimeout": "10s",
-        "originalExecutionRunId": "01a2072b-697d-7048-8f64-04b0597b1c0e",
-        "identity": "49009@dev-host",
-        "firstExecutionRunId": "01a2072b-697d-7048-8f64-04b0597b1c0e",
+        "originalExecutionRunId": "01a207d8-8aba-7576-8642-c9530ce7d534",
+        "identity": "76897@dev-host",
+        "firstExecutionRunId": "01a207d8-8aba-7576-8642-c9530ce7d534",
         "attempt": 1,
         "firstWorkflowTaskBackoff": "0s",
         "header": {},
-        "workflowId": "assessment-220aa2b7-4d8d-4276-8e26-cf5467c9a10b"
+        "workflowId": "assessment-8812f1c3-2efd-456e-b527-8dc97cbba74d"
       }
     },
     {
       "eventId": "2",
-      "eventTime": "2026-11-23T06:50:15.294665220Z",
+      "eventTime": "2026-11-23T09:59:21.537553721Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051025",
+      "taskId": "1051355",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
           "name": "recon",
@@ -49,36 +49,36 @@
     },
     {
       "eventId": "3",
-      "eventTime": "2026-11-23T06:50:15.300382387Z",
+      "eventTime": "2026-11-23T09:59:21.573055012Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051030",
+      "taskId": "1051360",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "2",
-        "identity": "48966@dev-host",
-        "requestId": "8211474b-3975-412d-8d2c-36a3290e7127",
-        "historySizeBytes": "448",
+        "identity": "76883@dev-host",
+        "requestId": "2c68c793-0632-4c92-9529-20f4f9ec736c",
+        "historySizeBytes": "461",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "4",
-      "eventTime": "2026-11-23T06:50:15.361283970Z",
+      "eventTime": "2026-11-23T09:59:21.703016554Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051034",
+      "taskId": "1051364",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "2",
         "startedEventId": "3",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {
           "coreUsedFlags": [
+            4,
             1,
             2,
-            4,
             3
           ],
           "sdkName": "temporal-typescript",
@@ -89,9 +89,9 @@
     },
     {
       "eventId": "5",
-      "eventTime": "2026-11-23T06:50:15.361911845Z",
+      "eventTime": "2026-11-23T09:59:21.703474637Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051035",
+      "taskId": "1051365",
       "activityTaskScheduledEventAttributes": {
         "activityId": "1",
         "activityType": {
@@ -108,7 +108,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIlNUQVJUSU5HIl0sInRvIjoiUlVOTklORyJ9"
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIlNUQVJUSU5HIl0sInRvIjoiUlVOTklORyJ9"
             }
           ]
         },
@@ -127,13 +127,13 @@
     },
     {
       "eventId": "6",
-      "eventTime": "2026-11-23T06:50:16.472516137Z",
+      "eventTime": "2026-11-23T09:59:22.836896888Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051044",
+      "taskId": "1051374",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "5",
-        "identity": "48966@dev-host",
-        "requestId": "c64eddd9-a131-48e4-9af3-6210736c177c",
+        "identity": "76883@dev-host",
+        "requestId": "2ed7571a-4564-402f-ab28-db04504a28ac",
         "attempt": 2,
         "lastFailure": {
           "message": "setRunStatus: injected failure on attempt 1 of 1",
@@ -144,15 +144,15 @@
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "7",
-      "eventTime": "2026-11-23T06:50:16.494163054Z",
+      "eventTime": "2026-11-23T09:59:22.877298680Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051045",
+      "taskId": "1051375",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -166,17 +166,17 @@
         },
         "scheduledEventId": "5",
         "startedEventId": "6",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "8",
-      "eventTime": "2026-11-23T06:50:16.494258095Z",
+      "eventTime": "2026-11-23T09:59:22.877339680Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051046",
+      "taskId": "1051376",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -186,30 +186,30 @@
     },
     {
       "eventId": "9",
-      "eventTime": "2026-11-23T06:50:16.497860845Z",
+      "eventTime": "2026-11-23T09:59:22.910283805Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051050",
+      "taskId": "1051380",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "8",
-        "identity": "48966@dev-host",
-        "requestId": "9a767f2a-6380-4de1-9ea1-c0d852dc83a0",
-        "historySizeBytes": "2540",
+        "identity": "76883@dev-host",
+        "requestId": "078bfe20-4a8b-4cbb-aba7-cd727fec9267",
+        "historySizeBytes": "2553",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "10",
-      "eventTime": "2026-11-23T06:50:16.524733721Z",
+      "eventTime": "2026-11-23T09:59:22.945515138Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051054",
+      "taskId": "1051384",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "8",
         "startedEventId": "9",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -217,9 +217,9 @@
     },
     {
       "eventId": "11",
-      "eventTime": "2026-11-23T06:50:16.524821471Z",
+      "eventTime": "2026-11-23T09:59:22.946860721Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051055",
+      "taskId": "1051385",
       "activityTaskScheduledEventAttributes": {
         "activityId": "2",
         "activityType": {
@@ -236,7 +236,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MCwiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJkbnMtYnJ1dGUifQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MCwiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJkbnMtYnJ1dGUifQ=="
             }
           ]
         },
@@ -259,32 +259,32 @@
     },
     {
       "eventId": "12",
-      "eventTime": "2026-11-23T06:50:17.606699763Z",
+      "eventTime": "2026-11-23T09:59:24.107131472Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051065",
+      "taskId": "1051395",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "11",
-        "identity": "48966@dev-host",
-        "requestId": "fd8b32f8-f156-480a-b4bf-e0f4b7737b02",
+        "identity": "76883@dev-host",
+        "requestId": "48b04aa6-7a16-45a9-96db-aa0045ad85d1",
         "attempt": 2,
         "lastFailure": {
           "message": "startAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:28:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:33:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "13",
-      "eventTime": "2026-11-23T06:50:17.625924846Z",
+      "eventTime": "2026-11-23T09:59:24.166031305Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051066",
+      "taskId": "1051396",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -292,23 +292,23 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "InMtZTcxNDA4NDci"
+              "data": "InMtZjQ3MThmY2Ui"
             }
           ]
         },
         "scheduledEventId": "11",
         "startedEventId": "12",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "14",
-      "eventTime": "2026-11-23T06:50:17.625938054Z",
+      "eventTime": "2026-11-23T09:59:24.167226264Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051067",
+      "taskId": "1051397",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -318,30 +318,30 @@
     },
     {
       "eventId": "15",
-      "eventTime": "2026-11-23T06:50:17.627452138Z",
+      "eventTime": "2026-11-23T09:59:24.173381055Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051071",
+      "taskId": "1051401",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "14",
-        "identity": "48966@dev-host",
-        "requestId": "55b3f73b-b3a1-46ec-ac87-c1e7cf06d677",
-        "historySizeBytes": "4655",
+        "identity": "76883@dev-host",
+        "requestId": "7536504d-051f-4167-803c-dd6d75ac055d",
+        "historySizeBytes": "4665",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "16",
-      "eventTime": "2026-11-23T06:50:17.638696388Z",
+      "eventTime": "2026-11-23T09:59:24.207463055Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051075",
+      "taskId": "1051405",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "14",
         "startedEventId": "15",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -349,9 +349,9 @@
     },
     {
       "eventId": "17",
-      "eventTime": "2026-11-23T06:50:17.638762013Z",
+      "eventTime": "2026-11-23T09:59:24.209938055Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051076",
+      "taskId": "1051406",
       "activityTaskScheduledEventAttributes": {
         "activityId": "3",
         "activityType": {
@@ -368,7 +368,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MCwic2NhbklkIjoicy1lNzE0MDg0NyIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MCwic2NhbklkIjoicy1mNDcxOGZjZSIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
             }
           ]
         },
@@ -387,9 +387,9 @@
     },
     {
       "eventId": "18",
-      "eventTime": "2026-11-23T06:50:17.638805471Z",
+      "eventTime": "2026-11-23T09:59:24.212520930Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051077",
+      "taskId": "1051407",
       "activityTaskScheduledEventAttributes": {
         "activityId": "4",
         "activityType": {
@@ -406,7 +406,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MSwiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJjZXJ0LXRyYW5zcGFyZW5jeSJ9"
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MSwiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJjZXJ0LXRyYW5zcGFyZW5jeSJ9"
             }
           ]
         },
@@ -429,32 +429,32 @@
     },
     {
       "eventId": "19",
-      "eventTime": "2026-11-23T06:50:18.672696055Z",
+      "eventTime": "2026-11-23T09:59:25.286106958Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051087",
+      "taskId": "1051418",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "18",
-        "identity": "48966@dev-host",
-        "requestId": "842fa4ee-d3d6-4d57-b3c7-1f3e05e28b3e",
+        "identity": "76883@dev-host",
+        "requestId": "5b24cc4c-0ead-4c5a-9fe2-f5eb61e7b0dc",
         "attempt": 2,
         "lastFailure": {
           "message": "startAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:28:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:33:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "20",
-      "eventTime": "2026-11-23T06:50:18.702104347Z",
+      "eventTime": "2026-11-23T09:59:25.308917041Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051088",
+      "taskId": "1051419",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -462,23 +462,23 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "InMtMGZmZWY1NTci"
+              "data": "InMtMmQyNjRjZGEi"
             }
           ]
         },
         "scheduledEventId": "18",
         "startedEventId": "19",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "21",
-      "eventTime": "2026-11-23T06:50:18.702125513Z",
+      "eventTime": "2026-11-23T09:59:25.308957583Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051089",
+      "taskId": "1051420",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -488,30 +488,30 @@
     },
     {
       "eventId": "22",
-      "eventTime": "2026-11-23T06:50:18.706248555Z",
+      "eventTime": "2026-11-23T09:59:25.313261958Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051093",
+      "taskId": "1051424",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "21",
-        "identity": "48966@dev-host",
-        "requestId": "11a1885c-84bd-4475-8080-4f36878dbff2",
-        "historySizeBytes": "7050",
+        "identity": "76883@dev-host",
+        "requestId": "5719c91f-7265-4cb1-997e-7254490574ef",
+        "historySizeBytes": "7056",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "23",
-      "eventTime": "2026-11-23T06:50:18.718306472Z",
+      "eventTime": "2026-11-23T09:59:25.327069250Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051097",
+      "taskId": "1051428",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "21",
         "startedEventId": "22",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -519,9 +519,9 @@
     },
     {
       "eventId": "24",
-      "eventTime": "2026-11-23T06:50:18.718457847Z",
+      "eventTime": "2026-11-23T09:59:25.327279041Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051098",
+      "taskId": "1051429",
       "activityTaskScheduledEventAttributes": {
         "activityId": "5",
         "activityType": {
@@ -538,7 +538,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MSwic2NhbklkIjoicy0wZmZlZjU1NyIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MSwic2NhbklkIjoicy0yZDI2NGNkYSIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
             }
           ]
         },
@@ -557,32 +557,32 @@
     },
     {
       "eventId": "25",
-      "eventTime": "2026-11-23T06:51:21.608160167Z",
+      "eventTime": "2026-11-23T10:00:31.476257794Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051118",
+      "taskId": "1051451",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "24",
-        "identity": "48966@dev-host",
-        "requestId": "e8188504-fd21-4498-b49f-f63395c98e1b",
+        "identity": "76883@dev-host",
+        "requestId": "c8c7da0e-592d-41c6-808d-9859faa17acf",
         "attempt": 2,
         "lastFailure": {
           "message": "waitAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:41:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:46:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "26",
-      "eventTime": "2026-11-23T06:51:21.636263Z",
+      "eventTime": "2026-11-23T10:00:31.511307503Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051119",
+      "taskId": "1051452",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -596,17 +596,17 @@
         },
         "scheduledEventId": "24",
         "startedEventId": "25",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "27",
-      "eventTime": "2026-11-23T06:51:21.636364250Z",
+      "eventTime": "2026-11-23T10:00:31.511399461Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051120",
+      "taskId": "1051453",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -616,30 +616,30 @@
     },
     {
       "eventId": "28",
-      "eventTime": "2026-11-23T06:51:21.641346709Z",
+      "eventTime": "2026-11-23T10:00:31.519221753Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051124",
+      "taskId": "1051457",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "27",
-        "identity": "48966@dev-host",
-        "requestId": "2f1cec3d-97c7-44c9-b8f8-fe0b09aaedd1",
-        "historySizeBytes": "9179",
+        "identity": "76883@dev-host",
+        "requestId": "d457ba9d-5067-4c01-aa90-630fdf7e3f3d",
+        "historySizeBytes": "9185",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "29",
-      "eventTime": "2026-11-23T06:51:21.662088959Z",
+      "eventTime": "2026-11-23T10:00:31.540845336Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051128",
+      "taskId": "1051461",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "27",
         "startedEventId": "28",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -647,9 +647,9 @@
     },
     {
       "eventId": "30",
-      "eventTime": "2026-11-23T06:51:21.662253542Z",
+      "eventTime": "2026-11-23T10:00:31.541016086Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051129",
+      "taskId": "1051462",
       "activityTaskScheduledEventAttributes": {
         "activityId": "6",
         "activityType": {
@@ -666,7 +666,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MiwiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJwYXNzaXZlLWRucyJ9"
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MiwiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJwYXNzaXZlLWRucyJ9"
             }
           ]
         },
@@ -689,32 +689,32 @@
     },
     {
       "eventId": "31",
-      "eventTime": "2026-11-23T06:51:22.686631917Z",
+      "eventTime": "2026-11-23T10:00:32.575423795Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051135",
+      "taskId": "1051468",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "30",
-        "identity": "48966@dev-host",
-        "requestId": "fb21ff49-a91e-4abd-ab8d-96539120aca7",
+        "identity": "76883@dev-host",
+        "requestId": "8bcb5ffd-fbbe-475f-b7e3-b59aa5986192",
         "attempt": 2,
         "lastFailure": {
           "message": "startAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:28:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:33:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "32",
-      "eventTime": "2026-11-23T06:51:22.709000667Z",
+      "eventTime": "2026-11-23T10:00:32.612179712Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051136",
+      "taskId": "1051469",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -722,23 +722,23 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "InMtZjRkNGE1OTYi"
+              "data": "InMtNWE1NDc0NWIi"
             }
           ]
         },
         "scheduledEventId": "30",
         "startedEventId": "31",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "33",
-      "eventTime": "2026-11-23T06:51:22.709024292Z",
+      "eventTime": "2026-11-23T10:00:32.612215420Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051137",
+      "taskId": "1051470",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -748,30 +748,30 @@
     },
     {
       "eventId": "34",
-      "eventTime": "2026-11-23T06:51:22.712993376Z",
+      "eventTime": "2026-11-23T10:00:32.618209753Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051141",
+      "taskId": "1051474",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "33",
-        "identity": "48966@dev-host",
-        "requestId": "f58ebdd9-6f3d-4712-a66a-0dd96591631b",
-        "historySizeBytes": "11297",
+        "identity": "76883@dev-host",
+        "requestId": "3b1fa91a-2d50-4f46-877d-8e64244f5155",
+        "historySizeBytes": "11303",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "35",
-      "eventTime": "2026-11-23T06:51:22.725921334Z",
+      "eventTime": "2026-11-23T10:00:32.630595837Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051145",
+      "taskId": "1051478",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "33",
         "startedEventId": "34",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -779,9 +779,9 @@
     },
     {
       "eventId": "36",
-      "eventTime": "2026-11-23T06:51:22.726013292Z",
+      "eventTime": "2026-11-23T10:00:32.630720128Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051146",
+      "taskId": "1051479",
       "activityTaskScheduledEventAttributes": {
         "activityId": "7",
         "activityType": {
@@ -798,7 +798,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6Miwic2NhbklkIjoicy1mNGQ0YTU5NiIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6Miwic2NhbklkIjoicy01YTU0NzQ1YiIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
             }
           ]
         },
@@ -817,32 +817,32 @@
     },
     {
       "eventId": "37",
-      "eventTime": "2026-11-23T06:51:36.752711216Z",
+      "eventTime": "2026-11-23T10:00:40.572436674Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051156",
+      "taskId": "1051486",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "17",
-        "identity": "48966@dev-host",
-        "requestId": "c4762b63-c016-4f92-8a7a-ca85dc0ee8df",
+        "identity": "76883@dev-host",
+        "requestId": "05e44647-c24c-4373-890b-d656794f9a59",
         "attempt": 2,
         "lastFailure": {
           "message": "waitAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:41:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:46:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "38",
-      "eventTime": "2026-11-23T06:51:36.774527216Z",
+      "eventTime": "2026-11-23T10:00:40.593957674Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051157",
+      "taskId": "1051487",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -856,17 +856,17 @@
         },
         "scheduledEventId": "17",
         "startedEventId": "37",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "39",
-      "eventTime": "2026-11-23T06:51:36.774625341Z",
+      "eventTime": "2026-11-23T10:00:40.594157257Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051158",
+      "taskId": "1051488",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -876,30 +876,30 @@
     },
     {
       "eventId": "40",
-      "eventTime": "2026-11-23T06:51:36.780367841Z",
+      "eventTime": "2026-11-23T10:00:40.600426465Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051162",
+      "taskId": "1051492",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "39",
-        "identity": "48966@dev-host",
-        "requestId": "95805872-c215-4069-b3f6-c45c99ad58ad",
-        "historySizeBytes": "13426",
+        "identity": "76883@dev-host",
+        "requestId": "6c479a60-dff1-4721-816f-ded94bcf52c1",
+        "historySizeBytes": "13432",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "41",
-      "eventTime": "2026-11-23T06:51:36.804119591Z",
+      "eventTime": "2026-11-23T10:00:40.622818924Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051166",
+      "taskId": "1051496",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "39",
         "startedEventId": "40",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -907,9 +907,9 @@
     },
     {
       "eventId": "42",
-      "eventTime": "2026-11-23T06:51:36.804418216Z",
+      "eventTime": "2026-11-23T10:00:40.622974382Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051167",
+      "taskId": "1051497",
       "activityTaskScheduledEventAttributes": {
         "activityId": "8",
         "activityType": {
@@ -926,7 +926,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MywiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJ3ZWItY3Jhd2wifQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6MywiZG9tYWluIjoiZXhhbXBsZS5jb20iLCJ0ZWNobmlxdWUiOiJ3ZWItY3Jhd2wifQ=="
             }
           ]
         },
@@ -949,32 +949,32 @@
     },
     {
       "eventId": "43",
-      "eventTime": "2026-11-23T06:51:37.834404425Z",
+      "eventTime": "2026-11-23T10:00:41.653875341Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051173",
+      "taskId": "1051503",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "42",
-        "identity": "48966@dev-host",
-        "requestId": "983605fb-156a-4712-a647-ab529a81a0e0",
+        "identity": "76883@dev-host",
+        "requestId": "bfafdc64-072d-4e02-9d40-f696aea2913d",
         "attempt": 2,
         "lastFailure": {
           "message": "startAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:28:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: startAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at startAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:33:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "44",
-      "eventTime": "2026-11-23T06:51:37.859824675Z",
+      "eventTime": "2026-11-23T10:00:41.684148091Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051174",
+      "taskId": "1051504",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -982,23 +982,23 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "InMtZTRmNjU1ZDgi"
+              "data": "InMtODQyNGZlZTEi"
             }
           ]
         },
         "scheduledEventId": "42",
         "startedEventId": "43",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "45",
-      "eventTime": "2026-11-23T06:51:37.859856216Z",
+      "eventTime": "2026-11-23T10:00:41.684201341Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051175",
+      "taskId": "1051505",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1008,30 +1008,30 @@
     },
     {
       "eventId": "46",
-      "eventTime": "2026-11-23T06:51:37.864517508Z",
+      "eventTime": "2026-11-23T10:00:41.690320091Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051179",
+      "taskId": "1051509",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "45",
-        "identity": "48966@dev-host",
-        "requestId": "41fb4b94-aac1-4750-bd10-526b8d3bab80",
-        "historySizeBytes": "15541",
+        "identity": "76883@dev-host",
+        "requestId": "6f682e25-30aa-461d-8b91-885755dfdfd1",
+        "historySizeBytes": "15547",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "47",
-      "eventTime": "2026-11-23T06:51:37.881940300Z",
+      "eventTime": "2026-11-23T10:00:41.708155549Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051183",
+      "taskId": "1051513",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "45",
         "startedEventId": "46",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1039,9 +1039,9 @@
     },
     {
       "eventId": "48",
-      "eventTime": "2026-11-23T06:51:37.882061008Z",
+      "eventTime": "2026-11-23T10:00:41.708253008Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051184",
+      "taskId": "1051514",
       "activityTaskScheduledEventAttributes": {
         "activityId": "9",
         "activityType": {
@@ -1058,7 +1058,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6Mywic2NhbklkIjoicy1lNGY2NTVkOCIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJpbmRleCI6Mywic2NhbklkIjoicy04NDI0ZmVlMSIsInN0YWxsVGltZW91dFMiOjYwLCJtYXhBZ2VudER1cmF0aW9uUyI6MzAwfQ=="
             }
           ]
         },
@@ -1077,32 +1077,32 @@
     },
     {
       "eventId": "49",
-      "eventTime": "2026-11-23T06:52:38.799236550Z",
+      "eventTime": "2026-11-23T10:01:49.959835303Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051205",
+      "taskId": "1051538",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "36",
-        "identity": "48966@dev-host",
-        "requestId": "49ed73b9-4adc-4c8d-8bc5-c62ade6bf925",
+        "identity": "76883@dev-host",
+        "requestId": "04b62c6a-e6af-4b55-9a82-c6f610eebb4a",
         "attempt": 2,
         "lastFailure": {
           "message": "waitAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:41:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:46:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "50",
-      "eventTime": "2026-11-23T06:52:38.824543800Z",
+      "eventTime": "2026-11-23T10:01:49.989550262Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051206",
+      "taskId": "1051539",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1116,17 +1116,17 @@
         },
         "scheduledEventId": "36",
         "startedEventId": "49",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "51",
-      "eventTime": "2026-11-23T06:52:38.824725967Z",
+      "eventTime": "2026-11-23T10:01:49.989940345Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051207",
+      "taskId": "1051540",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1136,30 +1136,30 @@
     },
     {
       "eventId": "52",
-      "eventTime": "2026-11-23T06:52:38.832581008Z",
+      "eventTime": "2026-11-23T10:01:49.997641887Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051211",
+      "taskId": "1051544",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "51",
-        "identity": "48966@dev-host",
-        "requestId": "3a6cf0ea-02a1-4f6d-a6e3-dcd085b583f2",
-        "historySizeBytes": "17670",
+        "identity": "76883@dev-host",
+        "requestId": "41a2113f-d52a-463a-b2d7-8a7ff592879f",
+        "historySizeBytes": "17676",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "53",
-      "eventTime": "2026-11-23T06:52:38.850482925Z",
+      "eventTime": "2026-11-23T10:01:50.026367387Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051215",
+      "taskId": "1051548",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "51",
         "startedEventId": "52",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1167,32 +1167,32 @@
     },
     {
       "eventId": "54",
-      "eventTime": "2026-11-23T06:52:49.922231264Z",
+      "eventTime": "2026-11-23T10:01:59.095698585Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051221",
+      "taskId": "1051554",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "48",
-        "identity": "48966@dev-host",
-        "requestId": "5c06520c-36e7-4136-a03e-16a8a4e4fd52",
+        "identity": "76883@dev-host",
+        "requestId": "3e725307-0ed4-4040-af6f-631ce408f132",
         "attempt": 2,
         "lastFailure": {
           "message": "waitAgent: injected failure on attempt 1 of 1",
           "source": "TypeScriptSDK",
-          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:41:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
+          "stackTrace": "ApplicationFailure: waitAgent: injected failure on attempt 1 of 1\n    at ApplicationFailure.retryable (~/Desktop/novee/node_modules/@temporalio/common/lib/failure.js:195:16)\n    at failIfInjected (file://~/Desktop/novee/apps/worker/dist/activities/failures.js:11:34)\n    at waitAgent (file://~/Desktop/novee/apps/worker/dist/activities/agent-activities.js:46:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Activity.execute (~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:108:20)\n    at async NativeConnection.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/worker/lib/connection.js:172:16)\n    at async Client.withAbortSignal (~/Desktop/novee/node_modules/@temporalio/client/lib/base-client.js:67:16)\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/activity.js:174:32\n    at async ~/Desktop/novee/node_modules/@temporalio/worker/lib/worker.js:858:30",
           "applicationFailureInfo": {
             "type": "InjectedFailure"
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "55",
-      "eventTime": "2026-11-23T06:52:49.952085805Z",
+      "eventTime": "2026-11-23T10:01:59.127729877Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051222",
+      "taskId": "1051555",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1206,17 +1206,17 @@
         },
         "scheduledEventId": "48",
         "startedEventId": "54",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "56",
-      "eventTime": "2026-11-23T06:52:49.952157222Z",
+      "eventTime": "2026-11-23T10:01:59.127822377Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051223",
+      "taskId": "1051556",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1226,30 +1226,30 @@
     },
     {
       "eventId": "57",
-      "eventTime": "2026-11-23T06:52:49.961918180Z",
+      "eventTime": "2026-11-23T10:01:59.134681418Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051227",
+      "taskId": "1051560",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "56",
-        "identity": "48966@dev-host",
-        "requestId": "56ebecf9-877b-4b0d-9e75-4aeb49857ace",
-        "historySizeBytes": "19529",
+        "identity": "76883@dev-host",
+        "requestId": "fa9742e0-5394-4f89-a411-94f7fcc700f0",
+        "historySizeBytes": "19531",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "58",
-      "eventTime": "2026-11-23T06:52:50.013368375Z",
+      "eventTime": "2026-11-23T10:01:59.186532085Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051231",
+      "taskId": "1051564",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "56",
         "startedEventId": "57",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1257,9 +1257,9 @@
     },
     {
       "eventId": "59",
-      "eventTime": "2026-11-23T06:52:50.013519625Z",
+      "eventTime": "2026-11-23T10:01:59.186964543Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051232",
+      "taskId": "1051565",
       "activityTaskScheduledEventAttributes": {
         "activityId": "10",
         "activityType": {
@@ -1276,7 +1276,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIlJVTk5JTkciXSwidG8iOiJBR0dSRUdBVElORyJ9"
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIlJVTk5JTkciXSwidG8iOiJBR0dSRUdBVElORyJ9"
             }
           ]
         },
@@ -1295,13 +1295,13 @@
     },
     {
       "eventId": "60",
-      "eventTime": "2026-11-23T06:52:51.039871125Z",
+      "eventTime": "2026-11-23T10:02:00.255569169Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051240",
+      "taskId": "1051573",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "59",
-        "identity": "48966@dev-host",
-        "requestId": "b444200a-a39c-44e1-9cb3-4bc5c2f21b59",
+        "identity": "76883@dev-host",
+        "requestId": "396cc653-fd0f-4655-8cf9-39d73f1602e9",
         "attempt": 2,
         "lastFailure": {
           "message": "setRunStatus: injected failure on attempt 1 of 1",
@@ -1312,15 +1312,15 @@
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "61",
-      "eventTime": "2026-11-23T06:52:51.055685917Z",
+      "eventTime": "2026-11-23T10:02:00.280720335Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051241",
+      "taskId": "1051574",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1334,17 +1334,17 @@
         },
         "scheduledEventId": "59",
         "startedEventId": "60",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "62",
-      "eventTime": "2026-11-23T06:52:51.055736042Z",
+      "eventTime": "2026-11-23T10:02:00.280811169Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051242",
+      "taskId": "1051575",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1354,30 +1354,30 @@
     },
     {
       "eventId": "63",
-      "eventTime": "2026-11-23T06:52:51.061636167Z",
+      "eventTime": "2026-11-23T10:02:00.285748877Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051246",
+      "taskId": "1051579",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "62",
-        "identity": "48966@dev-host",
-        "requestId": "00456684-5831-4c8b-a2cd-47be6aa7949c",
-        "historySizeBytes": "21585",
+        "identity": "76883@dev-host",
+        "requestId": "788855da-5454-4283-9433-d63e817ba895",
+        "historySizeBytes": "21588",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "64",
-      "eventTime": "2026-11-23T06:52:51.076045708Z",
+      "eventTime": "2026-11-23T10:02:00.300447419Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051250",
+      "taskId": "1051583",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "62",
         "startedEventId": "63",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1385,9 +1385,9 @@
     },
     {
       "eventId": "65",
-      "eventTime": "2026-11-23T06:52:51.076133750Z",
+      "eventTime": "2026-11-23T10:02:00.300526627Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051251",
+      "taskId": "1051584",
       "activityTaskScheduledEventAttributes": {
         "activityId": "11",
         "activityType": {
@@ -1404,7 +1404,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxfQ=="
             }
           ]
         },
@@ -1423,13 +1423,13 @@
     },
     {
       "eventId": "66",
-      "eventTime": "2026-11-23T06:52:52.128069209Z",
+      "eventTime": "2026-11-23T10:02:01.365459044Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051259",
+      "taskId": "1051592",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "65",
-        "identity": "48966@dev-host",
-        "requestId": "5842387d-6ce6-4df8-add3-467cf313aaab",
+        "identity": "76883@dev-host",
+        "requestId": "f58f9f00-4af2-4701-abbd-38d94a60fc53",
         "attempt": 2,
         "lastFailure": {
           "message": "aggregate: injected failure on attempt 1 of 1",
@@ -1440,15 +1440,15 @@
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "67",
-      "eventTime": "2026-11-23T06:52:52.147516209Z",
+      "eventTime": "2026-11-23T10:02:01.384870961Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051260",
+      "taskId": "1051593",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1456,23 +1456,23 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJ1bmlxdWVEb21haW5zIjo3OSwiY3JpdGljYWwiOjE0LCJoaWdoIjoyNywibWVkaXVtIjoxMywibG93IjoyNX0="
+              "data": "eyJ1bmlxdWVEb21haW5zIjo3MywiY3JpdGljYWwiOjE1LCJoaWdoIjoxOCwibWVkaXVtIjoxNSwibG93IjoyNX0="
             }
           ]
         },
         "scheduledEventId": "65",
         "startedEventId": "66",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "68",
-      "eventTime": "2026-11-23T06:52:52.147535251Z",
+      "eventTime": "2026-11-23T10:02:01.384903919Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051261",
+      "taskId": "1051594",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1482,30 +1482,30 @@
     },
     {
       "eventId": "69",
-      "eventTime": "2026-11-23T06:52:52.156489334Z",
+      "eventTime": "2026-11-23T10:02:01.388304794Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051265",
+      "taskId": "1051598",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "68",
-        "identity": "48966@dev-host",
-        "requestId": "8bf94576-a2f9-4cbf-8a6e-0fa6dfd2baeb",
-        "historySizeBytes": "23649",
+        "identity": "76883@dev-host",
+        "requestId": "b3650c56-8280-4343-ba12-da547eedf75e",
+        "historySizeBytes": "23658",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "70",
-      "eventTime": "2026-11-23T06:52:52.166964334Z",
+      "eventTime": "2026-11-23T10:02:01.399413503Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051269",
+      "taskId": "1051602",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "68",
         "startedEventId": "69",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1513,9 +1513,9 @@
     },
     {
       "eventId": "71",
-      "eventTime": "2026-11-23T06:52:52.167064292Z",
+      "eventTime": "2026-11-23T10:02:01.399682628Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051270",
+      "taskId": "1051603",
       "activityTaskScheduledEventAttributes": {
         "activityId": "12",
         "activityType": {
@@ -1532,7 +1532,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIkFHR1JFR0FUSU5HIl0sInRvIjoiQVdBSVRJTkdfQVBQUk9WQUwifQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIkFHR1JFR0FUSU5HIl0sInRvIjoiQVdBSVRJTkdfQVBQUk9WQUwifQ=="
             }
           ]
         },
@@ -1551,24 +1551,24 @@
     },
     {
       "eventId": "72",
-      "eventTime": "2026-11-23T06:52:52.218299959Z",
+      "eventTime": "2026-11-23T10:02:02.049970170Z",
       "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_SIGNALED",
-      "taskId": "1051276",
+      "taskId": "1051609",
       "workflowExecutionSignaledEventAttributes": {
         "signalName": "approve",
         "input": {},
-        "identity": "49009@dev-host",
+        "identity": "76897@dev-host",
         "header": {}
       }
     },
     {
       "eventId": "73",
-      "eventTime": "2026-11-23T06:52:52.218304084Z",
+      "eventTime": "2026-11-23T10:02:02.050066336Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051277",
+      "taskId": "1051610",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1578,30 +1578,30 @@
     },
     {
       "eventId": "74",
-      "eventTime": "2026-11-23T06:52:52.219969417Z",
+      "eventTime": "2026-11-23T10:02:02.059169170Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051281",
+      "taskId": "1051614",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "73",
-        "identity": "48966@dev-host",
-        "requestId": "a27a2d31-9fb9-467c-b912-cb22ff38f302",
-        "historySizeBytes": "24371",
+        "identity": "76883@dev-host",
+        "requestId": "e39501cb-8d79-4066-8cb1-f9b6ec638ed8",
+        "historySizeBytes": "24383",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "75",
-      "eventTime": "2026-11-23T06:52:52.235626209Z",
+      "eventTime": "2026-11-23T10:02:02.073172753Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051285",
+      "taskId": "1051618",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "73",
         "startedEventId": "74",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {
           "langUsedFlags": [
@@ -1613,13 +1613,13 @@
     },
     {
       "eventId": "76",
-      "eventTime": "2026-11-23T06:52:53.189639584Z",
+      "eventTime": "2026-11-23T10:02:02.426496503Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051289",
+      "taskId": "1051622",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "71",
-        "identity": "48966@dev-host",
-        "requestId": "fa58453c-f9b1-49a2-adf6-b5e2baf70759",
+        "identity": "76883@dev-host",
+        "requestId": "b0fbc1dc-268d-4f08-9478-1ea6e8a2bf1d",
         "attempt": 2,
         "lastFailure": {
           "message": "setRunStatus: injected failure on attempt 1 of 1",
@@ -1630,15 +1630,15 @@
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "77",
-      "eventTime": "2026-11-23T06:52:53.210039376Z",
+      "eventTime": "2026-11-23T10:02:02.446442253Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051290",
+      "taskId": "1051623",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1652,17 +1652,17 @@
         },
         "scheduledEventId": "71",
         "startedEventId": "76",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "78",
-      "eventTime": "2026-11-23T06:52:53.210097043Z",
+      "eventTime": "2026-11-23T10:02:02.446534545Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051291",
+      "taskId": "1051624",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1672,30 +1672,30 @@
     },
     {
       "eventId": "79",
-      "eventTime": "2026-11-23T06:52:53.215124293Z",
+      "eventTime": "2026-11-23T10:02:02.452655545Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051295",
+      "taskId": "1051628",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "78",
-        "identity": "48966@dev-host",
-        "requestId": "ca8c4c77-059e-4a9c-b6bb-a543dff7a5b6",
-        "historySizeBytes": "26196",
+        "identity": "76883@dev-host",
+        "requestId": "4343b491-c6da-462d-9779-66dbdd8c2b03",
+        "historySizeBytes": "26211",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "80",
-      "eventTime": "2026-11-23T06:52:53.229625626Z",
+      "eventTime": "2026-11-23T10:02:02.464191628Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051299",
+      "taskId": "1051632",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "78",
         "startedEventId": "79",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1703,9 +1703,9 @@
     },
     {
       "eventId": "81",
-      "eventTime": "2026-11-23T06:52:53.230351293Z",
+      "eventTime": "2026-11-23T10:02:02.464266837Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051300",
+      "taskId": "1051633",
       "activityTaskScheduledEventAttributes": {
         "activityId": "13",
         "activityType": {
@@ -1722,7 +1722,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIkFXQUlUSU5HX0FQUFJPVkFMIl0sInRvIjoiUEVSU0lTVElORyJ9"
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxLCJmcm9tIjpbIkFXQUlUSU5HX0FQUFJPVkFMIl0sInRvIjoiUEVSU0lTVElORyJ9"
             }
           ]
         },
@@ -1741,13 +1741,13 @@
     },
     {
       "eventId": "82",
-      "eventTime": "2026-11-23T06:52:54.259509127Z",
+      "eventTime": "2026-11-23T10:02:03.485511004Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051308",
+      "taskId": "1051641",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "81",
-        "identity": "48966@dev-host",
-        "requestId": "2abb5560-79a3-4713-8608-da99fcf5c2e2",
+        "identity": "76883@dev-host",
+        "requestId": "8bdd9756-d983-407e-b1b8-3e5b37626ac6",
         "attempt": 2,
         "lastFailure": {
           "message": "setRunStatus: injected failure on attempt 1 of 1",
@@ -1758,15 +1758,15 @@
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "83",
-      "eventTime": "2026-11-23T06:52:54.276863210Z",
+      "eventTime": "2026-11-23T10:02:03.498085420Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051309",
+      "taskId": "1051642",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1780,17 +1780,17 @@
         },
         "scheduledEventId": "81",
         "startedEventId": "82",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "84",
-      "eventTime": "2026-11-23T06:52:54.276939918Z",
+      "eventTime": "2026-11-23T10:02:03.498098962Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051310",
+      "taskId": "1051643",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1800,30 +1800,30 @@
     },
     {
       "eventId": "85",
-      "eventTime": "2026-11-23T06:52:54.281195293Z",
+      "eventTime": "2026-11-23T10:02:03.501705129Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051314",
+      "taskId": "1051647",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "84",
-        "identity": "48966@dev-host",
-        "requestId": "c737abc8-9bc9-4c69-85e0-a3e536c8f9dc",
-        "historySizeBytes": "28262",
+        "identity": "76883@dev-host",
+        "requestId": "05054614-cba4-4754-9675-67bcaedbf611",
+        "historySizeBytes": "28281",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "86",
-      "eventTime": "2026-11-23T06:52:54.295396960Z",
+      "eventTime": "2026-11-23T10:02:03.512153295Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051318",
+      "taskId": "1051651",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "84",
         "startedEventId": "85",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1831,9 +1831,9 @@
     },
     {
       "eventId": "87",
-      "eventTime": "2026-11-23T06:52:54.295592377Z",
+      "eventTime": "2026-11-23T10:02:03.512355629Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
-      "taskId": "1051319",
+      "taskId": "1051652",
       "activityTaskScheduledEventAttributes": {
         "activityId": "14",
         "activityType": {
@@ -1850,7 +1850,7 @@
               "metadata": {
                 "encoding": "anNvbi9wbGFpbg=="
               },
-              "data": "eyJydW5JZCI6IjIyMGFhMmI3LTRkOGQtNDI3Ni04ZTI2LWNmNTQ2N2M5YTEwYiIsImZhaWxGaXJzdEF0dGVtcHRzIjoxfQ=="
+              "data": "eyJydW5JZCI6Ijg4MTJmMWMzLTJlZmQtNDU2ZS1iNTI3LThkYzk3Y2JiYTc0ZCIsImZhaWxGaXJzdEF0dGVtcHRzIjoxfQ=="
             }
           ]
         },
@@ -1869,13 +1869,13 @@
     },
     {
       "eventId": "88",
-      "eventTime": "2026-11-23T06:52:55.337892085Z",
+      "eventTime": "2026-11-23T10:02:04.554700129Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
-      "taskId": "1051327",
+      "taskId": "1051660",
       "activityTaskStartedEventAttributes": {
         "scheduledEventId": "87",
-        "identity": "48966@dev-host",
-        "requestId": "9660bc05-927e-4f12-943e-54f93d413dfa",
+        "identity": "76883@dev-host",
+        "requestId": "7583685b-322a-45dc-b92d-16d20c4950a2",
         "attempt": 2,
         "lastFailure": {
           "message": "persist: injected failure on attempt 1 of 1",
@@ -1886,15 +1886,15 @@
           }
         },
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "89",
-      "eventTime": "2026-11-23T06:52:55.361154835Z",
+      "eventTime": "2026-11-23T10:02:04.571716254Z",
       "eventType": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
-      "taskId": "1051328",
+      "taskId": "1051661",
       "activityTaskCompletedEventAttributes": {
         "result": {
           "payloads": [
@@ -1907,17 +1907,17 @@
         },
         "scheduledEventId": "87",
         "startedEventId": "88",
-        "identity": "48966@dev-host"
+        "identity": "76883@dev-host"
       }
     },
     {
       "eventId": "90",
-      "eventTime": "2026-11-23T06:52:55.361183544Z",
+      "eventTime": "2026-11-23T10:02:04.571737171Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
-      "taskId": "1051329",
+      "taskId": "1051662",
       "workflowTaskScheduledEventAttributes": {
         "taskQueue": {
-          "name": "48966@dev-host-9b56a9ea58e14f92a1dada49f5e71bdd",
+          "name": "76883@dev-host-3908b340f060469fb2b55f792dc21cde",
           "kind": "TASK_QUEUE_KIND_STICKY",
           "normalName": "recon"
         },
@@ -1927,30 +1927,30 @@
     },
     {
       "eventId": "91",
-      "eventTime": "2026-11-23T06:52:55.364907669Z",
+      "eventTime": "2026-11-23T10:02:04.574098879Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
-      "taskId": "1051333",
+      "taskId": "1051666",
       "workflowTaskStartedEventAttributes": {
         "scheduledEventId": "90",
-        "identity": "48966@dev-host",
-        "requestId": "1d4e7b81-0889-40cb-a743-f5aeeb2778f6",
-        "historySizeBytes": "30257",
+        "identity": "76883@dev-host",
+        "requestId": "ad6b8b88-c814-46f3-9692-ed8659f73e72",
+        "historySizeBytes": "30276",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         }
       }
     },
     {
       "eventId": "92",
-      "eventTime": "2026-11-23T06:52:55.381335877Z",
+      "eventTime": "2026-11-23T10:02:04.584614088Z",
       "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
-      "taskId": "1051337",
+      "taskId": "1051670",
       "workflowTaskCompletedEventAttributes": {
         "scheduledEventId": "90",
         "startedEventId": "91",
-        "identity": "48966@dev-host",
+        "identity": "76883@dev-host",
         "workerVersion": {
-          "buildId": "@temporalio/worker@1.26.0+79929995d82dfecd99bfbb6d3c33b545cb45c2501f3f1bfdda5b91378aeb4bc8"
+          "buildId": "@temporalio/worker@1.26.0+ead8ab7da76b30a10c3078572ce685cb47d8a9cfbcf3d3f90efa8af9bf3ba771"
         },
         "sdkMetadata": {},
         "meteringMetadata": {}
@@ -1958,9 +1958,9 @@
     },
     {
       "eventId": "93",
-      "eventTime": "2026-11-23T06:52:55.381481085Z",
+      "eventTime": "2026-11-23T10:02:04.584778379Z",
       "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED",
-      "taskId": "1051338",
+      "taskId": "1051671",
       "workflowExecutionCompletedEventAttributes": {
         "result": {
           "payloads": [

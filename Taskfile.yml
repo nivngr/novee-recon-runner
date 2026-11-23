@@ -48,6 +48,16 @@ tasks:
       - cd packages/db && DATABASE_URL={{.SCRATCH_PG_URL}} npx prisma migrate deploy
       - DATABASE_URL={{.SCRATCH_PG_URL}} npx vitest run -c vitest.db.config.ts
 
+  test:e2e:
+    desc: Browser test (R8) against the deployed stack; video goes to proofs/videos/r8
+    deps: [install]
+    cmds:
+      - defer: pkill -f "port-forward svc/web 3000:3000" || true
+      - cd apps/web && npx playwright install chromium > /dev/null
+      - kubectl -n {{.NS}} port-forward svc/web 3000:3000 > /dev/null 2>&1 &
+      - until curl -sf -o /dev/null http://localhost:3000; do sleep 1; done
+      - cd apps/web && npx playwright test
+
   db:migration:
     desc: 'Write a new migration from schema changes: task db:migration NAME=add_something'
     deps: [install]
@@ -93,6 +103,25 @@ tasks:
           *)
             echo "Loading into k3s with ctr (needs sudo)"
             docker save {{.ALL}} | sudo k3s ctr images import - ;;
+        esac
+      - task: prune-images
+
+  prune-images:
+    desc: Remove older builds of our images (local Docker, and the k3d node), keeping {{.TAG}}
+    internal: true
+    cmds:
+      # Every edit builds new tags; without this they pile up until the node hits disk pressure and evicts pods.
+      # Images still used by a running pod are refused by Docker/containerd, hence `|| true`.
+      - docker images 'novee-task/*' | awk 'NR > 1 && $2 != "{{.TAG}}" && $2 != "dev" {print $1":"$2}' | xargs -r docker rmi > /dev/null 2>&1 || true
+      - |
+        case "{{.CONTEXT}}" in
+          k3d-*)
+            node="{{.CONTEXT}}-server-0"
+            # ctr removes only the named reference; crictl rmi would delete the whole image, including the
+            # current tag when an unchanged build shares its content with an old one.
+            docker exec "$node" ctr -n k8s.io images ls -q \
+              | grep '/novee-task/' | grep -v ':{{.TAG}}$' | grep -v ':dev$' | grep -v '@sha256:' \
+              | xargs -r docker exec "$node" ctr -n k8s.io images rm > /dev/null 2>&1 || true ;;
         esac
 
   infra:

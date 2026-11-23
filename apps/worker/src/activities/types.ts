@@ -1,4 +1,4 @@
-import type { AgentStatus, AssessmentStatus, LostReason, Technique } from '@novee/contracts';
+import type { AgentStatus, AssessmentStatus, LostReason, RunFailure, Technique } from '@novee/contracts';
 
 // Activity inputs and outputs: small values only, never bulk results (R4).
 
@@ -60,7 +60,7 @@ export interface SetRunStatusInput extends Injectable {
   runId: string;
   from: readonly AssessmentStatus[];
   to: AssessmentStatus;
-  failureReason?: string;
+  failure?: RunFailure;
 }
 
 export interface RunRef extends Injectable {

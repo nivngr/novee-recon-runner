@@ -47,9 +47,7 @@ export class RunService {
         domain: request.domain,
         agentCount: request.agentCount,
         windowSize: request.windowSize,
-        stallTimeoutS: request.stallTimeoutS,
-        maxAgentDurationS: request.maxAgentDurationS,
-        failFirstAttempts: request.failFirstAttempts,
+        settings: request.settings,
       });
     } catch (error) {
       // The rows exist; repeating the same submit starts the workflow then.

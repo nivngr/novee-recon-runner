@@ -5,7 +5,7 @@ import {
   SubmitRequestSchema,
   WindowRequestSchema,
 } from '@novee/contracts';
-import type { FastifyInstance, FastifyReply } from 'fastify';
+import type { FastifyError, FastifyInstance, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import type { RequestAction, Result, RunService } from '../runs/run-service.js';
 
@@ -15,6 +15,7 @@ const HTTP_STATUS: Readonly<Record<ErrorCode, number>> = {
   [ErrorCode.IdConflict]: 409,
   [ErrorCode.NotAllowed]: 409,
   [ErrorCode.Unavailable]: 503,
+  [ErrorCode.Internal]: 500,
 };
 
 const IdParamsSchema = z.object({ id: z.uuid() });
@@ -22,6 +23,17 @@ const ListQuerySchema = z.object({ limit: z.coerce.number().int().min(1).max(100
 
 /** REST endpoints (plan §6). Inputs are parsed with the shared schemas; outputs are the shared types. */
 export function registerRoutes(server: FastifyInstance, service: RunService): void {
+  // Fastify's own errors (a malformed body, an unknown route, a crash) answer in our error shape too, so every
+  // response the browser gets matches the shared contract.
+  server.setErrorHandler((error: FastifyError, request, reply) => {
+    const clientError = error.statusCode !== undefined && error.statusCode < 500;
+    if (!clientError) request.log.error(error);
+    return sendError(reply, clientError ? ErrorCode.ValidationFailed : ErrorCode.Internal, error.message);
+  });
+  server.setNotFoundHandler((request, reply) =>
+    sendError(reply, ErrorCode.NotFound, `no route ${request.method} ${request.url}`),
+  );
+
   server.post('/assessments', async (request, reply) => {
     const body = SubmitRequestSchema.safeParse(request.body);
     if (!body.success) return sendError(reply, ErrorCode.ValidationFailed, z.prettifyError(body.error));

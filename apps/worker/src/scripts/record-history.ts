@@ -25,9 +25,8 @@ const input: ReconInput = {
   domain: 'example.com',
   agentCount: 4,
   windowSize: 2,
-  stallTimeoutS: 60,
-  maxAgentDurationS: 300,
-  failFirstAttempts: 1, // the history then also shows retried activities
+  // failFirstAttempts 1: the history then also shows retried activities.
+  settings: { stallTimeoutS: 60, maxAgentDurationS: 300, failFirstAttempts: 1 },
 };
 await new RunRequests(prisma).createRun({ ...input, id: input.runId });
 

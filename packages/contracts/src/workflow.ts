@@ -1,3 +1,4 @@
+import type { RunSettings } from './api.js';
 import type { AssessmentStatus } from './vocabulary.js';
 
 // The recon workflow's public surface: what the API needs to start and signal it without importing worker code.
@@ -18,10 +19,7 @@ export interface ReconInput {
   domain: string;
   agentCount: number;
   windowSize: number;
-  stallTimeoutS: number;
-  maxAgentDurationS: number;
-  /** The R3 retry switch: every activity fails its first N attempts right after its side effect (D15). */
-  failFirstAttempts: number;
+  settings: RunSettings;
 }
 
 /** The workflow's signal names. */

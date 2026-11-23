@@ -129,6 +129,37 @@ replayer reads protobuf's canonical JSON.
 **Fix:** `historyToJSON` / `historyFromJSON` from `@temporalio/common/proto-utils`.
 -->
 
+## A16 — R6 — the Approve button did nothing
+**File:** `apps/web/app/api/[...path]/route.ts`, `apps/api/src/http/routes.ts`
+**Wrong behaviour:** the web app's proxy labelled every POST as JSON, including approve, which has no body.
+Fastify refused it with its own 400, so the decision never reached our code and the run waited forever. That
+400 also wasn't in our error shape, so the browser read it as a contract mismatch.
+**How we noticed:** the Playwright R8 run timed out on "Awaiting approval" after the click; the API log showed
+`FST_ERR_CTP_EMPTY_JSON_BODY`.
+**Fix:** the proxy sends a content type only with a body; the API answers its framework errors in the contract
+shape too (error and not-found handlers, an `internal` code), with tests for both.
+
+## A17 — R9 — the image cleanup deleted the image it had just loaded
+**File:** `Taskfile.yml` (`prune-images`, the fix for A15)
+**Wrong behaviour:** to drop old builds from the node it ran `crictl rmi <old tag>`. When a build didn't change
+an image (here `migrate`), the new and old tags point at the same image, and `crictl rmi` deletes the image
+itself, every tag included. The next step's Job then couldn't start (`ImagePullBackOff`) and `task up` failed.
+Local `docker rmi` only removes the tag, so checking it locally looked fine.
+**How we noticed:** the next `task up` timed out waiting for the migrate Job; the node listed every current
+image except `migrate`.
+**Fix:** `ctr images rm`, which removes only the named reference.
+
+<!-- Below the bar (kept for the record):
+## A15 — R9 — image builds piled up until the node evicted the stack
+**File:** `Taskfile.yml` (`load`)
+**Wrong behaviour:** each `task up` after an edit imported a new set of image tags and never removed old ones.
+After a day of deploys the Docker disk hit 83%; the node reported DiskPressure, evicted every pod and
+garbage-collected our images, which then couldn't be pulled (`ImagePullBackOff`). A grader deploying once
+wouldn't hit it.
+**How we noticed:** `task up` failed after 694s with every pod Pending; node events showed the image GC.
+**Fix:** `task up` prunes our older tags after loading (local Docker and the k3d node).
+-->
+
 <!--
 ## A<n> — <requirement or spike> — <one-line summary>
 **File:** …

@@ -41,6 +41,9 @@ At the end of every milestone, say explicitly whether it produced new AI-log ent
 Before reporting a milestone done, and before every commit: `task check` passes (generate, typecheck,
 lint + formatting, unit tests), plus `task test:db` when the data layer changed. Say so in the report.
 
+Browser tests (`task test:e2e`, Playwright) are heavy on RAM and slow: run them deliberately, when the UI's
+behaviour changed or for a final proof run, never as a routine check after each change. Say when one is due.
+
 Rules:
 - Thin beats thorough. These feed `NOTES.md`, which is written last from them.
 - AI log entries are honest and specific: "it fanned out all six; caught because `maxConcurrent` came back 6".

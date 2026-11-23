@@ -1,3 +1,11 @@
-export default function Home() {
-  return <h1>Recon Runner</h1>;
+import { NewRunForm } from '../src/components/new-run-form';
+import { RunList } from '../src/components/run-list';
+
+export default function RunsPage() {
+  return (
+    <>
+      <NewRunForm />
+      <RunList />
+    </>
+  );
 }

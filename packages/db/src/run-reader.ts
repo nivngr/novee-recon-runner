@@ -1,6 +1,6 @@
-import { AssessmentStatus, DomainSource } from '@novee/contracts';
+import { AssessmentStatus, DomainSource, type StagedDomain } from '@novee/contracts';
 import type { PrismaClient } from './generated/prisma/client.js';
-import type { DomainList, RunListItem, RunRecord, StagedDomain } from './types.js';
+import type { DomainList, RunListItem, RunRecord } from './types.js';
 
 /** Read-only queries behind the API's GET endpoints. */
 export class RunReader {

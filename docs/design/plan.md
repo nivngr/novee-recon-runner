@@ -14,7 +14,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 | M2 | Data layer: Prisma schema and queries | done |
 | M3 | Workflow and activities (R1–R5, R7) | done |
 | M4 | HTTP API (R6) | done |
-| M5 | Web UI (R8) | not started |
+| M5 | Web UI (R8) | done |
 | M6 | Proofs R1–R9, with outputs and videos | not started |
 | M7 | `NOTES.md` and a clean-cluster dry run | not started |
 
@@ -75,6 +75,7 @@ Postgres enums sort in declaration order.
 | `agent_status` | `QUEUED`, `STARTING`, `RUNNING`, `COMPLETED`, `FAILED` (the agent said so), `LOST` (we gave up on it), `STOPPED` (by a cancel) |
 | `lost_reason` | `START_FAILED`, `NOT_FOUND`, `NO_PROGRESS`, `CEILING` |
 | `decision` | `APPROVE`, `REJECT` |
+| `failure_code` | `NO_AGENT_COMPLETED`, `WORKFLOW_ERROR`, `ENDED_UNRECORDED` (the last only reported by the API, never stored) |
 
 ### `assessments`: one row per run
 
@@ -93,7 +94,8 @@ Postgres enums sort in declaration order.
 | `decision_requested_at` | `timestamptz` | | new |
 | `unique_domains` | `integer` | written by `aggregate` | new |
 | `critical_count`, `high_count`, `medium_count`, `low_count` | `integer` | written by `aggregate` | new |
-| `failure_reason` | `text` | | new |
+| `failure_code` | `failure_code` | set with `FAILED`: `NO_AGENT_COMPLETED` or `WORKFLOW_ERROR` (second migration) | new |
+| `failure_reason` | `text` | the failure's detail, for people | new |
 | `created_at`, `updated_at` | `timestamptz` | not null, default `now()` | starter |
 
 Index on `created_at DESC` (starter).
@@ -332,7 +334,7 @@ Fastify (proposed, confirm in M0), zod schemas from `packages/contracts`. Errors
 
 | Method | Path | Request | Responses |
 |---|---|---|---|
-| `POST` | `/assessments` | `{ id: uuid, domain, agentCount, windowSize, stallTimeoutS?, maxAgentDurationS?, failFirstAttempts? }` | `201 {id}` new; `200 {id}` same request repeated; `409 id_conflict`; `400` validation |
+| `POST` | `/assessments` | `{ id: uuid, domain, agentCount, windowSize, settings?: { stallTimeoutS?, maxAgentDurationS?, failFirstAttempts? } }` | `201 {id}` new; `200 {id}` same request repeated; `409 id_conflict`; `400` validation |
 | `GET` | `/assessments` | `?limit` (default 20) | `200 [{ id, domain, status, agentCount, createdAt }]` |
 | `GET` | `/assessments/{id}` | | `200 RunView`; `404` |
 | `GET` | `/assessments/{id}/domains` | | `200 { source: "staged" \| "final", domains: [{ domain, risk, foundBy? }] }` |
@@ -346,7 +348,7 @@ Fastify (proposed, confirm in M0), zod schemas from `packages/contracts`. Errors
 **`RunView`:** `{ id, domain, agentCount, window, status, pending: "cancelling" | "approving" | "rejecting" | null,
 counts: { queued, running, completed, failed, lost, stopped }, summary: { uniqueDomains, critical, high, medium, low } | null,
 agents: [{ index, technique, status, progress, discoveredCount, lostReason, stopConfirmed, worker }],
-allowedActions: ("approve" | "reject" | "cancel" | "setWindow")[], failureReason, createdAt, updatedAt }`.
+allowedActions: ("approve" | "reject" | "cancel" | "setWindow")[], failure: { code, detail } | null, createdAt, updatedAt }`.
 
 **Submit:** validate → `createRun` → `conflict` gives 409 → start workflow `assessment-<id>` on queue `recon`
 with `workflowIdConflictPolicy: 'USE_EXISTING'` (spike 05: a repeat returns the same run) → reply.
@@ -375,7 +377,7 @@ for support** (the 422 path must stay reachable, R5); `agentCount` 1–20; `wind
 
 Next.js (App Router), TanStack Query, plain styling: a table that tells the truth.
 
-- **Routing:** `next.config` rewrites `/api/*` to `http://api:8080/*`. The browser never calls the API directly.
+- **Routing:** a Next route handler (`app/api/[...path]/route.ts`) forwards `/api/*` to `API_URL` (`http://api:8080`). The browser never calls the API directly.
 - **`/` (runs):** list of recent runs; "New run" form: domain, agents (default 6), window (default 2); the browser generates the UUID with `crypto.randomUUID()` and keeps it for retries.
   A collapsed **Advanced** section holds the per-run settings, pre-filled with the defaults from the shared
   submit schema: no-progress timeout (`stallTimeoutS`, 60), agent ceiling (`maxAgentDurationS`, 300) and the
@@ -385,6 +387,24 @@ Next.js (App Router), TanStack Query, plain styling: a table that tells the trut
 - **Buttons:** enabled only if in `allowedActions`; disabled while their request is in flight.
 - **Never terminal early:** status text comes only from the last poll.
 - **Contract check:** every response parsed with the shared schema; a failure shows "contract mismatch", never partial data.
+
+**As built in M5:**
+- **The `/api` proxy is a route handler, not a `next.config` rewrite:** it reads `API_URL` when a request
+  arrives, so the address isn't fixed at build time; an unreachable API answers 503 in the API's error shape.
+- `ApiClient` parses every response (and every error body) with the shared schemas; `ContractMismatchError`
+  replaces the page with a "contract mismatch" banner and stops polling. Other errors keep the last good view,
+  marked with its time.
+- Polling interval is a pure function (`runPollInterval`, unit-tested). Labels are `Record`s over the shared
+  types, so a new status fails the typecheck until it has a label.
+- The form keeps the run id across retries and drops it when any field changes (a different request).
+- The web image builds `@novee/contracts` first (the app bundles its compiled `dist/`).
+- `task test:e2e` port-forwards the web app and runs the Playwright R8 test; video lands in `proofs/videos/r8`.
+  It checks the screen two ways: against the rules of an honest UI (never terminal early, buttons per phase,
+  polling stops) and, at the two stable moments, against the API's own answer (status, counts, summary, domains).
+- After review: the per-run settings travel as one `settings` object (`RunSettings`) from the form to the
+  workflow input (the replay fixture was re-recorded for the new input shape); a run's failure is
+  `{ code, detail }` (`FailureCode`), added as a new column by a Prisma-generated migration, the old column kept
+  as the detail; domain entries are `FoundDomain`, and `StagedDomain` extends it.
 
 ## 8. Deployment
 
@@ -409,6 +429,8 @@ are two-stage: build with all tools, run `node dist/main.js` with production dep
 workflow code is pre-bundled at build time (`bundleWorkflowCode`, Temporal's production setup), so startup takes
 ~4s instead of ~13s; `migrate` adds OpenSSL (Prisma's migration engine needs it); `web` ships Next's
 standalone server. `task cluster` creates a local k3d cluster for development only; graders bring their own.
+After loading, `task up` removes older builds of our images (locally and on a k3d node): every edit makes new
+tags, and they once piled up until the node hit disk pressure and evicted the whole stack.
 
 **Environment:** `TEMPORAL_ADDRESS=temporal:7233`, `TEMPORAL_NAMESPACE=default`, `TASK_QUEUE=recon`,
 `AGENT_SERVICE_URL=http://agent-service:8080`, `DATABASE_URL` (secret), `API_URL=http://api:8080` (web),

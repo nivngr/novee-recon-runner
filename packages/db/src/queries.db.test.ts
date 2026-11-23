@@ -33,9 +33,7 @@ function newRun(overrides: Partial<NewRun> = {}): NewRun {
     domain: 'example.com',
     agentCount: 3,
     windowSize: 2,
-    stallTimeoutS: 60,
-    maxAgentDurationS: 300,
-    failFirstAttempts: 0,
+    settings: { stallTimeoutS: 60, maxAgentDurationS: 300, failFirstAttempts: 0 },
     ...overrides,
   };
 }

@@ -2,12 +2,14 @@ import {
   AgentStatus,
   AssessmentStatus,
   Decision,
+  FailureCode,
   isActionLegal,
   LEGAL_STATUSES,
   LIVE_STATUSES,
   type ReconInput,
   type ReconResult,
   RunAction,
+  type RunFailure,
   Signal,
   TECHNIQUES,
 } from '@novee/contracts';
@@ -86,7 +88,10 @@ class ReconRun {
       }
       if (error instanceof TemporalFailure) {
         await CancellationScope.nonCancellable(() =>
-          this.moveTo(AssessmentStatus.Failed, LIVE_STATUSES, describeFailure(error)),
+          this.moveTo(AssessmentStatus.Failed, LIVE_STATUSES, {
+            code: FailureCode.WorkflowError,
+            detail: describeFailure(error),
+          }),
         );
       }
       throw error; // Temporal shows "failed": real breakage. A plain Error (a bug) retries the workflow task instead.
@@ -101,7 +106,10 @@ class ReconRun {
 
     if (this.rejectedInput) return this.finish(AssessmentStatus.RejectedInput, [AssessmentStatus.Running]);
     if (this.completed === 0)
-      return this.finish(AssessmentStatus.Failed, [AssessmentStatus.Running], 'no agent completed');
+      return this.finish(AssessmentStatus.Failed, [AssessmentStatus.Running], {
+        code: FailureCode.NoAgentCompleted,
+        detail: `none of the ${this.input.agentCount} agents completed`,
+      });
 
     await this.moveTo(AssessmentStatus.Aggregating, [AssessmentStatus.Running]);
     await this.activities.aggregate(this.runRef());
@@ -145,8 +153,8 @@ class ReconRun {
       const result = await this.activities.waitAgent({
         ...this.agentRef(lane),
         scanId,
-        stallTimeoutS: this.input.stallTimeoutS,
-        maxAgentDurationS: this.input.maxAgentDurationS,
+        stallTimeoutS: this.input.settings.stallTimeoutS,
+        maxAgentDurationS: this.input.settings.maxAgentDurationS,
       });
       if (result.outcome === WaitOutcome.Completed) this.completed += 1;
       if (result.outcome === WaitOutcome.NoProgress || result.outcome === WaitOutcome.Ceiling) {
@@ -216,9 +224,9 @@ class ReconRun {
   private async finish(
     to: ReconResult,
     from: readonly AssessmentStatus[],
-    failureReason?: string,
+    failure?: RunFailure,
   ): Promise<ReconResult> {
-    await this.moveTo(to, from, failureReason);
+    await this.moveTo(to, from, failure);
     return to;
   }
 
@@ -229,14 +237,14 @@ class ReconRun {
   private async moveTo(
     to: AssessmentStatus,
     from: readonly AssessmentStatus[],
-    failureReason?: string,
+    failure?: RunFailure,
   ): Promise<void> {
     this.phase = to;
-    await this.activities.setRunStatus({ ...this.runRef(), from, to, failureReason });
+    await this.activities.setRunStatus({ ...this.runRef(), from, to, failure });
   }
 
   private runRef() {
-    return { runId: this.input.runId, failFirstAttempts: this.input.failFirstAttempts };
+    return { runId: this.input.runId, failFirstAttempts: this.input.settings.failFirstAttempts };
   }
 
   private agentRef(lane: Lane) {

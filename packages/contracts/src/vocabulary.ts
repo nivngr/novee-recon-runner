@@ -54,6 +54,23 @@ export const LostReason = {
 } as const;
 export type LostReason = (typeof LostReason)[keyof typeof LostReason];
 
+/** Why a run ended FAILED. */
+export const FailureCode = {
+  /** Every agent failed or was lost. */
+  NoAgentCompleted: 'NO_AGENT_COMPLETED',
+  /** A real error stopped the workflow (e.g. agent-service rejected our request as malformed). */
+  WorkflowError: 'WORKFLOW_ERROR',
+  /** Temporal says the workflow ended, but it never recorded how (reported by the API, never stored). */
+  EndedUnrecorded: 'ENDED_UNRECORDED',
+} as const;
+export type FailureCode = (typeof FailureCode)[keyof typeof FailureCode];
+
+/** A run-level failure: a code to act on, a detail for people. */
+export interface RunFailure {
+  code: FailureCode;
+  detail: string;
+}
+
 export const Decision = { Approve: 'APPROVE', Reject: 'REJECT' } as const;
 export type Decision = (typeof Decision)[keyof typeof Decision];
 

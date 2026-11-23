@@ -60,6 +60,15 @@ enum LostReason {
   @@map("lost_reason")
 }
 
+/// Why a run ended FAILED. ENDED_UNRECORDED is only ever reported by the API (D5's safety net), never stored.
+enum FailureCode {
+  NO_AGENT_COMPLETED
+  WORKFLOW_ERROR
+  ENDED_UNRECORDED
+
+  @@map("failure_code")
+}
+
 enum Decision {
   APPROVE
   REJECT
@@ -88,6 +97,8 @@ model Assessment {
   highCount           Int?             @map("high_count")
   mediumCount         Int?             @map("medium_count")
   lowCount            Int?             @map("low_count")
+  failureCode         FailureCode?     @map("failure_code")
+  /// The failure's detail, for people.
   failureReason       String?          @map("failure_reason")
   createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt           DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz

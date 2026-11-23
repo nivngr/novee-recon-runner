@@ -131,9 +131,7 @@ function inputFor(overrides: Partial<ReconInput> = {}): ReconInput {
     domain: 'example.com',
     agentCount: 6,
     windowSize: 2,
-    stallTimeoutS: 60,
-    maxAgentDurationS: 300,
-    failFirstAttempts: 0,
+    settings: { stallTimeoutS: 60, maxAgentDurationS: 300, failFirstAttempts: 0 },
     ...overrides,
   };
 }

@@ -11,7 +11,7 @@ RUN npm ci --workspace=@novee/web --include-workspace-root --no-audit --no-fund
 COPY tsconfig.base.json ./
 COPY packages packages
 COPY apps/web apps/web
-RUN npm run build --workspace=@novee/web
+RUN npm run build --workspace=@novee/contracts --workspace=@novee/web
 
 FROM node:22.23.5-bookworm-slim
 WORKDIR /app

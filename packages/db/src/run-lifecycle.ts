@@ -1,4 +1,4 @@
-import { AssessmentStatus, RiskLevel } from '@novee/contracts';
+import { AssessmentStatus, RiskLevel, type RunFailure } from '@novee/contracts';
 import type { PrismaClient } from './generated/prisma/client.js';
 import type { RunSummary } from './types.js';
 
@@ -11,11 +11,11 @@ export class RunLifecycle {
     id: string,
     from: readonly AssessmentStatus[],
     to: AssessmentStatus,
-    failureReason?: string,
+    failure?: RunFailure,
   ): Promise<boolean> {
     const { count } = await this.prisma.assessment.updateMany({
       where: { id, status: { in: [...from] } },
-      data: { status: to, failureReason },
+      data: { status: to, failureCode: failure?.code, failureReason: failure?.detail },
     });
     return count === 1;
   }

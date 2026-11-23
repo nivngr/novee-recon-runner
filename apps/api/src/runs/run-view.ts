@@ -3,19 +3,24 @@ import {
   type AgentView,
   AssessmentStatus,
   Decision,
+  FailureCode,
   isActionLegal,
   LIVE_STATUSES,
   PendingRequest,
   RunAction,
   type RunCounts,
+  type RunFailure,
   type RunView,
   TECHNIQUES,
   type Technique,
 } from '@novee/contracts';
 import type { AgentRecord, RunRecord } from '@novee/db';
 
-/** Shown when Temporal says the workflow ended but the row still says it's live (D5's safety net). */
-export const ENDED_WITHOUT_RECORD = 'the workflow ended without recording its outcome';
+/** Reported when Temporal says the workflow ended but the row still says it's live (D5's safety net). */
+export const ENDED_UNRECORDED: RunFailure = {
+  code: FailureCode.EndedUnrecorded,
+  detail: 'the workflow ended without recording its outcome',
+};
 
 /**
  * The run as the UI sees it. `workflowEnded`: Temporal reports no running workflow for a run the database still
@@ -45,10 +50,15 @@ export function toRunView(run: RunRecord, workflowEnded: boolean): RunView {
     agents: run.agents.map(toAgentView),
     allowedActions:
       pending === null ? Object.values(RunAction).filter((action) => isActionLegal(action, status)) : [],
-    failureReason: workflowEnded ? ENDED_WITHOUT_RECORD : run.failureReason,
+    failure: workflowEnded ? ENDED_UNRECORDED : failureOf(run),
     createdAt: run.createdAt.toISOString(),
     updatedAt: run.updatedAt.toISOString(),
   };
+}
+
+/** The stored failure: written together with FAILED, so the code and its detail come as a pair. */
+function failureOf(run: RunRecord): RunFailure | null {
+  return run.failureCode === null ? null : { code: run.failureCode, detail: run.failureReason ?? '' };
 }
 
 /** A request the workflow hasn't acted on yet. Only a live run can have one. */

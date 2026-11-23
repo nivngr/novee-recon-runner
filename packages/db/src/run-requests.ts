@@ -19,9 +19,9 @@ export class RunRequests {
             targetDomain: run.domain,
             agentCount: run.agentCount,
             windowSize: run.windowSize,
-            stallTimeoutS: run.stallTimeoutS,
-            maxAgentDurationS: run.maxAgentDurationS,
-            failFirstAttempts: run.failFirstAttempts,
+            stallTimeoutS: run.settings.stallTimeoutS,
+            maxAgentDurationS: run.settings.maxAgentDurationS,
+            failFirstAttempts: run.settings.failFirstAttempts,
           },
         ],
         skipDuplicates: true,
@@ -108,8 +108,8 @@ function isSameRequest(existing: Assessment, run: NewRun): boolean {
   return (
     existing.targetDomain === run.domain &&
     existing.agentCount === run.agentCount &&
-    existing.stallTimeoutS === run.stallTimeoutS &&
-    existing.maxAgentDurationS === run.maxAgentDurationS &&
-    existing.failFirstAttempts === run.failFirstAttempts
+    existing.stallTimeoutS === run.settings.stallTimeoutS &&
+    existing.maxAgentDurationS === run.settings.maxAgentDurationS &&
+    existing.failFirstAttempts === run.settings.failFirstAttempts
   );
 }

@@ -13,6 +13,6 @@
     "module": "ESNext",
     "moduleResolution": "Bundler"
   },
-  "include": ["next-env.d.ts", "app", "next.config.ts"],
+  "include": ["next-env.d.ts", "app", "src", "e2e", "next.config.ts", "playwright.config.ts"],
   "exclude": ["node_modules"]
 }

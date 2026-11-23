@@ -25,7 +25,7 @@ const DATABASE: ActivityOptions = { startToCloseTimeout: '10s', retry: { ...RETR
 export function activitiesFor(input: ReconInput) {
   const { startAgent } = proxyActivities<AgentActivities>(START);
   const { waitAgent } = proxyActivities<AgentActivities>({
-    startToCloseTimeout: (input.maxAgentDurationS + 60) * 1000,
+    startToCloseTimeout: (input.settings.maxAgentDurationS + 60) * 1000,
     heartbeatTimeout: '10s', // the lease: a dead worker's poll is retried elsewhere within ~10s
     retry: RETRY,
   });

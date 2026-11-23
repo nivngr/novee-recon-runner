@@ -12,7 +12,7 @@ export class RunActivities {
   }
 
   setRunStatus = async (input: SetRunStatusInput): Promise<boolean> => {
-    const moved = await this.#runs.setRunStatus(input.runId, input.from, input.to, input.failureReason);
+    const moved = await this.#runs.setRunStatus(input.runId, input.from, input.to, input.failure);
     failIfInjected(input.failFirstAttempts);
     return moved;
   };
