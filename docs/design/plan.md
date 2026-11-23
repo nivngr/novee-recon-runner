@@ -13,7 +13,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 | M1 | Deploy skeleton: `task up` on an empty cluster (R9) | done |
 | M2 | Data layer: Prisma schema and queries | done |
 | M3 | Workflow and activities (R1–R5, R7) | done |
-| M4 | HTTP API (R6) | not started |
+| M4 | HTTP API (R6) | done |
 | M5 | Web UI (R8) | not started |
 | M6 | Proofs R1–R9, with outputs and videos | not started |
 | M7 | `NOTES.md` and a clean-cluster dry run | not started |
@@ -159,6 +159,7 @@ Primary key `(assessment_id, agent_index, domain)`. `(assessment_id, agent_index
 | `getDomains(id)` | Before approve: deduplicated view of staged rows (`max(risk)`, agents count). After: `discovered_domains`. Sorted by risk desc, then domain. | API |
 | `setRunStatus(id, from[], to, extra?)` | Conditional update; `extra` can carry `failure_reason`, summary counts | workflow activities |
 | `requestCancel(id)`, `requestDecision(id, decision)`, `setWindow(id, size)` | Set the request columns (conditional on a legal status) | API |
+| `withdrawCancel(id)`, `withdrawDecision(id)` | Clear a request whose signal never reached Temporal (conditional: only while it's still pending) | API |
 | `setAgentStarting(id, i, worker)`, `setAgentRunning(id, i, scanId)`, `recordProgress(id, i, progress, worker)` | Agent row updates; `recordProgress` is best-effort | activities |
 | `completeAgent(id, i, findings[])` | One transaction: `RUNNING → COMPLETED` + `discovered_count` + `finished_at`; only if that moved, insert findings into staging (insert-or-nothing) | `waitAgent` |
 | `endAgent(id, i, ending)` | Conditional update (from `QUEUED`/`STARTING`/`RUNNING`) to `FAILED`, `LOST` or `STOPPED`; `ending` is a union carrying `lostReason` / `stopConfirmed` where they apply | activities |
@@ -339,7 +340,8 @@ Fastify (proposed, confirm in M0), zod schemas from `packages/contracts`. Errors
 | `POST` | `/assessments/{id}/reject` | | same |
 | `POST` | `/assessments/{id}/cancel` | | same |
 | `PUT` | `/assessments/{id}/window` | `{ size }` | `202 {window}`; `400`; `409`; `404` |
-| `GET` | `/healthz` | | `200` when the database and Temporal are reachable |
+| `GET` | `/healthz` | | `200` when the database and Temporal are reachable (readiness) |
+| `GET` | `/livez` | | `200` while the process answers (liveness: no dependencies) |
 
 **`RunView`:** `{ id, domain, agentCount, window, status, pending: "cancelling" | "approving" | "rejecting" | null,
 counts: { queued, running, completed, failed, lost, stopped }, summary: { uniqueDomains, critical, high, medium, low } | null,
@@ -356,6 +358,18 @@ report `FAILED`.
 **Validation and caps:** domain is a non-empty string ≤ 253 characters, trimmed and lowercased, **never checked
 for support** (the 422 path must stay reachable, R5); `agentCount` 1–20; `windowSize` 1–`agentCount`;
 `stallTimeoutS` 10–600; `maxAgentDurationS` 30–3600; `failFirstAttempts` 0–5.
+
+**As built in M4:**
+- `apps/api`: `RunService` (use cases, typed `Result` with an `ErrorCode`), `RunWorkflows` (Temporal client:
+  start with "use existing", signals, cancel, `hasEnded` for the safety net), `toRunView` (pure: counts,
+  `pending`, `allowedActions`, unit-tested), and thin Fastify routes that parse with the shared schemas.
+- **Approve, reject, cancel:** record the request first (conditional, so the first of two racing requests wins),
+  then signal; if the signal fails, withdraw the record and answer 503, so the user can try again.
+- **Window:** signal first, then record; if the record fails, repeating the request fixes it.
+- **Limits and defaults** live in `RUN_LIMITS` (`packages/contracts`); the database's CHECK constraints and
+  column defaults repeat them as a backstop.
+- **Probes:** readiness on `/healthz` (database + Temporal), liveness on `/livez`, so an outage takes the API
+  out of rotation instead of restarting it.
 
 ## 7. Web UI (`apps/web`)
 
@@ -517,7 +531,7 @@ deleted worker pod is replaced.
 2. AI log in `NOTES.md`: from the entries `ai-log.md` shows (A2, A3, A4, A6, A8, A9, A11 so far; the rest are kept
    there as comments), each caught by a method worth describing and explainable in 30 seconds.
 3. A settings table: every setting, where it lives, how to change it (per run in the form's Advanced section; fixed
-   in `apps/worker/src/workflows/activities.ts`; per deployment in each app's `config.ts` and the manifests;
+   in `apps/worker/src/workflows/activity-proxies.ts`; per deployment in each app's `config.ts` and the manifests;
    agent-service's own behaviour via its `/admin/config`).
 4. Tick `docs/constraints.md`.
 4. On a brand-new cluster, follow `NOTES.md` literally.

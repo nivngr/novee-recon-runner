@@ -29,8 +29,10 @@ spec:
             httpGet: { path: /healthz, port: http }
             initialDelaySeconds: 3
             periodSeconds: 5
+          # Liveness has no dependencies: a database or Temporal outage takes the pod out of rotation
+          # (readiness), it doesn't restart it.
           livenessProbe:
-            httpGet: { path: /healthz, port: http }
+            httpGet: { path: /livez, port: http }
             initialDelaySeconds: 15
             periodSeconds: 20
           resources:

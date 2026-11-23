@@ -69,6 +69,25 @@ export class RunRequests {
     return count === 1;
   }
 
+  /**
+   * Undo a cancel request whose signal never reached Temporal, so the user can try again. Conditional on the
+   * request still being there: if the workflow already acted on it, there's nothing to undo.
+   */
+  async withdrawCancel(id: string): Promise<void> {
+    await this.prisma.assessment.updateMany({
+      where: { id, cancelRequestedAt: { not: null }, status: { in: [...LEGAL_STATUSES[RunAction.Cancel]] } },
+      data: { cancelRequestedAt: null },
+    });
+  }
+
+  /** Undo a decision whose signal never reached Temporal; see withdrawCancel. */
+  async withdrawDecision(id: string): Promise<void> {
+    await this.prisma.assessment.updateMany({
+      where: { id, decision: { not: null }, status: { in: [...LEGAL_STATUSES[RunAction.Approve]] } },
+      data: { decision: null, decisionRequestedAt: null },
+    });
+  }
+
   /** `size` must be 1..agentCount; the row's own agent count is checked here. */
   async setWindow(id: string, size: number): Promise<boolean> {
     const { count } = await this.prisma.assessment.updateMany({

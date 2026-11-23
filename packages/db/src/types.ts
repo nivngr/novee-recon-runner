@@ -18,6 +18,9 @@ export type CreateRunResult = (typeof CreateRunResult)[keyof typeof CreateRunRes
 
 export type RunRecord = Prisma.AssessmentGetPayload<{ include: { agents: true } }>;
 
+/** One agent row, as stored. */
+export type AgentRecord = RunRecord['agents'][number];
+
 export type RunListItem = Prisma.AssessmentGetPayload<{
   select: { id: true; targetDomain: true; status: true; agentCount: true; createdAt: true };
 }>;

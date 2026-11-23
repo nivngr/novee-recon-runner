@@ -5,4 +5,4 @@ export type { EnumParity } from './enum-parity.js';
 export { RunLifecycle } from './run-lifecycle.js';
 export { RunReader } from './run-reader.js';
 export { RunRequests } from './run-requests.js';
-export type * from './types.js';
+export * from './types.js';

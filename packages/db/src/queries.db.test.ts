@@ -228,6 +228,30 @@ describe('requests follow the legality table', () => {
   });
 });
 
+describe('withdrawing a request whose signal failed', () => {
+  it('clears the pending request, so the action can be tried again', async () => {
+    const id = await runWithFindings();
+    await runs.setRunStatus(id, [AssessmentStatus.Aggregating], AssessmentStatus.AwaitingApproval);
+    expect(await requests.requestDecision(id, Decision.Approve)).toBe(true);
+
+    await requests.withdrawDecision(id);
+
+    expect((await reader.getRun(id))?.decision).toBeNull();
+    expect(await requests.requestDecision(id, Decision.Approve)).toBe(true);
+  });
+
+  it('changes nothing once the workflow has acted on the request', async () => {
+    const run = newRun();
+    await requests.createRun(run);
+    expect(await requests.requestCancel(run.id)).toBe(true);
+    await runs.setRunStatus(run.id, [AssessmentStatus.Starting], AssessmentStatus.Cancelled);
+
+    await requests.withdrawCancel(run.id);
+
+    expect((await reader.getRun(run.id))?.cancelRequestedAt).not.toBeNull();
+  });
+});
+
 describe('statuses only move forward', () => {
   it('a status update from the wrong status changes nothing', async () => {
     const run = newRun();

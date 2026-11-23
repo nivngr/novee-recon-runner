@@ -22,7 +22,7 @@ import {
 } from '@temporalio/workflow';
 import { FailureType } from '../activities/failure-types.js';
 import { type StopReason, WaitOutcome } from '../activities/types.js';
-import { activitiesFor, type ReconActivities } from './activities.js';
+import { activitiesFor, type ReconActivities } from './activity-proxies.js';
 import { describeFailure, isFailureOfType, isTimeout } from './failures.js';
 
 export const setWindowSignal = defineSignal<[number]>(Signal.SetWindow);
