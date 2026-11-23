@@ -7,4 +7,4 @@ workflow) and `packages/db`.
   Statuses and risk levels are also database enums: change them through `packages/db` (see its CLAUDE.md).
 - **Keep it pure:** TypeScript and zod only, no Node APIs, no I/O, no other dependencies. It runs in the
   browser and inside Temporal's deterministic workflow sandbox.
-- **Don't reorder `RISK_LEVELS`:** the order is severity, and it matches the database enum's sort order.
+- **Don't reorder `RiskLevel`:** declaration order is severity, and it matches the database enum's sort order.

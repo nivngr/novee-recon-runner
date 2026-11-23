@@ -12,7 +12,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 | M0 | Toolchain and workspace skeleton | done |
 | M1 | Deploy skeleton: `task up` on an empty cluster (R9) | done |
 | M2 | Data layer: Prisma schema and queries | done |
-| M3 | Workflow and activities (R1–R5, R7) | not started |
+| M3 | Workflow and activities (R1–R5, R7) | done |
 | M4 | HTTP API (R6) | not started |
 | M5 | Web UI (R8) | not started |
 | M6 | Proofs R1–R9, with outputs and videos | not started |
@@ -194,7 +194,7 @@ the side effect (D15).
 | Activity | Input | Does | Returns |
 |---|---|---|---|
 | `startAgent` | `runId, index, domain, technique, failFirstAttempts` | `setAgentStarting` → `POST /scans` with `Idempotency-Key: <runId>-agent-<index>` → `setAgentRunning` | `scanId` |
-| `waitAgent` | `runId, index, scanId, stallTimeoutS, maxAgentDurationS, failFirstAttempts` | Loop every 1s: `GET /scans/{id}`; `recordProgress`; heartbeat `{lastProgress, lastChangeAt}`. Ends on `COMPLETED` (`completeAgent`), `FAILED` (`endAgent FAILED`), 404 (`endAgent LOST NOT_FOUND`), no progress for `stallTimeoutS` → `NO_PROGRESS`, running longer than `maxAgentDurationS` since agent-service's `startedAt` → `CEILING` | `{ outcome: COMPLETED \| FAILED \| NOT_FOUND \| NO_PROGRESS \| CEILING, discoveredCount? }` |
+| `waitAgent` | `runId, index, scanId, stallTimeoutS, maxAgentDurationS, failFirstAttempts` | Loop every 1s: `GET /scans/{id}`; `recordProgress`; heartbeat `{lastProgress, lastChangeAt}`. Ends on `COMPLETED` (`completeAgent`), `FAILED` (`endAgent FAILED`), 404 (`endAgent LOST NOT_FOUND`), no progress for `stallTimeoutS` → `NO_PROGRESS`, running longer than `maxAgentDurationS` since agent-service's `startedAt` → `CEILING` | `{ outcome: COMPLETED \| FAILED \| NOT_FOUND \| NO_PROGRESS \| CEILING \| STOPPED, discoveredCount? }` |
 | `stopAgent` | `runId, index, scanId, endAs: LOST(reason) \| STOPPED` | `POST /scans/{id}/stop` (404 = nothing to stop), then `endAgent(..., stopConfirmed: true)` | nothing |
 | `markStopUnconfirmed` | `runId, index, endAs` | `endAgent(..., stopConfirmed: false)` after `stopAgent` gave up | nothing |
 | `markStartFailed` | `runId, index` | `endAgent LOST START_FAILED` | nothing |
@@ -203,7 +203,7 @@ the side effect (D15).
 | `persist` | `runId` | `approve(id)` | nothing |
 
 **`waitAgent` details:** on a re-run after a crash it reads the previous attempt's heartbeat details
-(`Context.current().info.heartbeatDetails`) so the no-progress clock doesn't reset *(verify in M3)*. A network
+(`Context.current().info.heartbeatDetails`) so the no-progress clock doesn't reset (spike 05). A network
 error on `GET` is logged and the loop continues; only the stall checks end it. A failed `recordProgress` is
 logged and ignored.
 
@@ -282,11 +282,29 @@ runLane(i):
     running -= 1                                       # any ending frees the slot
 ```
 
-**Signal handlers:** `setWindow(n)`: if `phase` is `RUNNING` and `1 ≤ n ≤ agentCount`, set `window = n`.
+**Signal handlers:** `setWindow(n)`: if `phase` is `STARTING` or `RUNNING` and `1 ≤ n ≤ agentCount`, set `window = n`.
 `approve()` / `reject()`: if `phase` is `AWAITING_APPROVAL` and `decision == null`, set it. Otherwise ignore.
 
 **Outcomes in Temporal:** `REJECTED_INPUT`, `REJECTED`, `COMPLETED`, and `FAILED` for "no agent completed",
 end the workflow normally. Cancellation shows "cancelled"; a real error shows "failed".
+
+**As built in M3:**
+- `recon()` hands over to a `ReconRun` class holding the run's state; signal handlers use the shared
+  legality table (`isActionLegal`), so `setWindow` is accepted in `STARTING` too.
+- **The phase moves before the database row:** the API allows an action once the row shows a status, so
+  the workflow must already be in it when the signal lands (A11).
+- An unsupported domain also marks agent 0 `LOST START_FAILED`, so no row is left `STARTING`. `waitAgent` can
+  see a scan already `STOPPED` (by our own cleanup): it records `STOPPED`, confirmed.
+- A lane's real error (e.g. `BadRequest`) stops new starts and fails the run; a plain `Error` in workflow code
+  (a bug) is left to Temporal, which retries the workflow task until the code is fixed.
+- Stops and `persist` run in non-cancellable scopes: a cancel never interrupts them halfway.
+- Activity classes keep dependencies in `#private` fields, because the worker registers an object's own
+  properties as activities (A12).
+- The workflow's public surface (input, signal names, workflow id, agent key) lives in `packages/contracts`,
+  so the API never imports worker code.
+- Tests: Temporal's time-skipping server with fake activities; the bundler resolves `@novee/contracts` from
+  source. The replay fixture is a real run (4 agents, window 2, every activity failed once, approved),
+  recorded by `src/scripts/record-history.ts` in Temporal's canonical JSON, hostname and home path scrubbed.
 
 ## 5. Error handling, end to end
 
@@ -329,7 +347,7 @@ agents: [{ index, technique, status, progress, discoveredCount, lostReason, stop
 allowedActions: ("approve" | "reject" | "cancel" | "setWindow")[], failureReason, createdAt, updatedAt }`.
 
 **Submit:** validate → `createRun` → `conflict` gives 409 → start workflow `assessment-<id>` on queue `recon`
-(use Temporal's "use existing" conflict policy if supported, else treat "already started" as success) → reply.
+with `workflowIdConflictPolicy: 'USE_EXISTING'` (spike 05: a repeat returns the same run) → reply.
 **Actions:** read the run, check the legality table and that no request is pending, else 409 → write the
 request column → signal or cancel the workflow → 202.
 **`allowedActions`:** from the legality table, empty while a request is pending.
@@ -345,6 +363,9 @@ Next.js (App Router), TanStack Query, plain styling: a table that tells the trut
 
 - **Routing:** `next.config` rewrites `/api/*` to `http://api:8080/*`. The browser never calls the API directly.
 - **`/` (runs):** list of recent runs; "New run" form: domain, agents (default 6), window (default 2); the browser generates the UUID with `crypto.randomUUID()` and keeps it for retries.
+  A collapsed **Advanced** section holds the per-run settings, pre-filled with the defaults from the shared
+  submit schema: no-progress timeout (`stallTimeoutS`, 60), agent ceiling (`maxAgentDurationS`, 300) and the
+  retry switch (`failFirstAttempts`, 0). It lets a grader run the stall, ceiling and R3 scenarios from the UI.
 - **`/runs/[id]`:** status (with "cancelling…" / "approving…" from `pending`), "N of M completed, K running, L queued, X lost", summary counts, window control, agent table (technique, status, progress bar, lost reason, worker), Approve / Reject / Cancel, review list of domains when awaiting approval or done.
 - **Polling:** `refetchInterval`: 1000 ms while `STARTING`/`RUNNING`/`AGGREGATING`/`PERSISTING` or a request is pending; 5000 ms while `AWAITING_APPROVAL`; `false` at any terminal status. Invalidate immediately after an action.
 - **Buttons:** enabled only if in `allowedActions`; disabled while their request is in flight.
@@ -456,8 +477,8 @@ deleted worker pod is replaced.
 1. Activities and options per §3; HTTP classification with its test.
 2. Workflow per §4. Port the spikes' proven shapes: spike 01 (window), spike 03 (cancel cleanup).
 3. Workflow tests per §9; record one real history for the replay test.
-4. `setWindow` signal: accept it in `STARTING` too (the legality table allows it; §4's handler says only `RUNNING`).
-5. Settle the claims still marked "per the docs": D1 (the sandbox blocks non-deterministic calls), D7 (heartbeat details survive a retry), D12 ("use existing" conflict policy).
+4. ~~`setWindow` signal: accept it in `STARTING` too~~ done: handlers use the legality table.
+5. ~~Settle the claims still marked "per the docs"~~ done: spike 05 (D1 corrected, D7, D8, D12 confirmed).
 
 **Done when:** tests pass in `task check`; a run in the cluster shows `maxConcurrent` exactly at the window.
 
@@ -493,8 +514,12 @@ deleted worker pod is replaced.
    - child workflows per agent, at hundreds of agents per run (D2);
    - a minimum success ratio before a run reaches approval (D7);
    - push updates, once many people watch runs that wait long for approval (D11).
-2. Decide on the optional AI-log entries.
-3. Tick `docs/constraints.md`.
+2. AI log in `NOTES.md`: from the entries `ai-log.md` shows (A2, A3, A4, A6, A8, A9, A11 so far; the rest are kept
+   there as comments), each caught by a method worth describing and explainable in 30 seconds.
+3. A settings table: every setting, where it lives, how to change it (per run in the form's Advanced section; fixed
+   in `apps/worker/src/workflows/activities.ts`; per deployment in each app's `config.ts` and the manifests;
+   agent-service's own behaviour via its `/admin/config`).
+4. Tick `docs/constraints.md`.
 4. On a brand-new cluster, follow `NOTES.md` literally.
 
 **Done when:** the dry run works exactly as written.

@@ -1,5 +1,2 @@
-// Workflow definitions. M3 replaces this placeholder with the recon workflow (plan §4).
-
-export async function recon(): Promise<string> {
-  return 'not implemented yet';
-}
+// The workflow bundle's entry point: every workflow the worker runs.
+export { recon } from './recon.js';

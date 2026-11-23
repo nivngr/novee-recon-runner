@@ -1,4 +1,4 @@
-import type { RiskLevel } from '@novee/contracts';
+import type { AgentStatus, DomainSource, LostReason, RiskLevel } from '@novee/contracts';
 import type { Prisma } from './generated/prisma/client.js';
 
 /** What a submit asks for (validated by the API before it gets here). */
@@ -12,8 +12,9 @@ export interface NewRun {
   failFirstAttempts: number;
 }
 
-/** `existing`: the same request repeated. `conflict`: the same id with different parameters. */
-export type CreateRunResult = 'created' | 'existing' | 'conflict';
+/** `Existing`: the same request repeated. `Conflict`: the same id with different parameters. */
+export const CreateRunResult = { Created: 'created', Existing: 'existing', Conflict: 'conflict' } as const;
+export type CreateRunResult = (typeof CreateRunResult)[keyof typeof CreateRunResult];
 
 export type RunRecord = Prisma.AssessmentGetPayload<{ include: { agents: true } }>;
 
@@ -37,8 +38,8 @@ export interface StagedDomain {
 
 /** Before approve: the deduplicated view of the staged findings. After: the stored result. */
 export type DomainList =
-  | { source: 'staged'; domains: StagedDomain[] }
-  | { source: 'final'; domains: Finding[] };
+  | { source: typeof DomainSource.Staged; domains: StagedDomain[] }
+  | { source: typeof DomainSource.Final; domains: Finding[] };
 
 export interface RunSummary {
   uniqueDomains: number;
@@ -50,7 +51,14 @@ export interface RunSummary {
 
 /** How an agent ended, other than completing. */
 export type AgentEnding =
-  | { status: 'FAILED' }
-  | { status: 'LOST'; lostReason: 'START_FAILED' | 'NOT_FOUND' }
-  | { status: 'LOST'; lostReason: 'NO_PROGRESS' | 'CEILING'; stopConfirmed: boolean }
-  | { status: 'STOPPED'; stopConfirmed: boolean };
+  | { status: typeof AgentStatus.Failed }
+  | {
+      status: typeof AgentStatus.Lost;
+      lostReason: typeof LostReason.StartFailed | typeof LostReason.NotFound;
+    }
+  | {
+      status: typeof AgentStatus.Lost;
+      lostReason: typeof LostReason.NoProgress | typeof LostReason.Ceiling;
+      stopConfirmed: boolean;
+    }
+  | { status: typeof AgentStatus.Stopped; stopConfirmed: boolean };

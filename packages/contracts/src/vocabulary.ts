@@ -1,49 +1,62 @@
-// The words the whole system shares: statuses, risk levels, techniques. The database enums mirror these
-// lists exactly (checked at compile time in packages/db), so the API, worker and UI can't drift apart.
+// The words the whole system shares. Each set is a named object (use `RiskLevel.High`, never 'HIGH') with a
+// type of the same name. The database enums mirror these exactly (checked at compile time in packages/db).
 
+/** Agents are assigned a technique round-robin: TECHNIQUES[agentIndex % 4]. */
 export const TECHNIQUES = ['dns-brute', 'cert-transparency', 'passive-dns', 'web-crawl'] as const;
 export type Technique = (typeof TECHNIQUES)[number];
 
-/** Ordered least to most severe: the database sorts the enum this way, so "most severe" is max(risk). */
-export const RISK_LEVELS = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const;
-export type RiskLevel = (typeof RISK_LEVELS)[number];
+/** Declared least to most severe: the database sorts the enum this way, so "most severe" is max(risk). */
+export const RiskLevel = { Low: 'LOW', Medium: 'MEDIUM', High: 'HIGH', Critical: 'CRITICAL' } as const;
+export type RiskLevel = (typeof RiskLevel)[keyof typeof RiskLevel];
 
-export const ASSESSMENT_STATUSES = [
-  'STARTING',
-  'RUNNING',
-  'AGGREGATING',
-  'AWAITING_APPROVAL',
-  'PERSISTING',
-  'COMPLETED',
-  'REJECTED',
-  'REJECTED_INPUT',
-  'CANCELLED',
-  'FAILED',
-] as const;
-export type AssessmentStatus = (typeof ASSESSMENT_STATUSES)[number];
+export const AssessmentStatus = {
+  Starting: 'STARTING',
+  Running: 'RUNNING',
+  Aggregating: 'AGGREGATING',
+  AwaitingApproval: 'AWAITING_APPROVAL',
+  Persisting: 'PERSISTING',
+  Completed: 'COMPLETED',
+  Rejected: 'REJECTED',
+  RejectedInput: 'REJECTED_INPUT',
+  Cancelled: 'CANCELLED',
+  Failed: 'FAILED',
+} as const;
+export type AssessmentStatus = (typeof AssessmentStatus)[keyof typeof AssessmentStatus];
 
-export const TERMINAL_STATUSES = [
-  'COMPLETED',
-  'REJECTED',
-  'REJECTED_INPUT',
-  'CANCELLED',
-  'FAILED',
-] as const satisfies readonly AssessmentStatus[];
+/** Statuses a run can still move on from. */
+export const LIVE_STATUSES: readonly AssessmentStatus[] = [
+  AssessmentStatus.Starting,
+  AssessmentStatus.Running,
+  AssessmentStatus.Aggregating,
+  AssessmentStatus.AwaitingApproval,
+  AssessmentStatus.Persisting,
+];
 
-/** FAILED: the agent said so. LOST: we gave up on it. STOPPED: stopped by a cancel. */
-export const AGENT_STATUSES = [
-  'QUEUED',
-  'STARTING',
-  'RUNNING',
-  'COMPLETED',
-  'FAILED',
-  'LOST',
-  'STOPPED',
-] as const;
-export type AgentStatus = (typeof AGENT_STATUSES)[number];
+export const AgentStatus = {
+  Queued: 'QUEUED',
+  Starting: 'STARTING',
+  Running: 'RUNNING',
+  Completed: 'COMPLETED',
+  /** The agent said so. */
+  Failed: 'FAILED',
+  /** We gave up on it. */
+  Lost: 'LOST',
+  /** Stopped by a cancel. */
+  Stopped: 'STOPPED',
+} as const;
+export type AgentStatus = (typeof AgentStatus)[keyof typeof AgentStatus];
 
-export const LOST_REASONS = ['START_FAILED', 'NOT_FOUND', 'NO_PROGRESS', 'CEILING'] as const;
-export type LostReason = (typeof LOST_REASONS)[number];
+export const LostReason = {
+  StartFailed: 'START_FAILED',
+  NotFound: 'NOT_FOUND',
+  NoProgress: 'NO_PROGRESS',
+  Ceiling: 'CEILING',
+} as const;
+export type LostReason = (typeof LostReason)[keyof typeof LostReason];
 
-export const DECISIONS = ['APPROVE', 'REJECT'] as const;
-export type Decision = (typeof DECISIONS)[number];
+export const Decision = { Approve: 'APPROVE', Reject: 'REJECT' } as const;
+export type Decision = (typeof Decision)[keyof typeof Decision];
+
+/** Where a run's domain list comes from: the deduplicated staged findings, or the stored result after approve. */
+export const DomainSource = { Staged: 'staged', Final: 'final' } as const;
+export type DomainSource = (typeof DomainSource)[keyof typeof DomainSource];

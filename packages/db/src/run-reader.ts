@@ -1,3 +1,4 @@
+import { AssessmentStatus, DomainSource } from '@novee/contracts';
 import type { PrismaClient } from './generated/prisma/client.js';
 import type { DomainList, RunListItem, RunRecord, StagedDomain } from './types.js';
 
@@ -24,15 +25,15 @@ export class RunReader {
   async getDomains(id: string): Promise<DomainList | null> {
     const run = await this.prisma.assessment.findUnique({ where: { id }, select: { status: true } });
     if (run === null) return null;
-    if (run.status === 'COMPLETED') {
+    if (run.status === AssessmentStatus.Completed) {
       const domains = await this.prisma.discoveredDomain.findMany({
         where: { assessmentId: id },
         select: { domain: true, risk: true },
         orderBy: [{ risk: 'desc' }, { domain: 'asc' }],
       });
-      return { source: 'final', domains };
+      return { source: DomainSource.Final, domains };
     }
-    return { source: 'staged', domains: await this.stagedDomains(id) };
+    return { source: DomainSource.Staged, domains: await this.stagedDomains(id) };
   }
 
   private async stagedDomains(id: string): Promise<StagedDomain[]> {

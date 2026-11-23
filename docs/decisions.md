@@ -6,7 +6,7 @@ In the order we made them. Each: what we chose, what we rejected, and why.
 **Chose:** TypeScript. **Rejected:** Go.
 **Why:**
 - I read TypeScript fluently, so I can review every line the agent writes.
-- Temporal's TypeScript SDK sandboxes workflow code, blocking the non-deterministic calls that break crash recovery. Go has no such guard. *(Per the docs; not yet verified by a spike.)*
+- Temporal's TypeScript SDK sandboxes workflow code: `Math.random()` and the clock are replaced with replay-safe versions, and I/O (`fetch`, Node modules) is rejected, so the calls that break crash recovery can't slip in. Go has no such guard. ([Spike 05](../spikes/05-sdk-claims/README.md))
 - One language across the stack, frontend included.
 
 ## D2 — Concurrency window: a counter inside the workflow
@@ -75,7 +75,7 @@ legal in the run's current phase (from the read model, D5) and refuses with 409 
 checks again when the signal arrives, and the first decision wins.
 **Rejected:** Temporal updates (a request with a validated reply).
 **Why:**
-- A signal is stored even with the worker down and applied when it returns; an update needs a live worker to answer *(per the docs)*.
+- A signal is stored even with the worker down and applied when it returns; an update needs a live worker to answer ([spike 05](../spikes/05-sdk-claims/README.md)).
 - The API check gives the user a fast, clear "not now". The workflow check holds against races, since only it sees the real state.
 
 ## D9 — Database access: Prisma
@@ -109,8 +109,8 @@ immediately after the user's own action, and stops at any terminal status.
 
 ## D12 — Run identity: a UUID from the browser, a submit safe to repeat
 **Chose:** the browser generates the run's UUID and sends it with the submit. The API saves the rows with
-"insert, or do nothing if it exists", and starts the workflow with id `assessment-<uuid>`, treating
-"already started" as success. Same id, different parameters → 409. Agent keys are `<uuid>-agent-<n>`.
+"insert, or do nothing if it exists", and starts the workflow with id `assessment-<uuid>` and Temporal's "use existing" conflict policy, so a repeat
+returns the same run ([spike 05](../spikes/05-sdk-claims/README.md)). Same id, different parameters → 409. Agent keys are `<uuid>-agent-<n>`.
 **Rejected:** the API generating the id, with a sweeper failing runs stuck in `STARTING`.
 **Why:**
 - A double click or a retried submit can't create two runs, and a half-finished submit is completed by retrying it.

@@ -1,4 +1,4 @@
-import type { AssessmentStatus, RiskLevel } from '@novee/contracts';
+import { AssessmentStatus, RiskLevel } from '@novee/contracts';
 import type { PrismaClient } from './generated/prisma/client.js';
 import type { RunSummary } from './types.js';
 
@@ -30,10 +30,10 @@ export class RunLifecycle {
     const countAt = (risk: RiskLevel): number => perDomain.filter((group) => group._max.risk === risk).length;
     const summary: RunSummary = {
       uniqueDomains: perDomain.length,
-      critical: countAt('CRITICAL'),
-      high: countAt('HIGH'),
-      medium: countAt('MEDIUM'),
-      low: countAt('LOW'),
+      critical: countAt(RiskLevel.Critical),
+      high: countAt(RiskLevel.High),
+      medium: countAt(RiskLevel.Medium),
+      low: countAt(RiskLevel.Low),
     };
     await this.prisma.assessment.update({
       where: { id },
@@ -56,8 +56,8 @@ export class RunLifecycle {
   approve(id: string): Promise<void> {
     return this.prisma.$transaction(async (tx) => {
       const { count } = await tx.assessment.updateMany({
-        where: { id, status: 'PERSISTING' },
-        data: { status: 'COMPLETED' },
+        where: { id, status: AssessmentStatus.Persisting },
+        data: { status: AssessmentStatus.Completed },
       });
       if (count === 0) return;
       await tx.$executeRaw`

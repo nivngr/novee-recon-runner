@@ -1,13 +1,16 @@
 # AI log
 
-Where the coding agent got it wrong, and how we noticed. In the order it happened.
+Where the coding agent got it wrong, and how we noticed. In the order it happened. Shown: catches that would
+have broken a requirement or shipped broken. Smaller ones are kept as comments in this file, numbers unchanged.
 
+<!-- Below the bar (kept for the record):
 ## A1 — Design — padded "rejected alternatives" *(optional: decide later if it fits)*
 **File:** `docs/decisions.md` (D2, D4 drafts)
 **Wrong behaviour:** the agent listed alternatives the brief forbids or nobody would build (fan-out, cron,
 agent-service's own cap; Redis for staging), making the comparison look broader than it was.
 **How we noticed:** I asked for one genuine rejected alternative; most of the list didn't survive the question.
 **Fix:** each decision now names only genuine alternatives (child workflows for D2, re-fetching for D4).
+-->
 
 ## A2 — R7 — cancelled runs stuck live
 **File:** `spikes/03-cancel/src/workflows.ts`
@@ -33,12 +36,14 @@ worker-down scenario passed without testing anything.
 showed workers alive.
 **Fix:** kill by script path and confirm no worker is alive before the step.
 
+<!-- Below the bar (kept for the record):
 ## A5 — R5 — naive stall detection first *(optional: decide later if it fits)*
 **File:** `docs/decisions.md` (D7 draft)
 **Wrong behaviour:** the agent proposed only a fixed 5-min ceiling for stalled agents, holding a window
 slot for minutes, though a no-progress timeout (stalls freeze progress) catches them in about one.
 **How we noticed:** I asked for genuine alternatives to each choice; the better option surfaced there.
 **Fix:** both: a 60s no-progress timeout, with the 5-min ceiling as a backstop.
+-->
 
 ## A6 — R9 — the plan picked Alpine images the worker can't run on
 **File:** `docs/design/plan.md` (§8, images)
@@ -48,6 +53,7 @@ library, and the SDK ships it only for glibc Linux; Alpine uses musl, so the wor
 `x86_64-unknown-linux-gnu` and `aarch64-unknown-linux-gnu`, no musl.
 **Fix:** all Node images use `node:22.23.5-bookworm-slim` (Debian, glibc).
 
+<!-- Below the bar (kept for the record):
 ## A7 — R9 — `task up` never returned
 **File:** `Taskfile.yml` (the last step of `up`)
 **Wrong behaviour:** the closing message was `echo "… Open the UI with `task open` …"`. The shell runs anything
@@ -56,6 +62,7 @@ bring-up would hang at the very end.
 **How we noticed:** the first `task up` on a fresh cluster deployed everything but never exited; its log
 ended with `task: [open] … port-forward`.
 **Fix:** plain quotes in the message.
+-->
 
 ## A8 — R3 — the plan's TypedSQL couldn't be built in an image
 **File:** `docs/design/plan.md` §2 (`approve`), D9
@@ -74,6 +81,53 @@ path and loaded M1's old `dist/` of `@novee/contracts`, which had no legality ta
 **How we noticed:** 2 of 13 database tests failed with `Cannot read properties of undefined (reading 'approve')`
 on code that typechecked.
 **Fix:** both Vitest configs alias the workspace packages to their source.
+
+<!-- Below the bar (kept for the record):
+## A10 — D1 — "the sandbox blocks non-deterministic calls"
+**File:** `docs/decisions.md` D1
+**Wrong behaviour:** D1 said the workflow sandbox *blocks* non-deterministic calls. It doesn't block
+`Math.random()` or `Date.now()`: it replaces them with replay-safe versions (seeded per run; clock frozen per
+workflow task). Only I/O is rejected. The guarantee holds; the description of it was wrong.
+**How we noticed:** spike 05 called both inside a workflow: they returned values instead of throwing, and all
+four runs replayed cleanly.
+**Fix:** D1 reworded from the spike's results.
+-->
+
+## A11 — R6 — an approve could be dropped
+**File:** `apps/worker/src/workflows/recon.ts` (`moveTo`)
+**Wrong behaviour:** the first version wrote the status to the database, then updated the workflow's own
+phase. The API allows approve once the *row* says `AWAITING_APPROVAL`, so an approve signal could arrive while
+the workflow still thought it was `AGGREGATING`; the handler would ignore it, and the run would wait forever.
+**How we noticed:** reviewing the workflow before its first run.
+**Fix:** the phase moves first, then the row.
+
+<!-- Below the bar (kept for the record):
+## A12 — Worker — dependencies registered as activities
+**File:** `apps/worker/src/activities/*.ts`, `main.ts`
+**Wrong behaviour:** activity classes held their dependencies in TypeScript `private` fields and were
+registered with `{ ...agentActivities }`. `private` only exists at compile time, so the spread would have
+registered the HTTP client and database layer as "activities".
+**How we noticed:** reviewing `main.ts` before the first run.
+**Fix:** JavaScript `#private` fields, which a spread doesn't copy (checked: only the methods come through).
+-->
+
+<!-- Below the bar (kept for the record):
+## A13 — Replay fixture — the developer's machine in a committed file
+**File:** `apps/worker/src/workflows/fixtures/recon-history.json`
+**Wrong behaviour:** the recorded history carried the worker identity (`pid@<hostname>`) and stack traces with
+the home-directory path; it would have been committed with the submission.
+**How we noticed:** inspecting the largest history events while checking R4 payload sizes.
+**Fix:** the recorder replaces the hostname and home path before writing.
+-->
+
+<!-- Below the bar (kept for the record):
+## A14 — Replay test — the fixture was in the wrong format
+**File:** `apps/worker/src/scripts/record-history.ts`
+**Wrong behaviour:** the recorder wrote the history with `JSON.stringify`, the protobuf *object* form; the
+replayer reads protobuf's canonical JSON.
+**How we noticed:** the replay test failed: `expected timestamp string: {"seconds":…}`.
+**Fix:** `historyToJSON` / `historyFromJSON` from `@temporalio/common/proto-utils`.
+-->
 
 <!--
 ## A<n> — <requirement or spike> — <one-line summary>

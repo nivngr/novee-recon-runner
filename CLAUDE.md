@@ -15,6 +15,8 @@ The goal is a submission I understand and can defend line by line, so explain be
 - **Type safety first:** no `any`, no loosely typed objects or ad-hoc dictionaries. Model data with explicit
   types and zod schemas; use discriminated unions for variants.
 - **Readable, simple, clean:** small units with a single responsibility; clear names over comments.
+- **No magic strings:** a value set used in more than one module is a named `as const` object with a type
+  of the same name (`RiskLevel.High`, never `'HIGH'`). Literal tags are fine for a union used inside one file.
 - **Prefer classes for stateful services** (clients, repositories, activity groups with dependencies).
   Temporal workflow code itself is a function, as the SDK requires.
 
@@ -42,9 +44,11 @@ lint + formatting, unit tests), plus `task test:db` when the data layer changed.
 Rules:
 - Thin beats thorough. These feed `NOTES.md`, which is written last from them.
 - AI log entries are honest and specific: "it fanned out all six; caught because `maxConcurrent` came back 6".
-  Log every catch, including ones caught in review before running.
+  Log a catch only if it would have broken a requirement or shipped broken (review catches count); small slips
+  are just fixed. Entries below that bar stay in `ai-log.md` as comments, never deleted; `NOTES.md` draws from
+  the shown ones.
 - Wording: describe new parts of the stack by how they connect to my experience. Don't frame it
   as things I lack or need to learn.
 
-Package-specific rules live in nested `CLAUDE.md` files (`packages/db`, `packages/contracts`). Add one only
+Package-specific rules live in nested `CLAUDE.md` files (`packages/db`, `packages/contracts`, `apps/worker`). Add one only
 for a practice that must be repeated and can't be read from the code itself.

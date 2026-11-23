@@ -1,6 +1,6 @@
-import { type Decision, LEGAL_STATUSES, TECHNIQUES } from '@novee/contracts';
+import { type Decision, LEGAL_STATUSES, RunAction, TECHNIQUES } from '@novee/contracts';
 import type { Assessment, PrismaClient } from './generated/prisma/client.js';
-import type { CreateRunResult, NewRun } from './types.js';
+import { CreateRunResult, type NewRun } from './types.js';
 
 /**
  * The API's writes: a submit, and the user's requests (cancel, decision, window). Each request is a
@@ -28,7 +28,7 @@ export class RunRequests {
       });
       if (inserted.count === 0) {
         const existing = await tx.assessment.findUniqueOrThrow({ where: { id: run.id } });
-        return isSameRequest(existing, run) ? 'existing' : 'conflict';
+        return isSameRequest(existing, run) ? CreateRunResult.Existing : CreateRunResult.Conflict;
       }
       await tx.assessmentAgent.createMany({
         data: Array.from({ length: run.agentCount }, (_, agentIndex) => ({
@@ -38,13 +38,18 @@ export class RunRequests {
         })),
         skipDuplicates: true,
       });
-      return 'created';
+      return CreateRunResult.Created;
     });
   }
 
   async requestCancel(id: string): Promise<boolean> {
     const { count } = await this.prisma.assessment.updateMany({
-      where: { id, status: { in: [...LEGAL_STATUSES.cancel] }, cancelRequestedAt: null, decision: null },
+      where: {
+        id,
+        status: { in: [...LEGAL_STATUSES[RunAction.Cancel]] },
+        cancelRequestedAt: null,
+        decision: null,
+      },
       data: { cancelRequestedAt: new Date() },
     });
     return count === 1;
@@ -53,7 +58,12 @@ export class RunRequests {
   /** First decision wins. */
   async requestDecision(id: string, decision: Decision): Promise<boolean> {
     const { count } = await this.prisma.assessment.updateMany({
-      where: { id, status: { in: [...LEGAL_STATUSES.approve] }, cancelRequestedAt: null, decision: null },
+      where: {
+        id,
+        status: { in: [...LEGAL_STATUSES[RunAction.Approve]] },
+        cancelRequestedAt: null,
+        decision: null,
+      },
       data: { decision, decisionRequestedAt: new Date() },
     });
     return count === 1;
@@ -64,7 +74,7 @@ export class RunRequests {
     const { count } = await this.prisma.assessment.updateMany({
       where: {
         id,
-        status: { in: [...LEGAL_STATUSES.setWindow] },
+        status: { in: [...LEGAL_STATUSES[RunAction.SetWindow]] },
         cancelRequestedAt: null,
         agentCount: { gte: size },
       },
