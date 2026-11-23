@@ -233,8 +233,8 @@ anything else → retryable.
 | Status | approve / reject | setWindow | cancel |
 |---|---|---|---|
 | `STARTING`, `RUNNING` | no | yes | yes |
-| `AGGREGATING` | no | no | yes |
-| `AWAITING_APPROVAL` | yes (first decision wins) | no | yes |
+| `AGGREGATING` | no | no | no |
+| `AWAITING_APPROVAL` | yes (first decision wins) | no | no (reject is the honest name: nothing stored) |
 | `PERSISTING` and terminal | no | no | no |
 
 **Algorithm:**

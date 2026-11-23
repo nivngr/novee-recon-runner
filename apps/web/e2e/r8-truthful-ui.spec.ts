@@ -69,9 +69,9 @@ test('submit, watch, approve, completed: truthful status, buttons from allowedAc
   }
   expect(checkedRunningButtons).toBe(true);
 
-  // Awaiting approval: approve offered, cancel still offered, the window no longer changeable.
+  // Awaiting approval: approve offered; cancel and the window no longer (nothing left to stop or start).
   await expect(page.getByTestId('action-approve')).toBeEnabled();
-  await expect(page.getByTestId('action-cancel')).toBeEnabled();
+  await expect(page.getByTestId('action-cancel')).toBeDisabled(); // nothing left to stop: approve or reject
   await expect(page.getByTestId('action-window')).toBeDisabled();
   await expect(page.getByTestId('domain-list')).toBeVisible();
   await expect(page.getByText('found, not stored yet')).toBeVisible();

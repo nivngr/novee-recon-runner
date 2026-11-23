@@ -4,7 +4,6 @@ import {
   Decision,
   FailureCode,
   isActionLegal,
-  LEGAL_STATUSES,
   LIVE_STATUSES,
   type ReconInput,
   type ReconResult,
@@ -26,6 +25,17 @@ import { FailureType } from '../activities/failure-types.js';
 import { type StopReason, WaitOutcome } from '../activities/types.js';
 import { activitiesFor, type ReconActivities } from './activity-proxies.js';
 import { describeFailure, isFailureOfType, isTimeout } from './failures.js';
+
+/**
+ * Statuses the cleanup may move to CANCELLED from. Wider than where the UI offers Cancel (STARTING, RUNNING): a cancel
+ * that reaches Temporal some other way still ends the run truthfully, short of PERSISTING, which is never interrupted.
+ */
+const CANCELLABLE_FROM: readonly AssessmentStatus[] = [
+  AssessmentStatus.Starting,
+  AssessmentStatus.Running,
+  AssessmentStatus.Aggregating,
+  AssessmentStatus.AwaitingApproval,
+];
 
 export const setWindowSignal = defineSignal<[number]>(Signal.SetWindow);
 export const approveSignal = defineSignal(Signal.Approve);
@@ -214,7 +224,7 @@ class ReconRun {
           : [],
       ),
     );
-    await this.moveTo(AssessmentStatus.Cancelled, LEGAL_STATUSES[RunAction.Cancel]);
+    await this.moveTo(AssessmentStatus.Cancelled, CANCELLABLE_FROM);
   }
 
   private decide(decision: Decision): void {

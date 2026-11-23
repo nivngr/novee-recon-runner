@@ -80,10 +80,10 @@ describe('toRunView', () => {
       RunAction.Cancel,
       RunAction.SetWindow,
     ]);
+    // Awaiting a decision: approve or reject. Cancel is only for stopping agents, and they've all ended.
     expect(toRunView(run({ status: AssessmentStatus.AwaitingApproval })).allowedActions).toEqual([
       RunAction.Approve,
       RunAction.Reject,
-      RunAction.Cancel,
     ]);
     expect(toRunView(run({ status: AssessmentStatus.Completed })).allowedActions).toEqual([]);
   });

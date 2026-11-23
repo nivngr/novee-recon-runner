@@ -15,12 +15,9 @@ export const LEGAL_STATUSES: Readonly<Record<RunAction, readonly AssessmentStatu
   [RunAction.Approve]: [AssessmentStatus.AwaitingApproval],
   [RunAction.Reject]: [AssessmentStatus.AwaitingApproval],
   [RunAction.SetWindow]: [AssessmentStatus.Starting, AssessmentStatus.Running],
-  [RunAction.Cancel]: [
-    AssessmentStatus.Starting,
-    AssessmentStatus.Running,
-    AssessmentStatus.Aggregating,
-    AssessmentStatus.AwaitingApproval,
-  ],
+  // Cancel means "stop the agents": only while agents can be running. Once a run awaits a decision, it's approve
+  // or reject (reject stores nothing, the same outcome under the honest name).
+  [RunAction.Cancel]: [AssessmentStatus.Starting, AssessmentStatus.Running],
 };
 
 export function isActionLegal(action: RunAction, status: AssessmentStatus): boolean {

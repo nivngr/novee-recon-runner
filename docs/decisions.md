@@ -56,6 +56,8 @@ A stop is retried for a bounded time, then the agent is flagged "stop unconfirme
 - Built-in cancel also cancels the running `waitAgent` steps; a custom message means rebuilding that.
 - Temporal stores the cancel, so it works with the worker down; cleanup runs when one returns ([spike 03](../spikes/03-cancel/README.md)).
 - Retrying a stop forever could leave the run stuck live, which R7 forbids.
+- Cancel is offered only while agents can be running. Awaiting a decision, it would do exactly what reject does,
+  under a vaguer name, so the choice there is approve or reject (changed after manual testing).
 
 ## D7 — Errors and timeouts
 **Chose:** activities classify errors and Temporal retries by policy: 503, 429 and network errors with
@@ -139,6 +141,7 @@ port-forwards the UI.
 - A migrate Job is one explicit step that never races between replicas.
 - The worker stays a non-HTTP process (R9), and a hung worker stops touching the file and gets restarted.
 - With 2 replicas, a killed worker's agents move to the other within ~10s (R2).
+- The check runs in a container (`check.Dockerfile`), so deploying needs Docker, not Node.
 
 ## D15 — Verification: proof scripts, workflow tests, recorded UI runs
 **Chose:** a repeatable proof script per requirement against the deployed stack; workflow tests with
