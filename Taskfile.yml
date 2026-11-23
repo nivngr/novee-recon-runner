@@ -4,12 +4,18 @@ version: '3'
 
 vars:
   NS: novee-task
-  # Short git hash; uncommitted changes add a suffix hashed from them, so an edit never reuses an old image.
+  # Image tag. In a git checkout: the short commit hash, plus a suffix hashed from any uncommitted changes. Unpacked
+  # from a zip (no .git): a hash of the source files. Either way, different code never reuses an old image.
   TAG:
     sh: |
-      tag=$(git rev-parse --short HEAD)
-      if [ -n "$(git status --porcelain)" ]; then
-        tag="$tag-dirty-$( (git diff HEAD; git ls-files --others --exclude-standard -z | xargs -0 cat 2>/dev/null) | shasum | cut -c1-8)"
+      if git rev-parse --short HEAD > /dev/null 2>&1; then
+        tag=$(git rev-parse --short HEAD)
+        if [ -n "$(git status --porcelain)" ]; then
+          tag="$tag-dirty-$( (git diff HEAD; git ls-files --others --exclude-standard -z | xargs -0 cat 2>/dev/null) | shasum | cut -c1-8)"
+        fi
+      else
+        tag="src-$(find . \( -name node_modules -o -name .next -o -name dist -o -name generated -o -name .task -o -name videos \) -prune \
+          -o -type f -print0 | LC_ALL=C sort -z | xargs -0 shasum | shasum | cut -c1-8)"
       fi
       echo "$tag"
   CONTEXT:
@@ -166,7 +172,7 @@ tasks:
       - task: infra
       - task: migrate
       - task: apps
-      - echo "Stack is up (images {{.TAG}}). Open the UI with 'task open', then http://localhost:3000"
+      - echo "Stack is up (images {{.TAG}}). Run 'task open', then http://localhost:3000 (app) and http://localhost:8234 (Temporal)"
 
   open:
     desc: 'Open the stack locally: the UI on http://localhost:3000, Temporal''s Web UI on http://localhost:8234 (Ctrl-C stops both)'

@@ -2,7 +2,7 @@
 
 ## Changing workflow code (`src/workflows/`)
 
-- **Run the replay test** (part of `task check`). If it fails, the change would break runs already in flight (A10):
+- **Run the replay test** (part of `task check`). If it fails, the change would break runs already in flight (A4):
   Temporal finishes old runs with the new code.
 - **The workflow's input is a public API whose old callers can't be updated.** Change it additively only (new
   optional fields). If a breaking change is unavoidable, the new code accepts the old shape too (a small converter

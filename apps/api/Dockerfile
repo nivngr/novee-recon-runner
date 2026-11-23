@@ -1,5 +1,5 @@
 # The REST API. Built in two stages: compile with all tools, then run with production dependencies only.
-# Debian, not Alpine: Temporal's native library ships for glibc only (A4).
+# Debian, not Alpine: Temporal's native library ships for glibc only (A2).
 
 FROM node:22.23.5-bookworm-slim AS build
 WORKDIR /app

@@ -96,7 +96,7 @@ class FakeActivities {
   }
 }
 
-/** Bundle our packages from source, never a stale dist/ (A6). Keeps Temporal's own aliases: they block I/O. */
+/** Bundle our packages from source, never a stale dist/. Keeps Temporal's own aliases: they block I/O. */
 const BUNDLE_FROM_SOURCE: NonNullable<WorkerOptions['bundlerOptions']> = {
   webpackConfigHook: (config) => {
     const alias = config.resolve?.alias;
@@ -261,7 +261,7 @@ describe('recon workflow', { timeout: 60_000 }, () => {
 
 describe('replay', { timeout: 60_000 }, () => {
   // Each fixture is a real run recorded with a version of the code whose runs may still be in flight. A failing
-  // replay means the change would break them (A10). Retire a fixture only with its compatibility code (apps/worker/CLAUDE.md).
+  // replay means the change would break them (A4). Retire a fixture only with its compatibility code (apps/worker/CLAUDE.md).
   it.each([['recon-history.json', 'settings nested (M5 on)']])(
     '%s — a real run (%s) replays against the current code',
     async (fixture) => {

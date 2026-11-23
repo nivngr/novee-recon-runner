@@ -16,7 +16,7 @@ behind each choice is in [`decisions.md`](../decisions.md) (D1–D15), the short
 | M4 | HTTP API (R6) | done |
 | M5 | Web UI (R8) | done |
 | M6 | Proofs R1–R9, with outputs and videos | done |
-| M7 | `NOTES.md` and a clean-cluster dry run | not started |
+| M7 | `NOTES.md` and a clean-cluster dry run | done |
 
 Statuses: `not started` → `in progress` → `done` (its "done when" passed, reviewed, committed).
 
@@ -295,7 +295,7 @@ end the workflow normally. Cancellation shows "cancelled"; a real error shows "f
 - `recon()` hands over to a `ReconRun` class holding the run's state; signal handlers use the shared
   legality table (`isActionLegal`), so `setWindow` is accepted in `STARTING` too.
 - **The phase moves before the database row:** the API allows an action once the row shows a status, so
-  the workflow must already be in it when the signal lands (A7).
+  the workflow must already be in it when the signal lands.
 - An unsupported domain also marks agent 0 `LOST START_FAILED`, so no row is left `STARTING`. `waitAgent` can
   see a scan already `STOPPED` (by our own cleanup): it records `STOPPED`, confirmed.
 - A lane's real error (e.g. `BadRequest`) stops new starts and fails the run; a plain `Error` in workflow code
@@ -359,7 +359,7 @@ request column → signal or cancel the workflow → 202.
 `FAILED` (`ENDED_UNRECORDED`). Set `stuck: { step, attempt, lastError }` (status unchanged: it resumes once fixed)
 if the workflow's own step has failed 3+ times in a row, or an activity with no deadline (Temporal's
 `expirationTime` is unset: the database writes, `waitAgent`) has failed 5+ times beyond `failFirstAttempts`.
-Activities with a deadline give up on their own, so they never count. Added after A10, when a run said
+Activities with a deadline give up on their own, so they never count. Added after A4/A5, when a run said
 "approving…" for minutes while its workflow kept crashing. Manual test: `proofs/manual/stuck-writes.sh`.
 **Validation and caps:** domain is a non-empty string ≤ 253 characters, trimmed and lowercased, **never checked
 for support** (the 422 path must stay reachable, R5); `agentCount` 1–20; `windowSize` 1–`agentCount`;
@@ -412,7 +412,7 @@ Next.js (App Router), TanStack Query, plain styling: a table that tells the trut
 
 ## 8. Deployment
 
-**Images** (`node:22.23.5-bookworm-slim`, non-root, multi-stage; not Alpine, see A4): `api`, `worker`, `web` (Next.js standalone output),
+**Images** (`node:22.23.5-bookworm-slim`, non-root, multi-stage; not Alpine, see A2): `api`, `worker`, `web` (Next.js standalone output),
 `migrate` (Prisma CLI + migrations), plus the given `agent-service`. All tagged with the short git hash.
 
 **Manifests (`k8s/`):**
@@ -556,16 +556,16 @@ deleted worker pod is replaced.
    - push updates, once many people watch runs that wait long for approval (D11);
    - Temporal's Worker Versioning instead of compatibility converters, once workflow changes are frequent: each build
      gets its own worker Deployment, old runs stay on it until they finish, `task up` promotes the new version and a
-     cleanup removes drained ones (often Temporal's Worker Controller for Kubernetes) (A10).
-2. AI log in `NOTES.md`: from the entries `ai-log.md` shows (A1–A10 so far; smaller catches are
-   kept there as unnumbered comments), each caught by a method worth describing and explainable in 30 seconds.
-   **Lead with A10** (found by the user testing by hand): a real product gotcha of durable workflows, since old runs
+     cleanup removes drained ones (often Temporal's Worker Controller for Kubernetes) (A4).
+2. AI log in `NOTES.md`: the six entries `ai-log.md` shows (A1–A6: requirement-level mistakes caught by a judgement
+   call or a rule I set; smaller catches kept there as unnumbered comments), each caught by a method worth describing and explainable in 30 seconds.
+   **Lead with A4** (found by the user testing by hand): a real product gotcha of durable workflows, since old runs
    replay through new code, so a workflow's input is a public API; with the fix (versioned input, a fixture per
    version), the stuck warning it led to, and what production would add (Temporal's Worker Versioning).
 3. A settings table: every setting, where it lives, how to change it (per run in the form's Advanced section; fixed
    in `apps/worker/src/workflows/activity-proxies.ts`; per deployment in each app's `config.ts` and the manifests;
    agent-service's own behaviour via its `/admin/config`).
 4. Tick `docs/constraints.md`.
-4. On a brand-new cluster, follow `NOTES.md` literally.
+5. On a brand-new cluster, follow `NOTES.md` literally.
 
 **Done when:** the dry run works exactly as written.

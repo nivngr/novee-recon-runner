@@ -10,4 +10,9 @@ The phases I went through, in order, from receiving the assignment to submitting
 3. **Map the fixed constraints.** Listed everything the brief decides in advance as a pre-submission checklist ([`docs/constraints.md`](docs/constraints.md)).
 4. **Tech design, one decision at a time.** Each open question discussed, recorded in [`docs/decisions.md`](docs/decisions.md), and spiked where it depends on Temporal's behaviour (spike 01: the window; spike 02: read paths while the worker is down; spike 03: cancellation).
 5. **Plan the build.** Turned the design into a system diagram, a short tech design and a detailed build spec with milestones ([`docs/design/`](docs/design/)).
-6. **Build, milestone by milestone** *(in progress)*. Each milestone ends with a demo and a review before its commit.
+6. **Build, milestone by milestone.** Each milestone ended with a demo and a review before its commit; the review
+   reshaped the code more than once (named constants, nested settings, structured failures).
+7. **Prove it.** One repeatable script per requirement, all run in one pass on a freshly created cluster
+   ([`proofs/`](proofs/README.md)), plus manual testing in the UI, which found the hardest bug (A10).
+8. **Write it up.** [`NOTES.md`](NOTES.md) from the records, then a dry run on a brand-new cluster
+   following it literally.
