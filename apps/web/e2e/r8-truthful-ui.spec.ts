@@ -31,7 +31,7 @@ async function expectPageMatchesApi(page: Page, runId: string): Promise<void> {
   await expect(page.getByTestId('domain-list').locator('tbody tr')).toHaveCount(domains.domains.length);
 }
 
-test('submit → watch → approve → completed: truthful status, buttons from allowedActions, no polling after the end', async ({
+test('submit, watch, approve, completed: truthful status, buttons from allowedActions, no polling after the end', async ({
   page,
 }) => {
   const errors: string[] = [];
